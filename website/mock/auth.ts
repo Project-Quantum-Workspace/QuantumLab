@@ -1,0 +1,140 @@
+import { Request, Response } from 'express';
+
+const waitTime = (time: number = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+};
+
+const { ACCESS_ENV } = process.env;
+
+/**
+ * 当前用户的权限，如果为空代表没登录
+ * current user access， if is '', user need login
+ * 如果是 pro 的预览，默认是有权限的
+ */
+let access = ACCESS_ENV === 'site' ? 'admin' : '';
+
+const getAccess = () => {
+  return access;
+};
+
+// 代码中会兼容本地 service mock 以及部署站点的静态数据
+export default {
+  // 支持值为 Object 和 Array
+  'GET /api/auth/currentUser': (req: Request, res: Response) => {
+    if (!getAccess()) {
+      res.status(401).send({
+        data: {
+          isLogin: false,
+        },
+        errorCode: '401',
+        errorMessage: 'Please Login！',
+        success: true,
+      });
+      return;
+    }
+    if(req.headers.authorization==='Bearer admin-token'){
+      res.send({
+        success: true,
+        data: {
+          name: 'LoisW-Admin',
+          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+          email: 'loisw@test.com',
+          notifyCount: 12,
+          unreadCount: 11,
+          access: getAccess(),
+        },
+      });
+    }
+    if(req.headers.authorization==='Bearer user-token'){
+      res.send({
+        success: true,
+        data: {
+          name: 'LoisW-User',
+          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+          email: 'loisw@test.com',
+          notifyCount: 12,
+          unreadCount: 11,
+          access: getAccess(),
+        },
+      });
+    }
+
+  },
+  'POST /api/auth/login': async (req: Request, res: Response) => {
+    const { password, username, type } = req.body;
+    await waitTime(2000);
+    if (password === 'admin' && username === 'admin') {
+      res.send({
+        status: 'ok',
+        type,
+        currentAuthority: 'admin',
+        accessToken: 'admin-token',
+        refreshToken: 'admin-token',
+      });
+      access = 'admin';
+      return;
+    }
+    if (password === 'user' && username === 'user') {
+      res.send({
+        status: 'ok',
+        type,
+        currentAuthority: 'user',
+        accessToken: 'user-token',
+        refreshToken: 'user-token',
+      });
+      access = 'user';
+      return;
+    }
+
+    res.send({
+      status: 'error',
+      type,
+      currentAuthority: 'guest',
+    });
+    access = 'guest';
+  },
+  'POST /api/auth/logout': (req: Request, res: Response) => {
+    access = '';
+    res.send({ data: {}, success: true });
+  },
+  'GET /api/500': (req: Request, res: Response) => {
+    res.status(500).send({
+      timestamp: 1513932555104,
+      status: 500,
+      error: 'error',
+      message: 'error',
+      path: '/base/category/list',
+    });
+  },
+  'GET /api/404': (req: Request, res: Response) => {
+    res.status(404).send({
+      timestamp: 1513932643431,
+      status: 404,
+      error: 'Not Found',
+      message: 'No message available',
+      path: '/base/category/list/2121212',
+    });
+  },
+  'GET /api/403': (req: Request, res: Response) => {
+    res.status(403).send({
+      timestamp: 1513932555104,
+      status: 403,
+      error: 'Forbidden',
+      message: 'Forbidden',
+      path: '/base/category/list',
+    });
+  },
+  'GET /api/401': (req: Request, res: Response) => {
+    res.status(401).send({
+      timestamp: 1513932555104,
+      status: 401,
+      error: 'Unauthorized',
+      message: 'Unauthorized',
+      path: '/base/category/list',
+    });
+  },
+};

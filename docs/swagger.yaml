@@ -1,0 +1,71 @@
+basePath: /api
+definitions:
+  model.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact:
+    email: quanchic@student.unimelb.edu.au
+    name: Quanchi Chen
+  description: A web service API in Go using the Gin framework
+  title: QuantumLab Gin Web Service
+  version: "1.0"
+paths:
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Log a user in if the provided email and password are correct.
+      parameters:
+      - description: login credential
+        in: body
+        name: credential
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+        "400":
+          description: Bad Request (Invalid Email)
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Incorrect Password
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Email Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Error Creating Access/Refresh Token
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Log a user in.
+swagger: "2.0"
