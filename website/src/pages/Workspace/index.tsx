@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
-import { Form, Radio, Space, Switch, Table } from 'antd';
+import { Button, Form, Radio, Space, Switch, Table } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import type { ExpandableConfig, TableRowSelection } from 'antd/es/table/interface';
+import React, { useState } from 'react';
+import { Link } from 'umi';
 
 interface DataType {
   key: number;
@@ -180,6 +181,9 @@ const App: React.FC = () => {
 
   return (
     <>
+      <Link to="/workspace/new">
+        <Button type="primary">Go to Workspace</Button>
+      </Link>
       <Form
         layout="inline"
         className="components-table-demo-control-bar"

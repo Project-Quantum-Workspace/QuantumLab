@@ -41,6 +41,11 @@ export default [
     component: './Workspace',
   },
   {
+    path: '/workspace/new',
+    component: './NewWorkspace',
+    hideInMenu: true,
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
