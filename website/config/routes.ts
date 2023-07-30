@@ -28,23 +28,32 @@ export default [
     path: '/login',
     component: './Login',
   },
+
   {
     path: '/welcome',
     name: 'welcome',
     icon: 'home',
     component: './Welcome',
   },
+
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
     component: './Workspace',
   },
+  
   {
     path: '/workspace/new',
     component: './NewWorkspace',
     hideInMenu: true,
   },
+  {
+    name:'LandingPage',
+    path:'/home',
+    component:'./LandingPage'
+  },
+  
   {
     path: '/admin',
     name: 'admin',
@@ -70,7 +79,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/home',
   },
   {
     path: '*',
