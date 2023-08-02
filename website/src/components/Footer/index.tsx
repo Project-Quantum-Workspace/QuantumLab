@@ -22,13 +22,13 @@ const Footer: React.FC = () => {
         {
           key: 'QuantumLab',
           title: 'QuantumLab',
-          href: 'https://github.com/Project-Quantum-Workspace/QuantumLab',
+          href: 'https://QuantumLab',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/Project-Quantum-Workspace/QuantumLab',
+          href: 'https://QuantumLab',
           blankTarget: true,
         },
         {

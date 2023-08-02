@@ -1,10 +1,10 @@
 package route
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/api/controller"
-	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
-	"github.com/Project-Quantum-Workspace/QuantumLab/repository"
-	"github.com/Project-Quantum-Workspace/QuantumLab/usecase"
+	"QuantumLab/api/controller"
+	"QuantumLab/bootstrap"
+	"QuantumLab/repository"
+	"QuantumLab/usecase"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

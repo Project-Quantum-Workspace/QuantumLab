@@ -1,15 +1,15 @@
 package usecase
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"QuantumLab/internal/tokenutil"
+	"QuantumLab/model"
 )
 
 type refreshTokenUsecase struct {
-	userRepository model.UserRepo
+	userRepository model.UserRepository
 }
 
-func NewRefreshTokenUsecase(userRepository model.UserRepo) model.RefreshTokenUsecase {
+func NewRefreshTokenUsecase(userRepository model.UserRepository) model.RefreshTokenUsecase {
 	return &refreshTokenUsecase{
 		userRepository: userRepository,
 	}

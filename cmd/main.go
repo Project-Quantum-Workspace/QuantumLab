@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/api/route"
-	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
-	"github.com/Project-Quantum-Workspace/QuantumLab/docs"
-	"github.com/Project-Quantum-Workspace/QuantumLab/website"
+	"QuantumLab/api/route"
+	"QuantumLab/bootstrap"
+	"QuantumLab/docs"
+	"QuantumLab/website"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
