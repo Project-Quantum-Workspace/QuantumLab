@@ -135,9 +135,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get branch name
+        id: branch-name
+        run: echo ::set-output name=branch-name::${GITHUB_REF#refs/heads/}
+
+      - name: Covert branch name to lowercase URL
+        id: lowercase-branch-name
+        run: echo ::set-output name=branch::$(echo "${{ steps.get_branch.outputs.branch }}" | tr '[:upper:]' '[:lower:]' | tr '/' '-')
+
       - name: Trigger deployment
         run: |
           curl --user ${{ secrets.DEPLOYMENT_USER }}:${{ secrets.DEPLOYMENT_TOKEN }} \
             --request POST \
             --data image=${{ needs.build-image.outputs.image }} \
+            --data branch=${{ steps.lowercase-branch-name.outputs.branch }} \
             ${{ secrets.DEPLOYMENT_TARGET }}
