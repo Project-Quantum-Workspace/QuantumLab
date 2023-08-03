@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"QuantumLab/internal/tokenutil"
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 )
 
 type refreshTokenUsecase struct {

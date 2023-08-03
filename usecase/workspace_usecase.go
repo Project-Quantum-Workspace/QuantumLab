@@ -1,6 +1,6 @@
 package usecase
 
-import "QuantumLab/model"
+import "github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 type workspaceUsecase struct {
 	workspaceRepository model.WorkspaceRepository

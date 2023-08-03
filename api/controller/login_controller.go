@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"QuantumLab/bootstrap"
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

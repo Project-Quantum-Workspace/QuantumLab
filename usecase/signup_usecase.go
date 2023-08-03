@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 )
 
 type signupUsecase struct {
