@@ -74,15 +74,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/templates":{
+        "/templates":{
             "post":{
                 "description": "Allow users to create own template.",
                 "consumes":[
                     "application/json"
                 ],
-                "produces":[
-                    "application/json"
-                ],
+                
                 "summary": "create a new template",
                 "parameters":[
                     {
@@ -99,6 +97,9 @@ const docTemplate = `{
                 "responses":{
                     "200":{
                         "description":"OK",
+                        "schema":{
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
                        
                     },
                     "400": {
@@ -111,13 +112,8 @@ const docTemplate = `{
                 }
             },
             "get":{
-                "description":"Allow users to get all templates.",
-                "consumes":[
-                    "application/json"
-                ],
-                "produces":[
-                    "application/json"
-                ],
+                "description":"Allow users to get all templates, no parameters needed",
+            
                 "summary": "read all templates.",
                 "responses":{
                     "200":{
@@ -133,17 +129,23 @@ const docTemplate = `{
 
             
         },
-        "/api/templates/:id":{
+        "/templates/:id":{
             "put":{
                 "description":"Allow users to update a exist template.",
-                "consumes":[
-                    "application/json"
-                ],
+               
                 "produces":[
                     "application/json"
                 ],
+              
                 "summary":"update a template.",
                 "parameters":[
+                    {
+                        "type": "integer",
+                        "description": "Template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "required input to update a template",
                         "name": "template",
@@ -158,16 +160,20 @@ const docTemplate = `{
                 "responses":{
                     "200":{
                         "description":"OK",
+                        "schema":{
+                            "$ref":"#/definitions/model.GTResponse"
+                        }
                        
                     },
+                   
                     "400": {
-                        "description": "Bad Request(Invalid Request Body)",
+                        "description": "Illegal template ID/invalid body",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
-                    "404": {
-                        "description": "The Template Id is invalid",
+                    "500": {
+                        "description": "record Not Found",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -193,10 +199,16 @@ const docTemplate = `{
                         }
                        
                     },
-                    "404":{
-                        "description":"The Template Id is invalid",
-                        "schema":{
-                            "$ref":"#/definitions/model.ErrorResponse"
+                    "400": {
+                        "description": "Illegal template ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "record Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -408,7 +420,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
+                    "type": '[
+                        {
+                            Id: int,
+                            Parameters:string,
+                            Access_level:string,
+                            File_name: string
+                        },]'
                 }
             }
         },
