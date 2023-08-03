@@ -3,8 +3,8 @@
 package main
 
 import (
-	"QuantumLab/bootstrap"
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"log"
 )
 
