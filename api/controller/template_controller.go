@@ -1,45 +1,39 @@
 package controller
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"net/http"
+	"strconv"
+
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-// var tc.TemplateRepo *gorm.tc.TemplateRepo
-var req model.Template
+
 
 type TemplateController struct {
-	TemplateRepo *gorm.DB
+	TemplateUsecase model.TemplateUsecase
 }
 
 // create new template
 func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
-
-	err := c.Bind(&req)
+	var template model.Template
+	err := c.BindJSON(&template)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Bad Request(Invalid Request Body)"})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	template := model.Template{
-		Parameters:   req.Parameters,
-		Access_level: req.Access_level,
-		File_name:    req.File_name,
-	}
-	res := tc.TemplateRepo.Create(&template)
-	if res.Error != nil {
-		c.JSON(400, gin.H{
-			"status": 400,
-			"post":   res.Error,
+	
+	res := tc.TemplateUsecase.Create(&template)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"status": 200,
-		"post":   template,
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 }
 
@@ -47,61 +41,83 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	var templates []model.Template
 
-	tc.TemplateRepo.Find(&templates)
+	templates, err := tc.TemplateUsecase.GetAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
+		return
+	}
 	c.JSON(200, gin.H{
 		"status":  200,
 		"message": templates,
 	})
 }
 
-// update template with id
+ // update template with id
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
-	id := c.Param("id")
-	err := c.Bind(&req)
+	var template model.Template
+	err := c.BindJSON(&template)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Bad Request(Invalid Request Body)"})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	var template model.Template
-	tc.TemplateRepo.First(&template, id)
-	if template.Id == 0 {
-		c.JSON(404, gin.H{
-			"status":  404,
-			"message": "The Template Id is invalid",
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
-	//update
-	tc.TemplateRepo.Model(&template).Updates(model.Template{
-		Parameters:   req.Parameters,
-		Access_level: req.Access_level,
-		File_name:    req.File_name,
-	})
-	//respond
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": template,
+	if id <= 0 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "workspace id must be a positive integer",
+		})
+		return
+	}
+	//tc.TemplateUsecase.First(&template, id)
+	err = tc.TemplateUsecase.Update(&template,uint(id))
+	
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 
 }
 
 // delete template with id
 func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
-	id := c.Param("id")
-	var template model.Template
-	tc.TemplateRepo.First(&template, id)
-	if(template.Id==0){
-		c.JSON(404, gin.H{
-			"status":  404,
-			"message": "The Template Id is invalid",
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
-	tc.TemplateRepo.Delete(&model.Template{}, id)
+	if id <= 0 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "workspace id must be a positive integer",
+		})
+		return
+	}
 
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": "successfully delete template",
+	
+	err = tc.TemplateUsecase.Delete(uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 }
+ 
