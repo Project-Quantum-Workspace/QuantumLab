@@ -9,8 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-
 type TemplateController struct {
 	TemplateUsecase model.TemplateUsecase
 }
@@ -23,7 +21,7 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	
+
 	res := tc.TemplateUsecase.Create(&template)
 	if res != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
@@ -46,13 +44,10 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": templates,
-	})
+	c.JSON(http.StatusOK, templates)
 }
 
- // update template with id
+// update template with id
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
 	var template model.Template
@@ -75,8 +70,8 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 		return
 	}
 	//tc.TemplateUsecase.First(&template, id)
-	err = tc.TemplateUsecase.Update(&template,uint(id))
-	
+	err = tc.TemplateUsecase.Update(&template, uint(id))
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
@@ -106,7 +101,6 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 		return
 	}
 
-	
 	err = tc.TemplateUsecase.Delete(uint(id))
 
 	if err != nil {
@@ -120,4 +114,3 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 		Message: "success",
 	})
 }
- 

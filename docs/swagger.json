@@ -228,7 +228,6 @@
                 }
             }
         }
-        
     },
     "definitions": {
         "model.ErrorResponse": {

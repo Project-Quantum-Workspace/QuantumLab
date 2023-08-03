@@ -13,11 +13,10 @@ func TemplateRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	//route for templates
 	repo := repository.NewTemplateRepository(db)
 	tController := controller.TemplateController{
-		TemplateUsecase:usecase.NewTemplateUsecase(repo),
+		TemplateUsecase: usecase.NewTemplateUsecase(repo),
 	}
 	apiRouterGroup.GET("/templates", tController.GetAllTemplates)
 	apiRouterGroup.POST("/templates", tController.PostOneTemplate)
 	apiRouterGroup.PUT("/templates/:id", tController.UpdateOneTemplate)
 	apiRouterGroup.DELETE("/templates/:id", tController.DeleteTemplate)
-
 }
