@@ -10,13 +10,12 @@ import (
 )
 
 func NewWorkspaceRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
-	workspaceRouterGroup := apiRouterGroup.Group("/workspace")
 	repo := repository.NewWorkspaceRepository(db)
 	workspaceController := controller.WorkspaceController{
 		WorkspaceUsecase: usecase.NewWorkspaceUsecase(repo),
 	}
-	workspaceRouterGroup.POST("/create", workspaceController.Create)
-	workspaceRouterGroup.GET("/:id", workspaceController.GetByID)
-	workspaceRouterGroup.POST("/update", workspaceController.Update)
-	workspaceRouterGroup.POST("/delete/:id", workspaceController.Delete)
+	apiRouterGroup.POST("/workspaces", workspaceController.Create)
+	apiRouterGroup.GET("/workspaces/:id", workspaceController.GetByID)
+	apiRouterGroup.PATCH("/workspaces/:id", workspaceController.Update)
+	apiRouterGroup.DELETE("/workspaces/:id", workspaceController.Delete)
 }

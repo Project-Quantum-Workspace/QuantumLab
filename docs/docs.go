@@ -74,45 +74,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/workspace/:id": {
-            "get": {
-                "description": "Get a workspace by its ID.",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get workspace by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Workspace ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Workspace"
-                        }
-                    },
-                    "400": {
-                        "description": "Illegal Workspace ID",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Workspace Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/workspace/create": {
+        "/workspaces": {
             "post": {
                 "description": "Create a workspace.",
                 "consumes": [
@@ -124,12 +86,12 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "Workspace metadata",
+                        "description": "Workspace create request with workspace metadata and userID",
                         "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Workspace"
+                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
                         }
                     }
                 ],
@@ -153,49 +115,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/workspace/delete/:id": {
-            "post": {
-                "description": "Delete a workspace by its ID.",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Delete workspace",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Workspace ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Illegal Workspace ID",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Database Query Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/workspace/update": {
-            "post": {
-                "description": "Update a workspace.",
+            },
+            "patch": {
+                "description": "Update specific fields of a workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -235,9 +157,94 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/workspaces/:id": {
+            "get": {
+                "description": "Get a workspace by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get workspace by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Workspace"
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal Workspace ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Workspace Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a workspace by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete workspace",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal Workspace ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.CreateWorkspaceRequest": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                },
+                "workspace": {
+                    "$ref": "#/definitions/model.Workspace"
+                }
+            }
+        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -318,9 +325,6 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         }

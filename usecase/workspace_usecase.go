@@ -12,8 +12,8 @@ func NewWorkspaceUsecase(workspaceRepository model.WorkspaceRepository) model.Wo
 	}
 }
 
-func (usecase *workspaceUsecase) Create(workspace *model.Workspace) error {
-	return usecase.workspaceRepository.Create(workspace)
+func (usecase *workspaceUsecase) Create(workspace *model.Workspace, userID uint) error {
+	return usecase.workspaceRepository.Create(workspace, userID)
 }
 
 func (usecase *workspaceUsecase) GetByID(id uint) (model.Workspace, error) {

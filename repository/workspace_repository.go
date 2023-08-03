@@ -16,13 +16,13 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 	}
 }
 
-func (repo *workspaceRepository) Create(workspace *model.Workspace) error {
-	result := repo.qlDB.Omit("UserID").Create(workspace)
+func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
+	result := repo.qlDB.Create(workspace)
 	if result.Error != nil {
 		return result.Error
 	}
 	result = repo.qlDB.Create(&model.UserWorkspaces{
-		UserID:      workspace.UserID,
+		UserID:      userID,
 		WorkspaceID: workspace.ID,
 	})
 	return result.Error
@@ -36,7 +36,7 @@ func (repo *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
 
 func (repo *workspaceRepository) Update(workspace *model.Workspace) error {
 	result := repo.qlDB.Model(workspace).
-		Omit("ID", "UserID").Updates(*workspace)
+		Omit("ID").Updates(*workspace)
 	return result.Error
 }
 

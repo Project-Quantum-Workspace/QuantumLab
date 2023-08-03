@@ -16,7 +16,11 @@ type Workspace struct {
 	UpdatedAt    time.Time
 	LastAccessed time.Time
 	TemplateID   uint `json:"template_id"`
-	UserID       uint `json:"user_id"`
+}
+
+type CreateWorkspaceRequest struct {
+	Workspace Workspace
+	UserID    uint `json:"user_id"`
 }
 
 type UserWorkspaces struct {
@@ -25,14 +29,14 @@ type UserWorkspaces struct {
 }
 
 type WorkspaceRepository interface {
-	Create(workspace *Workspace) error
+	Create(workspace *Workspace, userID uint) error
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
 	Delete(id uint) error
 }
 
 type WorkspaceUsecase interface {
-	Create(workspace *Workspace) error
+	Create(workspace *Workspace, userID uint) error
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
 	Delete(id uint) error
