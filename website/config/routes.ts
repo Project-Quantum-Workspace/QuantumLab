@@ -29,13 +29,13 @@ export default [
     component: './Login',
   },
 
+ 
   {
-    path: '/welcome',
-    name: 'welcome',
+    name:'home',
+    path:'/home',
     icon: 'home',
-    component: './Welcome',
+    component:'./Home'
   },
-
   {
     name: 'workspace',
     icon: 'deploymentUnit',
@@ -48,11 +48,7 @@ export default [
     component: './NewWorkspace',
     hideInMenu: true,
   },
-  {
-    name:'LandingPage',
-    path:'/home',
-    component:'./LandingPage'
-  },
+  
   
   {
     path: '/admin',
