@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"gorm.io/gorm"
 )

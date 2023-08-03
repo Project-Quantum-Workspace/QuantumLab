@@ -1,7 +1,7 @@
 package route
 
 import (
-	"QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

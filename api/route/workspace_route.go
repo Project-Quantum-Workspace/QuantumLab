@@ -1,9 +1,9 @@
 package route
 
 import (
-	"QuantumLab/api/controller"
-	"QuantumLab/repository"
-	"QuantumLab/usecase"
+	"github.com/Project-Quantum-Workspace/QuantumLab/api/controller"
+	"github.com/Project-Quantum-Workspace/QuantumLab/repository"
+	"github.com/Project-Quantum-Workspace/QuantumLab/usecase"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

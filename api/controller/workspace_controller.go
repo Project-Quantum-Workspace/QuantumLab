@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"QuantumLab/model"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"net/http"
 	"strconv"
 	"time"
