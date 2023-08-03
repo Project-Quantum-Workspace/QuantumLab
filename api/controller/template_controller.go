@@ -11,12 +11,12 @@ import (
 // var tc.TemplateRepo *gorm.tc.TemplateRepo
 var req model.Template
 
-type TemplateControllor struct {
+type TemplateController struct {
 	TemplateRepo *gorm.DB
 }
 
 // create new template
-func (tc *TemplateControllor) PostOneTemplate(c *gin.Context) {
+func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 
 	err := c.Bind(&req)
 	if err != nil {
@@ -44,7 +44,7 @@ func (tc *TemplateControllor) PostOneTemplate(c *gin.Context) {
 }
 
 // read all templates
-func (tc *TemplateControllor) GetAllTemplates(c *gin.Context) {
+func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	var templates []model.Template
 
 	tc.TemplateRepo.Find(&templates)
@@ -55,7 +55,7 @@ func (tc *TemplateControllor) GetAllTemplates(c *gin.Context) {
 }
 
 // update template with id
-func (tc *TemplateControllor) UpdateOneTemplate(c *gin.Context) {
+func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
 	id := c.Param("id")
 	err := c.Bind(&req)
@@ -87,7 +87,7 @@ func (tc *TemplateControllor) UpdateOneTemplate(c *gin.Context) {
 }
 
 // delete template with id
-func (tc *TemplateControllor) DeleteTemplate(c *gin.Context) {
+func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	id := c.Param("id")
 	var template model.Template
 	tc.TemplateRepo.First(&template, id)

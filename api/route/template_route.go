@@ -9,7 +9,7 @@ import (
 
 func TemplateRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	//route for templates
-	tc := &controller.TemplateControllor{
+	tc := &controller.TemplateController{
 		TemplateRepo: db,
 	}
 	apiRouterGroup.GET("/templates", tc.GetAllTemplates)
