@@ -1,7 +1,8 @@
 package repository
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"QuantumLab/model"
+
 	"gorm.io/gorm"
 )
 
@@ -9,7 +10,7 @@ type userRepository struct {
 	database *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) model.UserRepo {
+func NewUserRepository(db *gorm.DB) model.UserRepository {
 	return &userRepository{
 		database: db,
 	}

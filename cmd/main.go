@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/api/route"
-	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
-	"github.com/Project-Quantum-Workspace/QuantumLab/docs"
-	"github.com/Project-Quantum-Workspace/QuantumLab/website"
+	"QuantumLab/api/route"
+	"QuantumLab/bootstrap"
+	_ "QuantumLab/docs"
+	"QuantumLab/website"
+	"log"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"log"
 )
 
 // @title           QuantumLab Gin Web Service
@@ -23,8 +24,6 @@ import (
 func main() {
 	app := bootstrap.App()
 	engine := gin.Default()
-
-	docs.SwaggerInfo.BasePath = "/"
 
 	// Load website assets and router.
 	website.InitWebsite(engine)

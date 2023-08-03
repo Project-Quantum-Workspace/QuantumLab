@@ -1,4 +1,4 @@
-module github.com/Project-Quantum-Workspace/QuantumLab
+module QuantumLab
 
 go 1.20
 

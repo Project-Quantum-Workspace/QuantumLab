@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"QuantumLab/model"
 	"github.com/golang-jwt/jwt/v4"
 )
 

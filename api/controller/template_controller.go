@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"QuantumLab/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
