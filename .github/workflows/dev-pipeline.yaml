@@ -1,0 +1,143 @@
+name: Dev Pipeline
+run-name: Dev Pipeline - ${{ github.ref }} by ${{ github.actor }}
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: website
+    strategy:
+      matrix:
+        node-version: [lts/hydrogen]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache dependencies
+        id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-frontend-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-${{ env.cache-name }}-
+            ${{ runner.os }}-frontend-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
+        working-directory: ${{ env.working-directory }}
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ env.working-directory }}
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: ${{ env.working-directory }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-frontend
+          path: ${{ env.working-directory }}/build
+          retention-days: 2
+          if-no-files-found: error
+
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.20.0'
+
+      - name: Build Backend
+        run: go build -o ./build/quantumlab ./cmd/main.go
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.run_id }}-backend
+          path: build
+          retention-days: 2
+          if-no-files-found: error
+
+  build-image:
+    runs-on: ubuntu-latest
+    needs:
+      - frontend
+      - backend
+    outputs:
+      image: ${{ steps.docker_meta.outputs.tags }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-frontend
+          path: build/website
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-backend
+          path: build/backend
+
+      - name: Set up Docker metadata
+        id: docker_meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/quantumlab-dev
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./script/dev/Dockerfile
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+
+  dev-deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - build-image
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Trigger deployment
+        run: |
+          curl --user ${{ secrets.DEPLOYMENT_USER }}:${{ secrets.DEPLOYMENT_TOKEN }} \
+            --request POST \
+            --data image=${{ needs.build-image.outputs.image }} \
+            ${{ secrets.DEPLOYMENT_TARGET }}
