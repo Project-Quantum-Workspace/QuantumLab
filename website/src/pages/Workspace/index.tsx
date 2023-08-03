@@ -15,6 +15,7 @@ interface DataType {
   description: string;
 }
 
+
 type TablePaginationPosition =
   | 'topLeft'
   | 'topCenter'
@@ -181,9 +182,17 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Link to="/workspace/new">
-        <Button type="primary">Go to Workspace</Button>
-      </Link>
+    <h1>Quantum Workspace</h1>
+    <p style={{color:"rgba(0,0,0,.6)"}}>Manage your projects in Quantum Workspace, utilize built-in templates for create your project,
+       or create custom quantum programming environment templates.
+       </p>
+        <Button type="primary"
+         href='/workspace/new'
+         style={{
+          width:"200px"
+         }}>
+          Go to Workspace
+          </Button>
       <Form
         layout="inline"
         className="components-table-demo-control-bar"
