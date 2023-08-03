@@ -74,6 +74,135 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/templates":{
+            "post":{
+                "description": "Allow users to create own template.",
+                "consumes":[
+                    "application/json"
+                ],
+                "produces":[
+                    "application/json"
+                ],
+                "summary": "create a new template",
+                "parameters":[
+                    {
+                        "description": "required input to create a template",
+                        "name": "template",
+                        "in":"body",
+                        "required":ture,
+                        "schema":{
+                            "$ref": "#/definitions/model.CreateTemplate"
+                        }
+
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"OK",
+                       
+                    },
+                    "400": {
+                        "description": "Bad Request(Invalid Request Body)",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                   
+                }
+            },
+            "get":{
+                "description":"Allow users to get all templates.",
+                "consumes":[
+                    "application/json"
+                ],
+                "produces":[
+                    "application/json"
+                ],
+                "summary": "read all templates.",
+                "responses":{
+                    "200":{
+                        "description":"OK",
+                        "schema":{
+                            "$ref":"#/definitions/model.GTResponse"
+                        }
+                       
+                    }
+                }
+
+            }
+
+            
+        },
+        "/api/templates/:id":{
+            "put":{
+                "description":"Allow users to update a exist template.",
+                "consumes":[
+                    "application/json"
+                ],
+                "produces":[
+                    "application/json"
+                ],
+                "summary":"update a template.",
+                "parameters":[
+                    {
+                        "description": "required input to update a template",
+                        "name": "template",
+                        "in":"body",
+                        "required":ture,
+                        "schema":{
+                            "$ref": "#/definitions/model.CreateTemplate"
+                        }
+
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"OK",
+                       
+                    },
+                    "400": {
+                        "description": "Bad Request(Invalid Request Body)",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "The Template Id is invalid",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                   
+                }
+            },
+
+            "delete":{
+                "description":"Allow users to delete a exist template.",
+                "cosumes":[
+                    "application/json"
+                ],
+                "produces":[
+                    "application/json"
+                ],
+                "summary":"delete a template.",
+                "responses":{
+                    "200":{
+                        "description":"OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                       
+                    },
+                    "404":{
+                        "description":"The Template Id is invalid",
+                        "schema":{
+                            "$ref":"#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+
+        },
         "/workspace/:id": {
             "get": {
                 "description": "Get a workspace by its ID.",
@@ -237,6 +366,7 @@ const docTemplate = `{
             }
         }
     },
+
     "definitions": {
         "model.ErrorResponse": {
             "type": "object",
@@ -273,6 +403,35 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 }
+            }
+        },
+        "model.GTResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CreateTemplate":{
+            "type": "object",
+            "required": [
+                "Parameters",
+                "Access_level",
+                "File_name"
+            ],
+            "properties": {
+                "Parameters": {
+                    "type": "string"
+                },
+                "Access_level": {
+                    "type": "string",
+                    "example":"0"
+                },
+                "File_name": {
+                    "type": "string",
+                    "example":"example_template1"
+                },
             }
         },
         "model.SuccessResponse": {

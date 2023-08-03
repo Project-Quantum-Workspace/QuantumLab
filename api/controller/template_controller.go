@@ -89,7 +89,15 @@ func (tc *TemplateControllor) UpdateOneTemplate(c *gin.Context) {
 // delete template with id
 func (tc *TemplateControllor) DeleteTemplate(c *gin.Context) {
 	id := c.Param("id")
-
+	var template model.Template
+	tc.TemplateRepo.First(&template, id)
+	if(template.Id==0){
+		c.JSON(404, gin.H{
+			"status":  404,
+			"message": "The Template Id is invalid",
+		})
+		return
+	}
 	tc.TemplateRepo.Delete(&model.Template{}, id)
 
 	c.JSON(200, gin.H{
