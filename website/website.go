@@ -15,8 +15,7 @@ loadWebsiteAssets loads the website assets from the dist folder, this includes f
 */
 func loadWebsiteAssets(engine *gin.Engine) {
 	engine.LoadHTMLFiles("dist/index.html")
-	engine.StaticFS("/assets", http.Dir("dist/assets"))
-	engine.StaticFS("/public", http.Dir("public"))
+	engine.StaticFS("/public", http.Dir("dist"))
 	log.Println("QuantumLab Website Assets Loaded Successfully")
 }
 

@@ -16,6 +16,7 @@ import { Alert, message, Tabs } from 'antd';
 import Settings from '../../../config/defaultSettings';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
+import logo from '../../../public/icons/logo.svg';
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -160,7 +161,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" style={{ width: '80%', height: 'auto' }}/>}
+          logo={<img alt="logo" src={logo} style={{ width: '80%', height: 'auto' }}/>}
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
