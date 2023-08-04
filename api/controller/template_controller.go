@@ -65,7 +65,7 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	}
 	if id <= 0 {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "template id must be a positive integer",
 		})
 		return
 	}
@@ -96,7 +96,7 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	}
 	if id <= 0 {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "template id must be a positive integer",
 		})
 		return
 	}

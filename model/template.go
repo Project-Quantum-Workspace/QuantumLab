@@ -1,10 +1,10 @@
 package model
 
 type Template struct {
-	ID          uint
-	Parameters  string
+	ID          uint   `json:"id"`
+	Parameters  string `json:"parameters"`
 	AccessLevel string `json:"access_level"`
-	Filename    string
+	Filename    string `json:"filename"`
 }
 
 type TemplateRepository interface {
