@@ -38,13 +38,13 @@ definitions:
     type: object
   model.Workspace:
     properties:
-      createdAt:
+      created_at:
         type: string
       description:
         type: string
       id:
         type: integer
-      lastAccessed:
+      last_accessed:
         type: string
       name:
         type: string
@@ -58,7 +58,7 @@ definitions:
         type: integer
       type:
         type: string
-      updatedAt:
+      updated_at:
         type: string
     type: object
 info:
@@ -209,4 +209,32 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get workspace by ID
+  /workspaces/users/:id:
+    get:
+      description: Get all workspaces of a user. An empty array is returned if the
+        user has no workspace.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Workspace'
+            type: array
+        "400":
+          description: Illegal User ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Database Query Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all workspaces by user
 swagger: "2.0"

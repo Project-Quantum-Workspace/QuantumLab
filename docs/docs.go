@@ -231,6 +231,47 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/workspaces/users/:id": {
+            "get": {
+                "description": "Get all workspaces of a user. An empty array is returned if the user has no workspace.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all workspaces by user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Workspace"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal User ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -293,7 +334,7 @@ const docTemplate = `{
         "model.Workspace": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {
@@ -302,7 +343,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "lastAccessed": {
+                "last_accessed": {
                     "type": "string"
                 },
                 "name": {
@@ -323,7 +364,7 @@ const docTemplate = `{
                 "type": {
                     "type": "string"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 }
             }

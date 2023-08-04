@@ -28,6 +28,20 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint)
 	return result.Error
 }
 
+func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
+	var workspaces []model.Workspace
+	result := repo.qlDB.
+		Raw(`
+			SELECT w.*
+			FROM users u
+			INNER JOIN user_workspaces uw ON u.id = uw.user_id
+			INNER JOIN workspaces w ON uw.workspace_id = w.id
+			WHERE u.id = ?
+		`, userID).
+		Scan(&workspaces)
+	return workspaces, result.Error
+}
+
 func (repo *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
 	var workspace model.Workspace
 	result := repo.qlDB.First(&workspace, id)

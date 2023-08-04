@@ -16,6 +16,10 @@ func (usecase *workspaceUsecase) Create(workspace *model.Workspace, userID uint)
 	return usecase.workspaceRepository.Create(workspace, userID)
 }
 
+func (usecase *workspaceUsecase) GetAllByUser(userID uint) ([]model.Workspace, error) {
+	return usecase.workspaceRepository.GetAllByUser(userID)
+}
+
 func (usecase *workspaceUsecase) GetByID(id uint) (model.Workspace, error) {
 	return usecase.workspaceRepository.GetByID(id)
 }

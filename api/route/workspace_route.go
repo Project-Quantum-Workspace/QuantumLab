@@ -15,6 +15,7 @@ func NewWorkspaceRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 		WorkspaceUsecase: usecase.NewWorkspaceUsecase(repo),
 	}
 	apiRouterGroup.POST("/workspaces", workspaceController.Create)
+	apiRouterGroup.GET("/workspaces/users/:id", workspaceController.GetAllByUser)
 	apiRouterGroup.GET("/workspaces/:id", workspaceController.GetByID)
 	apiRouterGroup.PATCH("/workspaces/:id", workspaceController.Update)
 	apiRouterGroup.DELETE("/workspaces/:id", workspaceController.Delete)
