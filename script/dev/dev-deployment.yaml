@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: branch
-          image: projectquantumlab/quantumlab-dev:image
+          image: projectquantumlab/quantumlab-dev:tag
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
