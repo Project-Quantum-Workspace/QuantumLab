@@ -86,7 +86,7 @@ jobs:
       - frontend
       - backend
     outputs:
-      image_name: ${{ steps.image-tags.outputs.image_name }}
+      image_name: ${{ steps.image-tags.outputs.image_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -129,7 +129,7 @@ jobs:
 
       - name: Outputs Image tags
         id: image-tags
-        run: echo "image_name=${{ steps.docker_meta.outputs.tags }}" >> $GITHUB_OUTPUT
+        run: echo "image_tag=${{ env.org.opencontainers.image.version }}" >> $GITHUB_OUTPUT
 
   dev-deploy:
     runs-on: ubuntu-latest
@@ -139,18 +139,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Covert branch name to lowercase URL
-        id: lowercase-branch-name
-        run: |
-          echo branch=${{ github.ref }} | sed "s|/ref/heads/||" | sed "s|/|-|" >> $GITHUB_OUTPUT
-
       - name: Outputs Debug
         run: |
-          echo "Image: ${{ needs.build-image.outputs.image_name }}"
-          echo "Branch: ${{ steps.lowercase-branch-name.outputs.branch }}"
+          echo "Tag: ${{ needs.build-image.outputs.image_tag }}"
 
       - name: Trigger deployment
         run: |
           curl -s -H "Content-Type: application/json" -X POST \
-          -d '{ "image": "${{ needs.build-image.outputs.image_name }}", "branch": "${{ steps.lowercase-branch-name.outputs.branch }}" }' \
+          -d '{ "tag": "${{ needs.build-image.outputs.image_tag }}" }' \
           ${{ secrets.DEPLOYMENT_HOOK }}
