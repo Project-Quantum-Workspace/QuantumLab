@@ -130,7 +130,7 @@ jobs:
       - name: Outputs Image tags
         id: image-tags
         run: |
-          echo image_tag=$org.opencontainers.image.version >> $GITHUB_OUTPUT
+          echo image_tag=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.version'] }} >> $GITHUB_OUTPUT
 
   dev-deploy:
     runs-on: ubuntu-latest
