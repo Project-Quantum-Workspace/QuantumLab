@@ -85,8 +85,6 @@ jobs:
     needs:
       - frontend
       - backend
-    outputs:
-      image: ${{ steps.docker_meta.outputs.tags }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -127,6 +125,9 @@ jobs:
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
+      - name: Outputs Image tags
+        run: echo image-name=${{ steps.docker_meta.outputs.tags }} >> "$GITHUB_OUTPUT"
+
   dev-deploy:
     runs-on: ubuntu-latest
     needs:
@@ -138,11 +139,11 @@ jobs:
       - name: Covert branch name to lowercase URL
         id: lowercase-branch-name
         run: |
-          echo "${{ github.ref }}" | sed 's|/ref/heads/||' | sed 's|/|-|'
+          echo ${{ github.ref }} | sed 's|/ref/heads/||' | sed 's|/|-|'
 
       - name: Outputs Debug
         run: |
-          echo "Image: ${{ needs.build-image.outputs.image }}"
+          echo "Image: ${{ needs.build-image.outputs.image-name }}"
           echo "Branch: ${{ steps.lowercase-branch-name.outputs }}"
 
       - name: Trigger deployment
