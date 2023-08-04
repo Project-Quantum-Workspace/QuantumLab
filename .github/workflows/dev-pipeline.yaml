@@ -126,7 +126,8 @@ jobs:
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Outputs Image tags
-        run: echo image-name=${{ steps.docker_meta.outputs.tags }} >> "$GITHUB_OUTPUT"
+        id: output_image
+        run: echo "::set-output name=image-name::${{ steps.docker_meta.outputs.tags }}"
 
   dev-deploy:
     runs-on: ubuntu-latest
@@ -139,12 +140,13 @@ jobs:
       - name: Covert branch name to lowercase URL
         id: lowercase-branch-name
         run: |
-          echo ${{ github.ref }} | sed "s|/ref/heads/||" | sed "s|/|-|"
+          branch=$(echo ${{ github.ref }} | sed "s|/ref/heads/||" | sed "s|/|-|")
+          echo "::set-output name=branch::${branch}"
 
       - name: Outputs Debug
         run: |
           echo "Image: ${{ needs.build-image.outputs.image-name }}"
-          echo "Branch: ${{ steps.lowercase-branch-name.outputs }}"
+          echo "Branch: ${{ steps.lowercase-branch-name.outputs.branch }}"
 
       - name: Trigger deployment
         run: |
