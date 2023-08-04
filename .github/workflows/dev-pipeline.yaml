@@ -129,7 +129,7 @@ jobs:
 
       - name: Outputs Image tags
         id: image-tags
-        run: echo "image_tag=${{ env.org.opencontainers.image.version }}" >> $GITHUB_OUTPUT
+        run: echo image_tag=$org.opencontainers.image.version >> $GITHUB_OUTPUT
 
   dev-deploy:
     runs-on: ubuntu-latest
