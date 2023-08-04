@@ -6,6 +6,7 @@ metadata:
   labels:
     app: branch
 spec:
+  ttlSecondsAfterFinished: 86400
   template:
     spec:
       restartPolicy: Never
@@ -17,7 +18,8 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: env-volume
-              mountPath: /app
+              mountPath: /app/.env
+              subPath: .env
       volumes:
         - name: env-volume
           configMap:
