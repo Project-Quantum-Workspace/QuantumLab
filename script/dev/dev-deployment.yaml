@@ -7,6 +7,7 @@ metadata:
     app: branch
 spec:
   ttlSecondsAfterFinished: 86400
+  backoffLimit: 3
   template:
     spec:
       restartPolicy: Never
@@ -32,7 +33,7 @@ metadata:
   namespace: quantumlab-dev
 spec:
   selector:
-    app: branch
+    job-name: branch-job
   ports:
     - protocol: TCP
       port: 8080
