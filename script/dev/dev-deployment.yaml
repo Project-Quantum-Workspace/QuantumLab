@@ -43,6 +43,8 @@ kind: IngressRoute
 metadata:
   name: branch-ingressroute
   namespace: quantumlab-dev
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - web
