@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: branch-job
+  namespace: quantumlab-dev
+  labels:
+    app: branch
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: branch
+          image: image
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: env-volume
+              mountPath: /app
+      volumes:
+        - name: env-volume
+          configMap:
+            name: dev-env-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: branch-service
+  namespace: quantumlab-dev
+spec:
+  selector:
+    app: branch
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: branch-ingressroute
+  namespace: quantumlab-dev
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`example.com`)
+      kind: Rule
+      services:
+        - name: branch-service
+          namespace: quantumlab-dev
+          port: 8080
