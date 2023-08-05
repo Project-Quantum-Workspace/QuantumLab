@@ -13,7 +13,15 @@ type TemplateController struct {
 	TemplateUsecase model.TemplateUsecase
 }
 
-// create new template
+// @Summary Create new template
+// @Description Create a new workspace template.
+// @Accept json
+// @Produce json
+// @Param template body model.Template true "Data needed for creating a workspace template"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates [post]
 func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	var template model.Template
 	err := c.BindJSON(&template)
@@ -35,19 +43,33 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	})
 }
 
-// read all templates
+// @Summary Get all templates
+// @Description Get all workspace templates.
+// @Produce json
+// @Success 200 {object} model.SuccessResponse
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	var templates []model.Template
 
 	templates, err := tc.TemplateUsecase.GetAll()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, templates)
 }
 
-// update template with id
+// @Summary Update template
+// @Description Update an existing workspace template.
+// @Accept json
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Param template body model.Template true "Updated template data"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates/:id [put]
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
 	var template model.Template
@@ -85,7 +107,14 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 
 }
 
-// delete template with id
+// @Summary Delete template
+// @Description Delete a workspace template.
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates/:id [delete]
 func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

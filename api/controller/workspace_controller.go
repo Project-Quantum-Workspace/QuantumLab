@@ -18,9 +18,9 @@ type WorkspaceController struct {
 // @Description Create a workspace.
 // @Accept json
 // @Produce json
-// @Param workspace body model.CreateWorkspaceRequest true "Workspace create request with workspace metadata and userID"
+// @Param create_workspace_request body model.CreateWorkspaceRequest true "Workspace create request with workspace metadata and userID"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "JSON Parse Error"
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
 // @Router /workspaces [post]
 func (controller *WorkspaceController) Create(c *gin.Context) {
@@ -133,11 +133,12 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 // @Description Update specific fields of a workspace.
 // @Accept json
 // @Produce json
+// @Param id path uint true "Workspace ID"
 // @Param workspace body model.Workspace true "Updated workspace metadata"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "JSON Parse Error"
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /workspaces [patch]
+// @Router /workspaces/:id [patch]
 func (controller *WorkspaceController) Update(c *gin.Context) {
 	var workspace model.Workspace
 

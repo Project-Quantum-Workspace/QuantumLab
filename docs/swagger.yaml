@@ -36,6 +36,17 @@ definitions:
       message:
         type: string
     type: object
+  model.Template:
+    properties:
+      access_level:
+        type: string
+      filename:
+        type: string
+      id:
+        type: integer
+      parameters:
+        type: string
+    type: object
   model.Workspace:
     properties:
       created_at:
@@ -69,7 +80,7 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
-  /login:
+  /auth/login:
     post:
       consumes:
       - application/json
@@ -105,18 +116,32 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Log a user in
-  /workspaces:
-    patch:
+  /templates:
+    get:
+      description: Get all workspace templates.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "500":
+          description: Database Query Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all templates
+    post:
       consumes:
       - application/json
-      description: Update specific fields of a workspace.
+      description: Create a new workspace template.
       parameters:
-      - description: Updated workspace metadata
+      - description: Data needed for creating a workspace template
         in: body
-        name: workspace
+        name: template
         required: true
         schema:
-          $ref: '#/definitions/model.Workspace'
+          $ref: '#/definitions/model.Template'
       produces:
       - application/json
       responses:
@@ -125,14 +150,72 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: JSON Parse Error
+          description: Request Parse Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Database Query Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Update workspace
+      summary: Create new template
+  /templates/:id:
+    delete:
+      description: Delete a workspace template.
+      parameters:
+      - description: Template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Request Parse Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Database Query Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete template
+    put:
+      consumes:
+      - application/json
+      description: Update an existing workspace template.
+      parameters:
+      - description: Template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated template data
+        in: body
+        name: template
+        required: true
+        schema:
+          $ref: '#/definitions/model.Template'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Request Parse Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Database Query Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update template
+  /workspaces:
     post:
       consumes:
       - application/json
@@ -140,7 +223,7 @@ paths:
       parameters:
       - description: Workspace create request with workspace metadata and userID
         in: body
-        name: workspace
+        name: create_workspace_request
         required: true
         schema:
           $ref: '#/definitions/model.CreateWorkspaceRequest'
@@ -152,7 +235,7 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: JSON Parse Error
+          description: Request Parse Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
@@ -209,6 +292,38 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get workspace by ID
+    patch:
+      consumes:
+      - application/json
+      description: Update specific fields of a workspace.
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated workspace metadata
+        in: body
+        name: workspace
+        required: true
+        schema:
+          $ref: '#/definitions/model.Workspace'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Request Parse Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Database Query Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update workspace
   /workspaces/users/:id:
     get:
       description: Get all workspaces of a user. An empty array is returned if the

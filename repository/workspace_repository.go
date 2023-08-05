@@ -17,7 +17,7 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 }
 
 func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
-	result := repo.qlDB.Create(workspace)
+	result := repo.qlDB.Omit("ID").Create(workspace)
 	if result.Error != nil {
 		return result.Error
 	}
