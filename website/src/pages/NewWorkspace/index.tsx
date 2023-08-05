@@ -9,7 +9,7 @@ import {
   Typography,
   notification,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'umi';
 const { Title } = Typography;
 const { Option } = Select;
@@ -17,23 +17,63 @@ const { Option } = Select;
 const NewWorkspaceForm = () => {
   const [form] = Form.useForm();
 
-  type Params = {
+  type ParametersType = {
     [key: string]: {
-      fieldType: 'opt' | 'inputNum';
-      options: Array<string | number>;
+      fieldType: 'opt' | 'num';
+      options?: string[];
     };
   };
 
-  const [templateParams, setTemplateParams] = useState<Params | null>(null);
+  type Template = {
+    Id: number;
+    Parameters: Record<string, any>; // Add this type definition
+    Access_level: string;
+    File_name: string;
+  };
 
-  const handleTemplateSelect = async (value: string) => {
-    // Fetch parameters for selected template
-    try {
-      const response = await fetch(`http://localhost:8080/template/get/${value}`);
-      const data = await response.json();
-      setTemplateParams(data); // Update the state with the fetched data
-    } catch (error) {
-      console.error('Fetch Error:', error);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+
+  const [templates, setTemplates] = useState<Template[]>([]);
+
+  useEffect(() => {
+    // function to fetch templates
+    const fetchTemplates = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/template/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setTemplates(data.message); // set fetched templates to state
+        } else {
+          throw new Error(data.message || 'Error fetching templates.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        notification.error({
+          message: 'Error',
+          description: 'An error occurred while fetching templates.',
+          duration: 5,
+        });
+      }
+    };
+
+    // call the function to fetch templates
+    fetchTemplates();
+  }, []);
+
+  const onTemplateChange = (value: number) => {
+    const template = templates.find((template) => template.Id === value);
+    if (template && typeof template.Parameters === 'string') {
+      // Parse the Parameters from string to object
+      const paramsObject = JSON.parse(template.Parameters);
+
+      setSelectedTemplate({ ...template, Parameters: paramsObject });
     }
   };
 
@@ -145,29 +185,32 @@ const NewWorkspaceForm = () => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="templates" label="Templates">
-          <Select onSelect={handleTemplateSelect}>
-            <Option value="template_1">Melbourne Cloud reasearch t1</Option>
-            <Option value="template_2">Melbourne Cloud reasearch t2</Option>
+        <Form.Item name="template_id" label="Templates">
+          <Select placeholder="Select a template" onChange={onTemplateChange}>
+            {templates.map((template) => (
+              <Option key={template.Id} value={template.Id}>
+                {template.File_name}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 
-        {templateParams &&
-          Object.keys(templateParams).map((key) => (
+        {selectedTemplate &&
+          selectedTemplate.Parameters &&
+          Object.keys(selectedTemplate.Parameters).map((key) => (
             <>
               <Divider />
-
-              {/* parameters section */}
               <Title level={4}>Workspace Parameters</Title>
-
-              <Form.Item key={key} name={key} label={key}>
-                {templateParams[key].fieldType === 'opt' ? (
+              <Form.Item name={key} label={key}>
+                {selectedTemplate.Parameters[key].fieldType === 'opt' ? (
                   <Select>
-                    {templateParams[key].options.map((option, index) => (
-                      <Option key={index} value={option}>
-                        {option}
-                      </Option>
-                    ))}
+                    {selectedTemplate.Parameters[key].options.map(
+                      (option: string, index: number) => (
+                        <Option key={index} value={option}>
+                          {option}
+                        </Option>
+                      ),
+                    )}
                   </Select>
                 ) : (
                   <InputNumber />
