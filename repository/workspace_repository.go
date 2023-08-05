@@ -30,15 +30,14 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint)
 
 func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
 	var workspaces []model.Workspace
-	result := repo.qlDB.
-		Raw(`
-			SELECT w.*
-			FROM workspaces w
-			INNER JOIN user_workspaces uw ON w.id = uw.workspace_id
-			WHERE uw.user_id = ?
-		`, userID).
-		Scan(&workspaces)
-	return workspaces, result.Error
+	user := model.User{ID: userID}
+	association := repo.qlDB.Model(&user).Association("Workspaces")
+
+	if association.Error != nil {
+		return workspaces, association.Error
+	}
+	err := association.Find(&workspaces)
+	return workspaces, err
 }
 
 func (repo *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
