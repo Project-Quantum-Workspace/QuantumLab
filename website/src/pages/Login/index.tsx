@@ -7,6 +7,7 @@ import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from
 import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
+import logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 
 const OAuthLogin = () => {
@@ -152,7 +153,8 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" style={{ width: '80%', height: 'auto' }} />}
+
+          logo={<img alt="logo" src={logo} style={{ width: '80%', height: 'auto' }}/>}
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{

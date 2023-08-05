@@ -32,6 +32,11 @@ func main() {
 	route.Setup(app.Env, app.DB, engine)
 
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	engine.GET("/healthz", func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
 
 	err := engine.Run()
 	if err != nil {
