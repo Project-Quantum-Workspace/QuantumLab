@@ -33,10 +33,9 @@ func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, e
 	result := repo.qlDB.
 		Raw(`
 			SELECT w.*
-			FROM users u
-			INNER JOIN user_workspaces uw ON u.id = uw.user_id
-			INNER JOIN workspaces w ON uw.workspace_id = w.id
-			WHERE u.id = ?
+			FROM workspaces w
+			INNER JOIN user_workspaces uw ON w.id = uw.workspace_id
+			WHERE uw.user_id = ?
 		`, userID).
 		Scan(&workspaces)
 	return workspaces, result.Error
