@@ -1,22 +1,14 @@
 import { Footer } from '@/components';
 import { login } from '@/services/quantumlab/auth';
-import {
-  GoogleOutlined,
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
-import Settings from '../../../config/defaultSettings';
+import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
+import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import logo from '../../../public/icons/logo.svg';
+import Settings from '../../../config/defaultSettings';
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -161,6 +153,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
+
           logo={<img alt="logo" src={logo} style={{ width: '80%', height: 'auto' }}/>}
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
@@ -264,7 +257,10 @@ const Login: React.FC = () => {
                 float: 'right',
               }}
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="Forgot Password ?" />
+              <FormattedMessage
+                id="pages.login.forgotPassword"
+                defaultMessage="Forgot Password ?"
+              />
             </a>
           </div>
         </LoginForm>
@@ -272,6 +268,6 @@ const Login: React.FC = () => {
       <Footer />
     </div>
   );
-}
+};
 
 export default Login;

@@ -28,11 +28,13 @@ export default [
     path: '/login',
     component: './Login',
   },
+
+ 
   {
-    path: '/welcome',
-    name: 'welcome',
+    name:'home',
+    path:'/home',
     icon: 'home',
-    component: './Welcome',
+    component:'./Home'
   },
   {
     name: 'workspace',
@@ -40,6 +42,14 @@ export default [
     path: '/workspace',
     component: './Workspace',
   },
+  
+  {
+    path: '/workspace/new',
+    component: './NewWorkspace',
+    hideInMenu: true,
+  },
+  
+  
   {
     path: '/admin',
     name: 'admin',
@@ -65,7 +75,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/home',
   },
   {
     path: '*',
