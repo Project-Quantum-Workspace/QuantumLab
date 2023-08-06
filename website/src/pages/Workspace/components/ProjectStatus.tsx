@@ -6,40 +6,44 @@ import FailedIcon from '../../../assets/failed.svg';
 import ConnectingIcon from '../../../assets/connecting.svg';
 import { StatusType } from '../utils/types/projectItemTypes';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import {
-  Space,
-  Typography
-} from 'antd';
+import { CaretRightFilled, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
+
+import styled from 'styled-components';
 
 interface StatusProps {
   status: StatusType;
+  margin:boolean
 }
+const StyledT = styled.p`
+margin-left: 6px;
+margin-bottom: 2px;
 
+`
 const ProjectStatus = (props: StatusProps) => {
   const status = props.status;
-  let iconType = '';
+  let iconType = null;
   let labelColor = '';
-  const { Title } = Typography;
+  
 
   switch (status) {
     case StatusType.Running:
-      iconType = RunningIcon;
+      iconType = <CaretRightFilled />;
       labelColor = '#2AB930';
       break;
     case StatusType.Stopped:
-      iconType = StoppedIcon;
+      iconType = <PauseCircleFilled/>;
       labelColor = '#818181';
       break;
     case StatusType.Pending:
-      iconType = PendingIcon;
+      iconType = <LoadingOutlined/>;
       labelColor = '#ED9526';
       break;
     case StatusType.Failed:
-      iconType = FailedIcon;
+      iconType = <WarningFilled/>;
       labelColor = '#B9332A';
       break;
     case StatusType.Connecting:
-      iconType = ConnectingIcon;
+      iconType = <CloudFilled spin/>;
       labelColor = '#1672EC';
       break;
   }
@@ -51,20 +55,27 @@ const ProjectStatus = (props: StatusProps) => {
   });
   const statusLabelClass = useEmotionCss(() => {
     return {
-      fontFamily: 'Manrope',
-      fontSize: '16px!important',
+     // fontFamily: 'Manrope',
+      fontSize: '15px!important',
       fontStyle: 'normal',
-      fontWeight: '800!important',
+      fontWeight: '600!important',
       lineHeight: '24px!important', /* 150% */
       letterSpacing: '0.08px',
     };
   });
   return (
-    <Space align="baseline">
-      <img className={statusIconClass} src={iconType} />
-      <Title className={statusLabelClass} style={{ color: labelColor }}>{status}</Title>
-    </Space>
+    <div  className={statusLabelClass} 
+    style={{
+      display:'flex',
+      flexDirection:'row',
+      color:labelColor,
+      marginBottom: props.margin?'0.5em':'0em'
+      }} >
+      {iconType}
+      <StyledT>{status}</StyledT>
+    </div>
   );
 };
 
 export default ProjectStatus;
+

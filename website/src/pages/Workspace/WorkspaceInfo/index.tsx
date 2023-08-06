@@ -108,8 +108,9 @@ const WorkspaceInfo: React.FC = () => {
           <Row>
             <Space size='large'>
               <>
-                <Title className="project-info-subtitle">{"Status: "}</Title>
-                <ProjectStatus status={projectItem.status}/>
+                <Title className="project-info-subtitle">{"Status: "}
+                </Title>
+                <ProjectStatus status={projectItem.status} margin={true}/>
               </>
               <Title className="project-info-subtitle">{"Owner: " + projectItem.owner}</Title>
               <Title className="project-info-subtitle">{"Template: " + projectItem.template}</Title>
