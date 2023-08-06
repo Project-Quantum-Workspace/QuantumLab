@@ -6,20 +6,20 @@ import PendingIcon from '~/assets/pending.svg';
 import FailedIcon from '~/assets/failed.svg';
 import ConnectingIcon from '~/assets/connecting.svg';
 import './ProjectStatus.css';
-
-import { StatusType } from '../utils/types/projectItemTypes';
+import { CaretRightOutlined, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
+import { StatusType } from '../pages/Workspace/utils/types/projectItemTypes';
 
 interface StatusProps {
   status: StatusType;
 }
 const ProjectStatus = (props: StatusProps) => {
   const status = props.status;
-  let iconType = '';
+  let iconType = null;
   let labelColor = '';
 
   switch (status) {
     case StatusType.Running:
-      iconType = RunningIcon;
+      iconType = CaretRightOutlined;
       labelColor = '#2AB930';
       break;
     case StatusType.Stopped:
@@ -47,8 +47,8 @@ const ProjectStatus = (props: StatusProps) => {
           <IonCol size="auto">
             <img className="status-icon" src={iconType} />
           </IonCol>
-          <IonCol size="auto">
-            <IonLabel style={{ color: labelColor }}>{status}</IonLabel>
+          <IonCol >
+            <IonLabel style={{ color: labelColor,marginBottom:'0px'}}>{status}</IonLabel>
           </IonCol>
         </IonRow>
       </IonGrid>
