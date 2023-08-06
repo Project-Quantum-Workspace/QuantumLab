@@ -1,10 +1,12 @@
 import { 
   ToolsetItemType, 
   ToolsetType, 
+
   WorkspaceInfoMetaData,
   WorkspaceInfoClass
 } from "../utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
+
 import {
   Button,
   Col,
@@ -13,6 +15,7 @@ import {
   message,
   Row, 
   Result,
+
   Space,
   Typography,
 } from 'antd';
@@ -22,18 +25,21 @@ import ProjectStatus from "../components/ProjectStatus";
 import { getWorkspace } from "@/services/quantumlab/workspace";
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useEffect, useState } from 'react';
+
 import { TemplateMetaData } from "../utils/types/TemplateTypes";
 import { FrownOutlined } from '@ant-design/icons';
+
 
 const WorkspaceInfo: React.FC = () => {
   const { Title, Text, Paragraph } = Typography;
   const { workspaceId } = useParams()
+
   const [workspace, setWorkspace] = useState<WorkspaceInfoClass|undefined>(undefined)
   const intl = useIntl();
   useEffect(() => {
     getWorkspace(workspaceId as string)
        .then((res) => {
-          if (!res.message){
+          if (res){
             const templateDto: TemplateMetaData = {
               id: res.template.id,
               filename: res.template.filename,
@@ -42,14 +48,17 @@ const WorkspaceInfo: React.FC = () => {
               icon: res.template.icon
             }
             const dto: WorkspaceInfoMetaData = {
+
               id: res.id,
               name: res.name,
               createdAt: res.createdAt,
               lastAccessed: res.lastAccessed,
               updatedAt: res.updatedAt,
               description: res.description,
+
               templateId: res.templateId,
               template: templateDto,
+
               state: res.state,
               type: res.type,
               parameters: res.parameters,
@@ -68,11 +77,13 @@ const WorkspaceInfo: React.FC = () => {
           }
        })
        .catch((error) => {
-          console.log(error)
+          //console.log(error)
        });
     }, []);
 
+
     const toolsets: ToolsetItemType[] = [
+
     {
       type: ToolsetType.Jupyter,
       // link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
@@ -145,6 +156,7 @@ const WorkspaceInfo: React.FC = () => {
       height: '83px',
       borderRadius: '8px',
       backgroundColor: 'white',
+
       flex: '1',
       order: '0',
       alignSelf: 'stretch',
@@ -203,11 +215,13 @@ const WorkspaceInfo: React.FC = () => {
     history.push('/workspace');
   };
 
+
   return (
     <>
     {workspace ? (
       <>
         <div>
+
         <Button 
           type="text" 
           icon={<ArrowLeftOutlined />}
@@ -225,7 +239,9 @@ const WorkspaceInfo: React.FC = () => {
         <Image
           width={96}
           height={96}
+
           src={workspace.templateIcon}
+
         />
         <div>
           <Row>
@@ -236,11 +252,13 @@ const WorkspaceInfo: React.FC = () => {
           <Row>
             <Space size='large'>
               <>
+
                 <Title className={projectAttrClass}>{"Status:"}</Title>
-                <ProjectStatus status={workspace?.state}/>
+                <ProjectStatus status={workspace?.state} margin={true}/>
               </>
               <Title className={projectAttrClass}>{"Owner: Lois"}</Title>
               <Title className={projectAttrClass}>{"Template: " + workspace?.templateName}</Title>
+
             </Space>
           </Row>
         </div>
@@ -288,6 +306,7 @@ const WorkspaceInfo: React.FC = () => {
           )}
         </div>
       </div>
+
     </>) : (
       <> 
         <Result
@@ -298,6 +317,7 @@ const WorkspaceInfo: React.FC = () => {
       </>
     )}
       
+
     </>
   )
 }
