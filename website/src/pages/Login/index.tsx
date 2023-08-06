@@ -110,14 +110,21 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // Login
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
+      const obj = {
+        email: values.username,
+        password: values.password
+      }
+      const msg = await login({ ...obj });
+      console.log(msg);
+      if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: 'Login successful!',
         });
         if (msg.accessToken) {
           localStorage.setItem('token', msg.accessToken);
+          console.log(localStorage.getItem('token'))
+
         }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -160,7 +167,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" style={{ width: '80%', height: 'auto' }}/>}
+          logo={<img alt="logo" src="/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
