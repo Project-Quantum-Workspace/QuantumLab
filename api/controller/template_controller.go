@@ -46,7 +46,7 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 // @Summary Get all templates
 // @Description Get all workspace templates.
 // @Produce json
-// @Success 200 {object} model.SuccessResponse
+// @Success 200 {object} []model.Template
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {

@@ -4,8 +4,8 @@ type User struct {
 	ID              uint        `json:"id"`
 	Email           string      `json:"email"`
 	Password        string      `json:"password"`
-	AccessLevel     uint        `json:"access_level"`
-	QuantumlabToken string      `json:"quantumlab_token"`
+	AccessLevel     uint        `json:"accessLevel"`
+	QuantumlabToken string      `json:"quantumlabToken"`
 	Workspaces      []Workspace `json:"workspaces" gorm:"many2many:user_workspaces;"`
 }
 

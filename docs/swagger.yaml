@@ -2,7 +2,7 @@ basePath: /api
 definitions:
   model.CreateWorkspaceRequest:
     properties:
-      user_id:
+      userId:
         type: integer
       workspace:
         $ref: '#/definitions/model.Workspace'
@@ -38,7 +38,7 @@ definitions:
     type: object
   model.Template:
     properties:
-      access_level:
+      accessLevel:
         type: string
       filename:
         type: string
@@ -49,13 +49,13 @@ definitions:
     type: object
   model.Workspace:
     properties:
-      created_at:
+      createdAt:
         type: string
       description:
         type: string
       id:
         type: integer
-      last_accessed:
+      lastAccessed:
         type: string
       name:
         type: string
@@ -65,11 +65,11 @@ definitions:
         type: string
       tags:
         type: string
-      template_id:
+      templateId:
         type: integer
       type:
         type: string
-      updated_at:
+      updatedAt:
         type: string
     type: object
 info:
@@ -125,7 +125,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.SuccessResponse'
+            items:
+              $ref: '#/definitions/model.Template'
+            type: array
         "500":
           description: Database Query Error
           schema:

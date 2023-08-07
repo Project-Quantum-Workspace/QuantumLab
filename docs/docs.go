@@ -85,7 +85,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.SuccessResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Template"
+                            }
                         }
                     },
                     "500": {
@@ -435,7 +438,7 @@ const docTemplate = `{
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {
-                "user_id": {
+                "userId": {
                     "type": "integer"
                 },
                 "workspace": {
@@ -491,7 +494,7 @@ const docTemplate = `{
         "model.Template": {
             "type": "object",
             "properties": {
-                "access_level": {
+                "accessLevel": {
                     "type": "string"
                 },
                 "filename": {
@@ -508,7 +511,7 @@ const docTemplate = `{
         "model.Workspace": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
@@ -517,7 +520,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "last_accessed": {
+                "lastAccessed": {
                     "type": "string"
                 },
                 "name": {
@@ -532,13 +535,13 @@ const docTemplate = `{
                 "tags": {
                     "type": "string"
                 },
-                "template_id": {
+                "templateId": {
                     "type": "integer"
                 },
                 "type": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 }
             }

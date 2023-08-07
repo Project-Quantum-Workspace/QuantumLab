@@ -77,7 +77,10 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.SuccessResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Template"
+                            }
                         }
                     },
                     "500": {
@@ -427,7 +430,7 @@
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {
-                "user_id": {
+                "userId": {
                     "type": "integer"
                 },
                 "workspace": {
@@ -483,7 +486,7 @@
         "model.Template": {
             "type": "object",
             "properties": {
-                "access_level": {
+                "accessLevel": {
                     "type": "string"
                 },
                 "filename": {
@@ -500,7 +503,7 @@
         "model.Workspace": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
@@ -509,7 +512,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "last_accessed": {
+                "lastAccessed": {
                     "type": "string"
                 },
                 "name": {
@@ -524,13 +527,13 @@
                 "tags": {
                     "type": "string"
                 },
-                "template_id": {
+                "templateId": {
                     "type": "integer"
                 },
                 "type": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 }
             }

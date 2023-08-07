@@ -12,20 +12,20 @@ type Workspace struct {
 	Description  string    `json:"description"`
 	Tags         string    `json:"tags"`
 	Parameters   string    `json:"parameters"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	LastAccessed time.Time `json:"last_accessed"`
-	TemplateID   uint      `json:"template_id"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	LastAccessed time.Time `json:"lastAccessed"`
+	TemplateID   uint      `json:"templateId"`
 }
 
 type CreateWorkspaceRequest struct {
 	Workspace Workspace `json:"workspace"`
-	UserID    uint      `json:"user_id"`
+	UserID    uint      `json:"userId"`
 }
 
 type UserWorkspaces struct {
-	UserID      uint `json:"user_id"`
-	WorkspaceID uint `json:"workspace_id"`
+	UserID      uint `json:"userId"`
+	WorkspaceID uint `json:"workspaceId"`
 }
 
 type WorkspaceRepository interface {
