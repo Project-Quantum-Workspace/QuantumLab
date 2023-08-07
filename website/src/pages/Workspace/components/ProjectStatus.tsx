@@ -47,12 +47,7 @@ const ProjectStatus = (props: StatusProps) => {
       labelColor = '#1672EC';
       break;
   }
-  const statusIconClass = useEmotionCss(() => {
-    return {
-      width: '14px',
-      height: '14px'
-    };
-  });
+ 
   const statusLabelClass = useEmotionCss(() => {
     return {
      // fontFamily: 'Manrope',
