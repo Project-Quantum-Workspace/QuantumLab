@@ -1,8 +1,8 @@
-import { PageContainer } from '@ant-design/pro-components';
-import { Card,Button } from 'antd';
+import {Button } from 'antd';
 import styled from "styled-components";
-import ComposerPNG from "../../../public/icons/Composer.png";
-import WorkspacePNG from "../../../public/icons/Rectangle 57.png"
+import ComposerPNG from "../../../../public/icons/Composer.png";
+import WorkspacePNG from "../../../../public/icons/Rectangle 57.png"
+import CircularLoading from './Circular/CircularLoading';
 /****
  * padding card of landing page
  */
@@ -57,7 +57,7 @@ const StyledImg = styled.img`
     margin-bottom:1%
 `;
 
-const SmallCard: React.FC<{
+export const SmallCard: React.FC<{
     title:string;
     index:number;
     desc:string;
@@ -71,8 +71,10 @@ const SmallCard: React.FC<{
         <StyledCard>
             {img=='c'&&<StyledImg src={ComposerPNG} style={{width:"60px"}}/>}
             {img=='w'&&<StyledImg src={WorkspacePNG}/>}
+           
             <p>{desc}</p>
             <h1>{title}</h1> 
+            {img=='0'&&<CircularLoading totalTask={6}/>}
             <Button
             type='primary'
             style={{
@@ -93,4 +95,6 @@ const SmallCard: React.FC<{
         </StyledCard>
    );
 }
-export default SmallCard;
+export const LargeCard=()=>{
+
+}
