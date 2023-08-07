@@ -1,24 +1,16 @@
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React from 'react'
 import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag} from 'antd';
-import { CaretRightOutlined, CloudFilled, DoubleRightOutlined, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
-import { styled } from 'styled-components';
+import {  DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
-import { StatusType } from '../utils/types/projectItemTypes';
+import { ProjectItemType } from '../utils/types/projectItemTypes';
 import AwsIcon from '../../../assets/aws.svg'
 
-interface WorkspaceData{
-    key: number;
-    name:string;
-    dateCreated:string;
-    lastAccessed:string;
-    template:string;
-    status:string;
-    tags:string[];
-    
+  
+  interface Workspaces{
+    data:ProjectItemType[]
   }
-  const columns: ColumnsType<WorkspaceData> =[
+  const columns: ColumnsType<ProjectItemType> =[
     {
       title:'',
       key:'icon',
@@ -40,8 +32,8 @@ interface WorkspaceData{
     },
     {
       title: 'Date Created',
-      dataIndex: 'dateCreated',
-      key: 'dateCreated'
+      dataIndex: 'createdAt',
+      key: 'createdAt'
     },
     {
       title: 'Last Accessed',
@@ -59,11 +51,7 @@ interface WorkspaceData{
       key: 'status',
       render:(text)=>(
         <>
-        {text==='Running' &&<ProjectStatus status={StatusType.Running} margin={false}/>}
-        {text==='Stopped' &&<ProjectStatus status={StatusType.Stopped} margin={false}/>}
-        {text==='Pending' &&<ProjectStatus status={StatusType.Pending} margin={false}/>}
-        {text==='Connecting' &&<ProjectStatus status={StatusType.Connecting} margin={false}/>}
-        {text==='Failed' &&<ProjectStatus status={StatusType.Failed} margin={false}/>}
+        <ProjectStatus status={text} margin={false}/>
         </>
       )
         
@@ -104,24 +92,27 @@ interface WorkspaceData{
     },
    
   ]
-const ProjectsTable: React.FC=()=>{
-  return <Table columns={columns} dataSource={data} />;
+const ProjectsTable=(props:Workspaces)=>{
+  const data = props.data;
+  return <Table columns={columns} dataSource={d} />;
 
 }
-const data: WorkspaceData[] =[
+const d:ProjectItemType[] =[
   {
     key:1,
+    icon:'',
     name:'AWS Example Project',
-    dateCreated: 'March 21,2023',
+    createdAt: 'March 21,2023',
     lastAccessed:'3 days ago',
     template:'AWS Machine Learning Template 1',
     status:'Stopped',
-    tags:['CPU']
+    tags:['CPU'],
   },
   {
     key:2,
+    icon:'',
     name:'AWS Example Project',
-    dateCreated: 'March 21,2023',
+    createdAt: 'March 21,2023',
     lastAccessed:'1 hours ago',
     template:'AWS Machine Learning Template 1',
     status:'Pending',
@@ -129,8 +120,9 @@ const data: WorkspaceData[] =[
   },
   {
     key:3,
+    icon:'',
     name:'AWS Example Project',
-    dateCreated: 'March 21,2023',
+    createdAt: 'March 21,2023',
     lastAccessed:'2 weeks ago',
     template:' Machine Learning Template 1',
     status:'Running',
@@ -138,8 +130,9 @@ const data: WorkspaceData[] =[
   },
   {
     key:4,
+    icon:'',
     name:'AWS Example Project',
-    dateCreated: 'March 21,2023',
+    createdAt: 'March 21,2023',
     lastAccessed:'1 years ago',
     template:'AWS Machine Learning Template 1',
     status:'Connecting',
@@ -147,8 +140,9 @@ const data: WorkspaceData[] =[
   },
   {
     key:5,
+    icon:'',
     name:'AWS Example Project',
-    dateCreated: 'March 21,2023',
+    createdAt: 'March 21,2023',
     lastAccessed:'2 days ago',
     template:' Machine Learning Template 1',
     status:'Failed',

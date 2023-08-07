@@ -43,7 +43,7 @@ const ProjectStatus = (props: StatusProps) => {
       labelColor = '#B9332A';
       break;
     case StatusType.Connecting:
-      iconType = <CloudFilled spin/>;
+      iconType = <CloudFilled />;
       labelColor = '#1672EC';
       break;
   }

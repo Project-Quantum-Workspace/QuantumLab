@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import SmallCard, { StyledContainer} from './LPComponent'
+import  {SmallCard, StyledContainer} from './HomeComponent/LPComponent'
+import CircularLoading from './HomeComponent/Circular/CircularLoading'
 
 
 const Home =()=>{
@@ -26,15 +27,17 @@ const Home =()=>{
      
       </StyledContainer>
       <StyledContainer>
+     
       <SmallCard
       index={1}
       href="/workspace"
       title="Job Monitor"
-      desc="Building quantum program in"
+      desc="Monitor Your Current Works"
       btName='Create'
       img = '0'
       />
       </StyledContainer>
+      
     </div>
   )
 }
