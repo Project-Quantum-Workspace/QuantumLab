@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,7 @@ type LoginController struct {
 // @Failure 401 {object} model.ErrorResponse "Incorrect Password"
 // @Failure 404 {object} model.ErrorResponse "Email Not Found"
 // @Failure 500 {object} model.ErrorResponse "Error Creating Access/Refresh Token"
-// @Router /login [post]
+// @Router /auth/login [post]
 func (lc *LoginController) Login(c *gin.Context) {
 	var request model.LoginRequest
 
