@@ -6,7 +6,7 @@ import { request } from '@umijs/max';
 export async function currentUser(token:string, options?: { [key: string]: any }) {
   return request<{
     data: API.CurrentUser;
-  }>('/api/currentUser', {
+  }>('/api/auth/currUser', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
