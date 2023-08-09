@@ -17,7 +17,7 @@ export async function currentUser(token:string, options?: { [key: string]: any }
 
 /** Login POST /api/auth/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login', {
+  return request<API.LoginResult>('/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

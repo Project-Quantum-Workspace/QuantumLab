@@ -70,5 +70,5 @@ func ExtractIDFromToken(requestToken string, secret string) (string, error) {
 		return "", fmt.Errorf("invalid token")
 	}
 
-	return claims["id"].(string), nil
+	return claims["email"].(string), nil
 }

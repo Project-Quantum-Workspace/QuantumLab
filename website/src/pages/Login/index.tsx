@@ -111,7 +111,7 @@ const Login: React.FC = () => {
     try {
       // Login
       const obj = {
-        email: values.username,
+        email: values.email,
         password: values.password
       }
       const msg = await login({ ...obj });
@@ -122,8 +122,8 @@ const Login: React.FC = () => {
           defaultMessage: 'Login successful!',
         });
         if (msg.accessToken) {
-          localStorage.setItem('token', msg.accessToken);
-          console.log(localStorage.getItem('token'))
+          localStorage.setItem('Authorization', msg.accessToken);
+          console.log(localStorage.getItem('Authorization'))
 
         }
         message.success(defaultLoginSuccessMessage);
@@ -211,22 +211,22 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="email"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.username.placeholder',
-                  defaultMessage: 'Username',
+                  defaultMessage: 'Email',
                 })}
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="Please input your username!"
+                        id="pages.login.email.required"
+                        defaultMessage="Please input your email!"
                       />
                     ),
                   },
