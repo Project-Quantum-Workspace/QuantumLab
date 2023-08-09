@@ -1,10 +1,13 @@
-import React from 'react'
+import React from 'react';
+import { Card } from 'antd';
 
-export default function index() {
-  return (
+
+const App: React.FC = () => (
     <div>
-      <h1>Backend Status page</h1>
-      <text>Filling...</text>
+      <h1 >Job Moniter page</h1>
+      <text>hihihi...</text>
     </div>
-  )
-}
+
+);
+
+export default App;
