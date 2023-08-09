@@ -40,6 +40,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       });
     }
   };
+  
   const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',

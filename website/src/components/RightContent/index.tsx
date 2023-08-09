@@ -4,7 +4,7 @@ import React from 'react';
 
 export type SiderTheme = 'light' | 'dark';
 
-export const SelectLang = () => {
+/* export const SelectLang = () => {
   return (
     <UmiSelectLang
       style={{
@@ -12,7 +12,7 @@ export const SelectLang = () => {
       }}
     />
   );
-};
+}; */
 
 export const Feedback = () => {
   return (
@@ -27,5 +27,23 @@ export const Feedback = () => {
     >
       <CommentOutlined />
     </div>
+  );
+};
+
+export const Search = () => {
+  return (
+    <div style={{
+      paddingRight: 30,
+      backgroundColor:'white',
+      fontSize: 16,
+      display: 'flex',
+      alignItems: 'center',
+      lineHeight:1.5,
+
+}}>
+  <input placeholder="Searching" />
+    </div >
+
+
   );
 };

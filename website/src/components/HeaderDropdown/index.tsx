@@ -15,6 +15,7 @@ const HeaderDropdown: React.FC<HeaderDropdownProps> = ({ overlayClassName: cls, 
       [`@media screen and (max-width: ${token.screenXS}px)`]: {
         width: '100%',
       },
+      
     };
   });
   return <Dropdown overlayClassName={classNames(className, cls)} {...restProps} />;

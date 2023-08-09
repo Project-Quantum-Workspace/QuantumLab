@@ -1,4 +1,4 @@
-import { Footer, Feedback, SelectLang, AvatarDropdown, AvatarName } from '@/components';
+import { Footer, Feedback,Search, AvatarDropdown, AvatarName } from '@/components';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -55,7 +55,8 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    actionsRender: () => [<Feedback key="doc" />, <SelectLang key="SelectLang" />],
+    /* <SelectLang key="SelectLang" /> */
+    actionsRender: () => [<Search key="Search"/>,<Feedback key="doc" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -89,7 +90,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
       {
         src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
-        bottom: 0,
+        bottom:0,
         left: 0,
         width: '331px',
       },

@@ -29,19 +29,34 @@ export default [
     component: './Login',
   },
 
+<<<<<<< Updated upstream
  
   {
     name:'home',
     path:'/home',
+=======
+  {
+    path: '/welcome',
+    name: 'Home',
+>>>>>>> Stashed changes
     icon: 'home',
     component:'./Home'
   },
+
+  {
+    path: '/Composer',
+    name: 'Composer',
+    icon: 'AppstoreOutlined',
+    component: './Composer',
+  },
+
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
     component: './Workspace',
   },
+<<<<<<< Updated upstream
   
   {
     path: '/workspace/new',
@@ -50,7 +65,45 @@ export default [
   },
   
   
+=======
+
+>>>>>>> Stashed changes
   {
+    path: '/JobMoniter',
+    name: 'Job Moniter',
+    icon: 'FundProjectionScreenOutlined',
+    component: './JobMoniter',
+  },
+
+  {
+    path: '/BackendStatus',
+    name: 'Backend Status',
+    icon: 'DatabaseOutlined',
+    component: './BackendStatus',
+  },
+
+  {
+    path: '/AnalyseTool',
+    name: 'Analyse Tool',
+    icon: 'FileSearchOutlined',
+    component: './AnalyseTool',
+  },
+
+  {
+    path: '/Document',
+    name: 'Document',
+    icon: 'ReadOutlined',
+    component: './Document',
+  },
+
+  {
+    path: '/Setting',
+    name: 'Setting',
+    icon: 'SettingOutlined',
+    component: './Setting',
+  },
+
+/*   {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
@@ -66,17 +119,24 @@ export default [
         component: './Admin',
       },
     ],
-  },
-  {
+  }, */
+
+/*   {
     name: 'list.table-list',
     icon: 'table',
     path: '/list',
     component: './TableList',
   },
+ */
   {
     path: '/',
+<<<<<<< Updated upstream
     redirect: '/home',
+=======
+    redirect: '/Welcome',
+>>>>>>> Stashed changes
   },
+
   {
     path: '*',
     layout: false,

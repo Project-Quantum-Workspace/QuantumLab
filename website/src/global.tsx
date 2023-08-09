@@ -1,9 +1,33 @@
 import { useIntl } from '@umijs/max';
-import { Button, message, notification } from 'antd';
+/* import { Button, message, notification } from 'antd'; */
+import {
+  Button,
+  ConfigProvider,
+  Divider,
+  Dropdown,
+  Input,
+  Popover,
+  theme,
+} from 'antd';
+
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
+import type { ProSettings } from '@ant-design/pro-components';
+import {
+  PageContainer,
+  ProCard,
+  ProConfigProvider,
+  ProLayout,
+  SettingDrawer,
+} from '@ant-design/pro-components';
+import { css } from '@emotion/css';
+import HeaderDropdown from './components/HeaderDropdown';
+import { Header } from 'antd/es/layout/layout';
+
+
+
 
 const clearCache = () => {
   // remove all caches
@@ -18,6 +42,8 @@ const clearCache = () => {
       .catch((e) => console.log(e));
   }
 };
+
+
 
 // if pwa is true
 if (pwa) {

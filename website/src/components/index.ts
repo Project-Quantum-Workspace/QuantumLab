@@ -5,8 +5,10 @@
 /**
  * Layout components
  */
+
 import Footer from './Footer';
-import { Feedback, SelectLang } from './RightContent';
+import { Feedback, Search } from './RightContent';
 import { AvatarDropdown, AvatarName } from './RightContent/AvatarDropdown';
 
-export { Footer, Feedback, SelectLang, AvatarDropdown, AvatarName };
+export { Footer, Feedback, Search, AvatarDropdown, AvatarName };
+
