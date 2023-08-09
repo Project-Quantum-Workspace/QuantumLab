@@ -8,29 +8,33 @@ export default function index() {
     </div>
   )
 } */
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from 'antd';
-import { FontColorsOutlined } from '@ant-design/icons';
+import {useNavigate, Navigate } from 'react-router-dom';
 
-const App: React.FC = () => (
-  <Card title="Card title"
-    bordered={true}
-    loading={false}
-    /* Shows a loading indicator while the 
-    contents of the card are being fetchedShows a loading 
-    indicator while the contents of the card are being 
-    fetched */
+const App: React.FC = () => {
+  const navigate = useNavigate();
+  const handleNavigation = () => {
+    navigate("/composer");
+  };
 
-    style={{ width: 300, }} >
-    <h1 style={{
-      color: 'blue',
-      fontFamily: 'serif',
-    }}>composer</h1>
-    <p>Card content</p>
-    <button id='click1'>click me to composer</button>
-  </Card>
+  return (
+    <div>
+      <Card title="Card title"
+        bordered={true}
+        loading={false}
+        style={{ width: 300, }} >
+        <h1 style={{
+          color: 'blue',
+          fontFamily: 'serif',
+        }}>composer</h1>
+        <p>Card content</p>
+        <button onClick={handleNavigation}>to composer </button>  
+      </Card>
+    </div>
 
-);
+  );
+}
+
 
 export default App;
