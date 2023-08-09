@@ -3,7 +3,7 @@ package model
 type Template struct {
 	ID          uint   `json:"id"`
 	Parameters  string `json:"parameters"`
-	AccessLevel string `json:"access_level"`
+	AccessLevel string `json:"accessLevel"`
 	Filename    string `json:"filename"`
 }
 

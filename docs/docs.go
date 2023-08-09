@@ -19,7 +19,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/login": {
+        "/auth/login": {
             "post": {
                 "description": "Log a user in if the provided email and password are correct.",
                 "consumes": [
@@ -74,7 +74,203 @@ const docTemplate = `{
                 }
             }
         },
-        "/workspace/:id": {
+        "/templates": {
+            "get": {
+                "description": "Get all workspace templates.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all templates",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Template"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new workspace template.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create new template",
+                "parameters": [
+                    {
+                        "description": "Data needed for creating a workspace template",
+                        "name": "template",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Template"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/:id": {
+            "put": {
+                "description": "Update an existing workspace template.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated template data",
+                        "name": "template",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Template"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a workspace template.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete template",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces": {
+            "post": {
+                "description": "Create a workspace.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create workspace",
+                "parameters": [
+                    {
+                        "description": "Workspace create request with workspace metadata and userID",
+                        "name": "create_workspace_request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/:id": {
             "get": {
                 "description": "Get a workspace by its ID.",
                 "produces": [
@@ -110,53 +306,8 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/workspace/create": {
-            "post": {
-                "description": "Create a workspace.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Create workspace",
-                "parameters": [
-                    {
-                        "description": "Workspace metadata",
-                        "name": "workspace",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.Workspace"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "JSON Parse Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Database Query Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/workspace/delete/:id": {
-            "post": {
+            },
+            "delete": {
                 "description": "Delete a workspace by its ID.",
                 "produces": [
                     "application/json"
@@ -191,11 +342,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/workspace/update": {
-            "post": {
-                "description": "Update a workspace.",
+            },
+            "patch": {
+                "description": "Update specific fields of a workspace.",
                 "consumes": [
                     "application/json"
                 ],
@@ -204,6 +353,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update workspace",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Updated workspace metadata",
                         "name": "workspace",
@@ -222,7 +378,48 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "JSON Parse Error",
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/users/:id": {
+            "get": {
+                "description": "Get all workspaces of a user. An empty array is returned if the user has no workspace.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all workspaces by user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Workspace"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal User ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -238,6 +435,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.CreateWorkspaceRequest": {
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "type": "integer"
+                },
+                "workspace": {
+                    "$ref": "#/definitions/model.Workspace"
+                }
+            }
+        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -283,6 +491,23 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Template": {
+            "type": "object",
+            "properties": {
+                "accessLevel": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "parameters": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Workspace": {
             "type": "object",
             "properties": {
@@ -310,7 +535,7 @@ const docTemplate = `{
                 "tags": {
                     "type": "string"
                 },
-                "template_id": {
+                "templateId": {
                     "type": "integer"
                 },
                 "type": {
@@ -318,9 +543,6 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         }
