@@ -64,7 +64,7 @@ export default {
     }
 
   },
-  'POST /api/auth/login': async (req: Request, res: Response) => {
+  'POST /api/login': async (req: Request, res: Response) => {
     const { password, username, type } = req.body;
     await waitTime(2000);
     if (password === 'admin' && username === 'admin') {

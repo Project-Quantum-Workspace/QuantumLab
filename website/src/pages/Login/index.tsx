@@ -115,21 +115,19 @@ const Login: React.FC = () => {
         password: values.password
       }
       const msg = await login({ ...obj });
-      console.log(msg);
       if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: 'Login successful!',
         });
         if (msg.accessToken) {
-          localStorage.setItem('Authorization', msg.accessToken);
-          console.log(localStorage.getItem('Authorization'))
-
+          localStorage.setItem('token', msg.accessToken);
+          
         }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        //const urlParams = new URL(window.location.href).searchParams;
+        history.push('/');
         return;
       }
       // If it fails to set user error message
