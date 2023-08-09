@@ -33,7 +33,6 @@ export default [
   {
     name:'home',
     path:'/home',
-
     icon: 'home',
     component:'./Home'
   },
@@ -96,7 +95,7 @@ export default [
     component: './Setting',
   },
 
-/*   {
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
@@ -112,7 +111,7 @@ export default [
         component: './Admin',
       },
     ],
-  }, */
+  },
 
 /*   {
     name: 'list.table-list',
@@ -121,6 +120,7 @@ export default [
     component: './TableList',
   },
  */
+
   {
     path: '/',
     redirect: '/home',
