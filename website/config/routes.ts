@@ -29,16 +29,11 @@ export default [
     component: './Login',
   },
 
-<<<<<<< Updated upstream
  
   {
     name:'home',
     path:'/home',
-=======
-  {
-    path: '/welcome',
-    name: 'Home',
->>>>>>> Stashed changes
+
     icon: 'home',
     component:'./Home'
   },
@@ -56,7 +51,7 @@ export default [
     path: '/workspace',
     component: './Workspace',
   },
-<<<<<<< Updated upstream
+
   
   {
     path: '/workspace/new',
@@ -65,9 +60,7 @@ export default [
   },
   
   
-=======
 
->>>>>>> Stashed changes
   {
     path: '/JobMoniter',
     name: 'Job Moniter',
@@ -130,11 +123,7 @@ export default [
  */
   {
     path: '/',
-<<<<<<< Updated upstream
     redirect: '/home',
-=======
-    redirect: '/Welcome',
->>>>>>> Stashed changes
   },
 
   {
