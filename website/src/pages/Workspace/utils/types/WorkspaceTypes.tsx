@@ -25,15 +25,15 @@ export type ProjectEventType = {
 };
 
 export type WorkspaceInfoDTO = {
-  id?: string;
+  id?: number
   // icon: string;
   name?: string;
   createdAt?: string;
   lastAccessed?: string;
   updatedAt?: string;
   description?: string;
-  template_id?: string;
-  state?: StatusType;
+  template_id?: number;
+  state?: string;
   tags?: string;
   type?: string;
   parameters?: string;

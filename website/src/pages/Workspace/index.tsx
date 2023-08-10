@@ -17,6 +17,7 @@ const App: React.FC = () => {
       setViewT(true);
     }
   }
+  
   return (
     <>
       {viewP &&
@@ -61,7 +62,7 @@ const App: React.FC = () => {
           + New Workspace
         </Button>
       </div>
-      {viewP && <ProjectsTable data={[]} />}
+      {viewP && <ProjectsTable data={"1"} />}
       {viewT && <TemplateTable/>}
 
     </>
