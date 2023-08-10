@@ -32,6 +32,7 @@ const WorkspaceInfo: React.FC = () => {
   useEffect(() => {
     getWorkspace(workspaceId as string)
        .then((res) => {
+        
           if (!res.message){
             const dto: WorkspaceInfoDTO = {
               id: res.id,
