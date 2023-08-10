@@ -73,4 +73,3 @@ const ProjectStatus = (props: StatusProps) => {
 };
 
 export default ProjectStatus;
-

@@ -1,4 +1,9 @@
-import { StatusType, ToolsetItemType, ToolsetType } from "../utils/types/projectItemTypes";
+import { 
+  ToolsetItemType, 
+  ToolsetType, 
+  WorkspaceInfoDTO,
+  WorkspaceInfoClass
+} from "../utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
 import ProjectItemIcon from '../../../assets/projectImg1.svg';
 import {
@@ -6,22 +11,62 @@ import {
   Col,
   Divider, 
   Image,
+  message,
   Row, 
   Space,
-  Typography
+  Typography,
 } from 'antd';
-import './WorkspaceInfoPage.css';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { history } from '@umijs/max';
+import { history, useIntl, useParams } from '@umijs/max';
 import ProjectStatus from "../components/ProjectStatus";
+import { getWorkspace } from "@/services/quantumlab/workspace";
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useEffect, useState } from 'react';
 
 const WorkspaceInfo: React.FC = () => {
   const { Title, Text, Paragraph } = Typography;
+  const { workspaceId } = useParams()
+  const [workspace, setWorkspace] = useState<WorkspaceInfoClass>(new WorkspaceInfoClass())
+  const intl = useIntl();
+
+  useEffect(() => {
+    getWorkspace(workspaceId as string)
+       .then((res) => {
+          if (!res.message){
+            const dto: WorkspaceInfoDTO = {
+              id: res.id,
+              name: res.name,
+              createdAt: res.createdAt,
+              lastAccessed: res.lastAccessed,
+              updatedAt: res.updatedAt,
+              description: res.description,
+              template_id: res.template_id,
+              state: res.state,
+              type: res.type,
+              parameters: res.parameters,
+              tags: res.tags
+            }
+            const w = WorkspaceInfoClass.fromDTO(dto)
+            setWorkspace(workspace => ({
+              ...workspace,
+              ...w}))
+          } else {
+            const Errormessage = intl.formatMessage({
+              id: 'pages.workspaceInfo.failure',
+              defaultMessage: res.message,
+            });
+            message.error(Errormessage);
+          }
+       })
+       .catch((error) => {
+          console.log(error)
+       });
+    }, []);
 
   const toolsets: ToolsetItemType[] = [
     {
       type: ToolsetType.Jupyter,
-      link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
+      // link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
     },
     {
       type: ToolsetType.VSCode,
@@ -30,39 +75,113 @@ const WorkspaceInfo: React.FC = () => {
       type: ToolsetType.Terminal,
     },
   ];
+  
+  const projectNameClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Ubuntu',
+      fontStyle: 'normal',
+      fontWeight: '500!important',
+      fontSize: '34px!important',
+      lineHeight: '130%',
+      color: '#414141',
+    };
+  });
 
-  const projectItem = {
-    icon: ProjectItemIcon,
-    name: 'MRC Example Project',
-    description: '',
-    owner: 'Lois',
-    createDate: 'April 23, 2023',
-    lastAccessedDate: '5 hours ago',
-    template: 'Melbourne Research Cloud QC Template 1',
-    status: StatusType.Running,
-    tags: ['Linux', 'Qiskit', 'Bracket'],
-    parameters: {
-      openstack_cloud_server: 'MRC_Instance',
-      'Available Zone': 'qh2-uom',
-      'Instance Type': '2 Cores CPU + 2 G Memory(t3.small)',
-      'Instance OS': 'NeCTAR Ubuntu 20.04 LTS (Focal) amd64',
-      openstack_cloud_volume: 'MRC_Volume',
-      'Disk Size': '50G',
-    },
-    toolsets: toolsets,
-  };
+  const projectAttrClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Manrope',
+      fontStyle: 'normal',
+      fontWeight: '400!important',
+      fontSize: '16px!important',
+      lineHeight: '132%',
+      color: '#818181',
+    };
+  });
+
+  const subTitleClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Manrope',
+      fontStyle: 'normal',
+      fontWeight: '600!important',
+      fontSize: '24px!important',
+      lineHeight: '130%',
+      color: '#414141',
+      display: 'flex',
+      alignItems: 'center',
+    };
+  });
+
+  const descriptionClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Manrope',
+      fontStyle: 'normal',
+      fontWeight: '400!important',
+      fontSize: '16px!important',
+      lineHeight: '150%',
+      color: '#818181',
+      display: 'flex',
+      alignItems: 'center',
+      letterSpacing: '0.269px'
+    };
+  });
+
+  const paramItemClass = useEmotionCss(() => {
+    return {
+      display: 'inline-block',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: '5px 8px',
+      minWidth: '160px',
+      height: '83px',
+      borderRadius: '8px',
+      backgroundColor: 'white',
+      // /* Inside auto layout */
+
+      flex: '1',
+      order: '0',
+      alignSelf: 'stretch',
+      flexGrow: '0'
+    };
+  });
+
+  const paramValueClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Manrope',
+      fontStyle: 'normal',
+      fontWeight: '600!important',
+      fontSize: '16px!important',
+      lineHeight: '130%',
+      color: '#414141',
+      display: 'flex',
+      alignItems: 'center',
+    };
+  });
+
+  const paramKeyClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Manrope',
+      fontStyle: 'normal',
+      fontWeight: '400!important',
+      fontSize: '12px!important',
+      lineHeight: '150%',
+      color: '#616161',
+      display: 'flex',
+      alignItems: 'center',
+    };
+  });
 
   const renderParam = (key: string, value: string) => {
     return (
-      <div className="param-item">
+      <div className={paramItemClass}>
         <Row>
           <Col>
-            <Title className="param-item-value">{value}</Title>
+            <Title className={paramValueClass}>{value}</Title>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Text className="param-item-key">{key}</Text>
+            <Text className={paramKeyClass}>{key}</Text>
           </Col>
         </Row>
       </div>
@@ -102,18 +221,17 @@ const WorkspaceInfo: React.FC = () => {
         <div>
           <Row>
             <Col>
-              <Title className="project-info-name">{projectItem.name}</Title>
+              <Title className={projectNameClass}>{workspace?.name}</Title>
             </Col>
           </Row>
           <Row>
             <Space size='large'>
               <>
-                <Title className="project-info-subtitle">{"Status: "}
-                </Title>
-                <ProjectStatus status={projectItem.status} margin={true}/>
+                <Title className={projectAttrClass}>{"Status: "}</Title>
+                <ProjectStatus status={workspace?.state} margin={true}/>
               </>
-              <Title className="project-info-subtitle">{"Owner: " + projectItem.owner}</Title>
-              <Title className="project-info-subtitle">{"Template: " + projectItem.template}</Title>
+              <Title className={projectAttrClass}>{"Owner: Lois"}</Title>
+              <Title className={projectAttrClass}>{"Template: Melbourne Research Cloud QC Template 1"}</Title>
             </Space>
           </Row>
         </div>
@@ -122,46 +240,45 @@ const WorkspaceInfo: React.FC = () => {
       <Divider />
 
       <div>
-        <Title level={3}>
+        <Title className={subTitleClass}>
           Description
         </Title>
-        <Paragraph>{projectItem.description}</Paragraph>
+        <Paragraph className={descriptionClass}>
+          {workspace.description}
+        </Paragraph>
       </div>
 
       <Divider />
 
       <div>
-        <Title level={3}>
+        <Title className={subTitleClass}>
           Overview
         </Title>
-        <Paragraph>
+        <Paragraph className={descriptionClass}>
           Inspect default and custome metadata for this workspace
         </Paragraph>
-        <div>
-          {Object.entries(projectItem.parameters).map(([key, value]) =>
-            renderParam(key, value),
+        <Space size="middle">
+          {Object.entries(workspace?.parameters || {}).map(([key, value]) =>
+            renderParam(key, value)
           )}
-        </div>
+        </Space>
       </div>
 
       <Divider />
 
       <div>
-        <Title level={3}>
+        <Title className={subTitleClass}>
           Toolset
         </Title>
-        <Paragraph>
+        <Paragraph className={descriptionClass}>
           Utilize the predefined toolset for your development
         </Paragraph>
         <div>
-          {Object.entries(projectItem.toolsets).map(([key, toolset]) =>
+          {Object.entries(toolsets).map(([key, toolset]) =>
             renderToolset(toolset)
           )}
         </div>
       </div>
-
-      
-    
     </>
   )
 }

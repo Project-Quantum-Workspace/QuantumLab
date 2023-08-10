@@ -49,6 +49,11 @@ export default [
     hideInMenu: true,
   },
   
+  {
+    path: '/workspace/:workspaceId',
+    component: './Workspace/WorkspaceInfo',
+    hideInMenu: true,
+  },
   
   {
     name: 'workspaceInfo',

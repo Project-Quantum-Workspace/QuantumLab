@@ -1,11 +1,11 @@
 import {
   Col, Row, Typography
 } from 'antd';
-import { ToolsetType } from '../../utils/types/projectItemTypes';
+import { ToolsetType } from '../../utils/types/WorkspaceTypes';
 import TerminalLOGO from '../../../../assets/TerminalLOGO.svg';
 import VSCodeLOGO from '../../../../assets/VSCodeLOGO.svg';
 import JupyterLOGO from '../../../../assets/JupyterLOGO.svg';
-import './ToolsetComponent.css';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
 
 interface ToolsetProps {
   type: ToolsetType;
@@ -38,24 +38,51 @@ const Toolset = (props: ToolsetProps) => {
       break;
   }
   const { Title } = Typography;
-  return (
-    <div 
-    className='toolset-item'
-    style={{
+
+  const toolsetClass = useEmotionCss(() => {
+    return {
       width: '160px',
       height: '160px',
-      textAlign: 'center',
       background: '#F7F7F7',
-    }} 
+      borderRadius: '30px',
+      cursor: 'pointer',
+      display: 'inline-block',
+      textAlign: 'center'
+    };
+  });
+
+  const toolsetImgClass = useEmotionCss(() => {
+    return {
+      width: '100px',
+      height: '80px',
+      background: 'transparent',
+    };
+  });
+
+  const toolsetLabelClass = useEmotionCss(() => {
+    return {
+      fontFamily: 'Source Sans Pro',
+      fontStyle: 'normal',
+      fontWeight: '300!important',
+      fontSize: '12px!important',
+      lineHeight: '150%',
+      letterSpacing: '0.0168em',
+      color: '#616161'
+    };
+  });
+
+  return (
+    <div 
+    className={toolsetClass}
     onClick={handleOpenLink}>
         <Row>
-          <Col style={{ height: '80px' }} span={24}>
-            <img className="toolset-img" src={logo} />
+          <Col span={24}>
+            <img className={toolsetImgClass} src={logo} />
           </Col>
         </Row>
         <Row>
           <Col style={{ height: '24px' }} span={24}>
-            <Title level={5} className="toolset-label">{label}</Title>
+            <Title level={5} className={toolsetLabelClass}>{label}</Title>
           </Col>
           </Row>
     </div>
