@@ -1,23 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag} from 'antd';
 import {  DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
 import { ProjectItemType } from '../utils/types/projectItemTypes';
 import AwsIcon from '../../../assets/aws.svg'
+import { getAllWorkspace } from '@/services/quantumlab/workspace';
+import { WorkspaceInfoDTO } from '../utils/types/WorkspaceTypes';
 
   
   interface Workspaces{
-    data:ProjectItemType[]
+    data: string
   }
-  const columns: ColumnsType<ProjectItemType> =[
+  const columns: ColumnsType<WorkspaceInfoDTO> =[
     {
       title:'',
-      key:'icon',
-      dataIndex:'template',
-      render:(text)=>{
+      key:'template_id',
+      dataIndex:'templateId',
+      render:(id)=>{
         return (<>
-        {text.substring(0,3)==='AWS'?
+        {id===1?
         <img src={AwsIcon}></img>
         :<img src='/favicon.ico'></img>
       }
@@ -40,22 +42,17 @@ import AwsIcon from '../../../assets/aws.svg'
       dataIndex: 'lastAccessed',
       key: 'lastAccessed'
     },
+   
     {
-      title: 'Template',
-      dataIndex: 'template',
-      key: 'template'
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render:(text)=>(
-        <>
+      title: 'State',
+      dataIndex: 'state',
+      key: 'state',
+      render:(text)=>{
+       
+        return <>
         <ProjectStatus status={text} margin={false}/>
         </>
-      )
-        
-        
+      }
       
     },
     
@@ -63,9 +60,10 @@ import AwsIcon from '../../../assets/aws.svg'
       title: 'Tags',
       dataIndex: 'tags',
       key: 'tags',
-      render: (_,{tags})=>(
-        <>
-        {tags.map((tag)=>{
+      render: (tagStr)=>{
+        const tags= tagStr.split(",");
+        return (<>
+        {tags.map((tag:string)=>{
           let color = 'green';
           if(tag==='CPU'){
             color='volcano';
@@ -77,16 +75,16 @@ import AwsIcon from '../../../assets/aws.svg'
           )
         }
         )}
-        </>
-      )
+        </>)
+      }
     },
     {
       title: ' ',
       key: 'action',
-      dataIndex: 'key',
-      render: (text) => (
+      dataIndex: 'id',
+      render: (id) => (
         <Space size="middle">
-          <a href={'/workspace/'+`${text}`}><DoubleRightOutlined /></a>
+          <a href={'/workspace/'+`${id}`}><DoubleRightOutlined /></a>
         </Space>
       ),
     },
@@ -94,59 +92,99 @@ import AwsIcon from '../../../assets/aws.svg'
   ]
 const ProjectsTable=(props:Workspaces)=>{
   const data = props.data;
-  return <Table columns={columns} dataSource={d} />;
+  const [workspaces, setworkspces] = useState(ws);
+  useEffect(() => {
+    getAllWorkspace(data)
+    .then((res)=>{
+    setworkspces(res);
+      
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }, [])
+  return <Table columns={columns} dataSource={workspaces}
+   rowKey={workspaces=>String(workspaces.id)}/>;
 
 }
-const d:ProjectItemType[] =[
+const ws:WorkspaceInfoDTO[]=[
   {
-    key:1,
-    icon:'',
-    name:'AWS Example Project',
-    createdAt: 'March 21,2023',
-    lastAccessed:'3 days ago',
-    template:'AWS Machine Learning Template 1',
-    status:'Stopped',
-    tags:['CPU'],
+    id: 1,
+  // icon: string;
+  name: 'AWS Example Project',
+  createdAt:  "2023-08-10T15:04:05Z",
+  lastAccessed: "2023-08-10T15:04:05Z",
+  updatedAt: "2023-08-10T15:04:05Z",
+  description: "",
+  template_id: 1,
+  state: 'Stopped',
+  tags: 'CPU, Qiskit',
+
   },
   {
-    key:2,
-    icon:'',
-    name:'AWS Example Project',
-    createdAt: 'March 21,2023',
-    lastAccessed:'1 hours ago',
-    template:'AWS Machine Learning Template 1',
-    status:'Pending',
-    tags:['CPU']
-  },
-  {
-    key:3,
-    icon:'',
-    name:'AWS Example Project',
-    createdAt: 'March 21,2023',
-    lastAccessed:'2 weeks ago',
-    template:' Machine Learning Template 1',
-    status:'Running',
-    tags:['CPU']
-  },
-  {
-    key:4,
-    icon:'',
-    name:'AWS Example Project',
-    createdAt: 'March 21,2023',
-    lastAccessed:'1 years ago',
-    template:'AWS Machine Learning Template 1',
-    status:'Connecting',
-    tags:['Qiskit','CPU']
-  },
-  {
-    key:5,
-    icon:'',
-    name:'AWS Example Project',
-    createdAt: 'March 21,2023',
-    lastAccessed:'2 days ago',
-    template:' Machine Learning Template 1',
-    status:'Failed',
-    tags:['Qiskit','CPU']
+    id: 2,
+  // icon: string;
+  name: 'AWS Example Project',
+  createdAt:  "2023-08-10T15:04:05Z",
+  lastAccessed: "2023-08-10T15:04:05Z",
+  updatedAt: "2023-08-10T15:04:05Z",
+  description: "",
+  template_id: 1,
+  state: 'Stopped',
+  tags: 'CPU, Qiskit',
+
   }
 ]
+// const d:WorkspaceInfoDTO[] =[
+//   {
+//     key:1,
+//     icon:'',
+//     name:'AWS Example Project',
+//     createdAt: 'March 21,2023',
+//     lastAccessed:'3 days ago',
+//     template:'AWS Machine Learning Template 1',
+//     status:'Stopped',
+//     tags:['CPU'],
+//   },
+//   {
+//     key:2,
+//     icon:'',
+//     name:'AWS Example Project',
+//     createdAt: 'March 21,2023',
+//     lastAccessed:'1 hours ago',
+//     template:'AWS Machine Learning Template 1',
+//     status:'Pending',
+//     tags:['CPU']
+//   },
+//   {
+//     key:3,
+//     icon:'',
+//     name:'AWS Example Project',
+//     createdAt: 'March 21,2023',
+//     lastAccessed:'2 weeks ago',
+//     template:' Machine Learning Template 1',
+//     status:'Running',
+//     tags:['CPU']
+//   },
+//   {
+//     key:4,
+//     icon:'',
+//     name:'AWS Example Project',
+//     createdAt: 'March 21,2023',
+//     lastAccessed:'1 years ago',
+//     template:'AWS Machine Learning Template 1',
+//     status:'Connecting',
+//     tags:['Qiskit','CPU']
+//   },
+//   {
+//     key:5,
+//     icon:'',
+//     name:'AWS Example Project',
+//     createdAt: 'March 21,2023',
+//     lastAccessed:'2 days ago',
+//     template:' Machine Learning Template 1',
+//     status:'Failed',
+//     tags:['Qiskit','CPU']
+//   }
+// ]
 export default ProjectsTable
