@@ -16,6 +16,7 @@ type Workspace struct {
 	UpdatedAt    time.Time `json:"updatedAt"`
 	LastAccessed time.Time `json:"lastAccessed"`
 	TemplateID   uint      `json:"templateId"`
+	Template     Template  `json:"template"`
 	Users        []User    `json:"users" gorm:"many2many:user_workspaces;"`
 }
 

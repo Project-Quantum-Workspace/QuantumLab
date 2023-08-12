@@ -580,6 +580,9 @@ const docTemplate = `{
                 "tags": {
                     "type": "string"
                 },
+                "template": {
+                    "$ref": "#/definitions/model.Template"
+                },
                 "templateId": {
                     "type": "integer"
                 },
