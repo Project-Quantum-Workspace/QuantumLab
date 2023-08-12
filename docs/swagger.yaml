@@ -116,6 +116,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Log a user in
+      tags:
+      - auth
   /templates:
     get:
       description: Get all workspace templates.
@@ -133,6 +135,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get all templates
+      tags:
+      - templates
     post:
       consumes:
       - application/json
@@ -160,7 +164,9 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Create new template
-  /templates/:id:
+      tags:
+      - templates
+  /templates/{id}:
     delete:
       description: Delete a workspace template.
       parameters:
@@ -185,6 +191,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Delete template
+      tags:
+      - templates
     put:
       consumes:
       - application/json
@@ -217,6 +225,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update template
+      tags:
+      - templates
   /workspaces:
     post:
       consumes:
@@ -245,7 +255,9 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Create workspace
-  /workspaces/:id:
+      tags:
+      - workspaces
+  /workspaces/{id}:
     delete:
       description: Delete a workspace by its ID.
       parameters:
@@ -270,6 +282,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Delete workspace
+      tags:
+      - workspaces
     get:
       description: Get a workspace by its ID.
       parameters:
@@ -294,6 +308,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get workspace by ID
+      tags:
+      - workspaces
     patch:
       consumes:
       - application/json
@@ -326,7 +342,9 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update workspace
-  /workspaces/users/:id:
+      tags:
+      - workspaces
+  /workspaces/users/{id}:
     get:
       description: Get all workspaces of a user. An empty array is returned if the
         user has no workspace.
@@ -354,4 +372,6 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get all workspaces by user
+      tags:
+      - workspaces
 swagger: "2.0"
