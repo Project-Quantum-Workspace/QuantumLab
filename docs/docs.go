@@ -257,12 +257,12 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "Workspace create request with workspace metadata and userID",
-                        "name": "create_workspace_request",
+                        "description": "New workspace with the ID of owner",
+                        "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
+                            "$ref": "#/definitions/model.Workspace"
                         }
                     }
                 ],
@@ -465,17 +465,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.CreateWorkspaceRequest": {
-            "type": "object",
-            "properties": {
-                "userId": {
-                    "type": "integer"
-                },
-                "workspace": {
-                    "$ref": "#/definitions/model.Workspace"
-                }
-            }
-        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -538,6 +527,32 @@ const docTemplate = `{
                 }
             }
         },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "accessLevel": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "quantumlabToken": {
+                    "type": "string"
+                },
+                "workspaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Workspace"
+                    }
+                }
+            }
+        },
         "model.Workspace": {
             "type": "object",
             "properties": {
@@ -573,6 +588,12 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
                 }
             }
         }
