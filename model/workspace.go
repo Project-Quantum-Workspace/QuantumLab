@@ -16,20 +16,11 @@ type Workspace struct {
 	UpdatedAt    time.Time `json:"updatedAt"`
 	LastAccessed time.Time `json:"lastAccessed"`
 	TemplateID   uint      `json:"templateId"`
-}
-
-type CreateWorkspaceRequest struct {
-	Workspace Workspace `json:"workspace"`
-	UserID    uint      `json:"userId"`
-}
-
-type UserWorkspaces struct {
-	UserID      uint `json:"userId"`
-	WorkspaceID uint `json:"workspaceId"`
+	Users        []User    `json:"users" gorm:"many2many:user_workspaces;"`
 }
 
 type WorkspaceRepository interface {
-	Create(workspace *Workspace, userID uint) error
+	Create(workspace *Workspace) error
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
@@ -37,7 +28,7 @@ type WorkspaceRepository interface {
 }
 
 type WorkspaceUsecase interface {
-	Create(workspace *Workspace, userID uint) error
+	Create(workspace *Workspace) error
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error

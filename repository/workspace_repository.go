@@ -16,15 +16,9 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 	}
 }
 
-func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
-	result := repo.qlDB.Omit("ID").Create(workspace)
-	if result.Error != nil {
-		return result.Error
-	}
-	result = repo.qlDB.Create(&model.UserWorkspaces{
-		UserID:      userID,
-		WorkspaceID: workspace.ID,
-	})
+func (repo *workspaceRepository) Create(workspace *model.Workspace) error {
+	// skip the insertion of new user but include the insertion of the association
+	result := repo.qlDB.Omit("ID", "Users.*").Create(workspace)
 	return result.Error
 }
 
