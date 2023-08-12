@@ -1,12 +1,5 @@
 basePath: /api
 definitions:
-  model.CreateWorkspaceRequest:
-    properties:
-      userId:
-        type: integer
-      workspace:
-        $ref: '#/definitions/model.Workspace'
-    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -47,6 +40,23 @@ definitions:
       parameters:
         type: string
     type: object
+  model.User:
+    properties:
+      accessLevel:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      quantumlabToken:
+        type: string
+      workspaces:
+        items:
+          $ref: '#/definitions/model.Workspace'
+        type: array
+    type: object
   model.Workspace:
     properties:
       createdAt:
@@ -71,6 +81,10 @@ definitions:
         type: string
       updatedAt:
         type: string
+      users:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
     type: object
 info:
   contact:
@@ -233,12 +247,12 @@ paths:
       - application/json
       description: Create a workspace.
       parameters:
-      - description: Workspace create request with workspace metadata and userID
+      - description: New workspace with the ID of owner
         in: body
-        name: create_workspace_request
+        name: workspace
         required: true
         schema:
-          $ref: '#/definitions/model.CreateWorkspaceRequest'
+          $ref: '#/definitions/model.Workspace'
       produces:
       - application/json
       responses:
