@@ -15,6 +15,7 @@ type TemplateController struct {
 
 // @Summary Create new template
 // @Description Create a new workspace template.
+// @Tags templates
 // @Accept json
 // @Produce json
 // @Param template body model.Template true "Data needed for creating a workspace template"
@@ -45,6 +46,7 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 
 // @Summary Get all templates
 // @Description Get all workspace templates.
+// @Tags templates
 // @Produce json
 // @Success 200 {object} []model.Template
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
@@ -62,6 +64,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 
 // @Summary Update template
 // @Description Update an existing workspace template.
+// @Tags templates
 // @Accept json
 // @Produce json
 // @Param id path uint true "Template ID"
@@ -69,7 +72,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /templates/:id [put]
+// @Router /templates/{id} [put]
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
 	var template model.Template
@@ -109,12 +112,13 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 
 // @Summary Delete template
 // @Description Delete a workspace template.
+// @Tags templates
 // @Produce json
 // @Param id path uint true "Template ID"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /templates/:id [delete]
+// @Router /templates/{id} [delete]
 func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
