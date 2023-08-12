@@ -17,6 +17,7 @@ type LoginController struct {
 // Login
 // @Summary Log a user in
 // @Description Log a user in if the provided email and password are correct.
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param credential body model.LoginRequest true "login credential"
