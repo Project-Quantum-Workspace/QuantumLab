@@ -18,7 +18,7 @@ func NewTemplateRepository(db *gorm.DB) model.TemplateRepository {
 
 // create new
 func (repo *templateRepository) Create(template *model.Template) error {
-	result := repo.database.Create(&template)
+	result := repo.database.Omit("ID").Create(&template)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -46,7 +46,7 @@ func (repo *templateRepository) Update(template *model.Template, id uint) error 
 	if result.Error != nil {
 		return result.Error
 	}
-	res := repo.database.Model(findT).Omit("id").Updates(*template)
+	res := repo.database.Model(findT).Omit("ID").Updates(*template)
 	return res.Error
 }
 
