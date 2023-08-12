@@ -19,4 +19,5 @@ func NewLoginRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterG
 	authRouterGroup := apiRouterGroup.Group("/auth")
 	authRouterGroup.POST("/login", lc.Login)
 	authRouterGroup.GET("/currUser", lc.CheckUser)
+
 }

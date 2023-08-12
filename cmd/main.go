@@ -3,12 +3,13 @@ package main
 import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/api/route"
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
-	"github.com/Project-Quantum-Workspace/QuantumLab/docs"
+	_ "github.com/Project-Quantum-Workspace/QuantumLab/docs"
 	"github.com/Project-Quantum-Workspace/QuantumLab/website"
+	"log"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"log"
 )
 
 // @title           QuantumLab Gin Web Service
@@ -24,8 +25,6 @@ func main() {
 	app := bootstrap.App()
 	engine := gin.Default()
 
-	docs.SwaggerInfo.BasePath = "/"
-
 	// Load website assets and router.
 	website.InitWebsite(engine)
 
@@ -33,6 +32,11 @@ func main() {
 	route.Setup(app.Env, app.DB, engine)
 
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	engine.GET("/healthz", func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
 
 	err := engine.Run()
 	if err != nil {

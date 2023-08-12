@@ -6,17 +6,17 @@ import (
 )
 
 type loginUsecase struct {
-	userRepo model.UserRepo
+	userRepository model.UserRepository
 }
 
-func NewLoginUC(userRepo model.UserRepo) model.LoginUsecase {
+func NewLoginUC(userRepository model.UserRepository) model.LoginUsecase {
 	return &loginUsecase{
-		userRepo: userRepo,
+		userRepository: userRepository,
 	}
 }
 
 func (lu *loginUsecase) FindUser(email string) (model.User, error) {
-	return lu.userRepo.GetByEmail(email)
+	return lu.userRepository.GetByEmail(email)
 }
 
 func (lu *loginUsecase) CreateAccessToken(user *model.User, secret string, expiry int) (accessToken string, err error) {

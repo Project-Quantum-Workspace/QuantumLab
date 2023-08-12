@@ -126,7 +126,7 @@ export default defineConfig({
    */
   headScripts: [
     // Solves the issue of white screen on initial load
-    { src: '/scripts/loading.js', async: true },
+    { src: '../public/scripts/loading.js', async: true },
   ],
   //================ pro plugin configurations =================
   presets: ['umi-presets-pro'],
@@ -146,4 +146,15 @@ export default defineConfig({
     strategy: 'normal',
   },
   requestRecord: {},
+
+
+  publicPath: process.env.NODE_ENV === 'production' ? '/public/' : '/',
+
+  favicons: ['/public/favicon.ico']
+  // manifest: {
+  //   basePath: '/',
+  // }
+  // Pack static file into static directory
+
+
 });

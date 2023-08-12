@@ -1,99 +1,145 @@
 package controller
 
 import (
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"net/http"
+	"strconv"
+
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-// var tc.TemplateRepo *gorm.tc.TemplateRepo
-var req model.Template
-
-type TemplateControllor struct {
-	TemplateRepo *gorm.DB
+type TemplateController struct {
+	TemplateUsecase model.TemplateUsecase
 }
 
-// create new template
-func (tc *TemplateControllor) PostOneTemplate(c *gin.Context) {
-
-	err := c.Bind(&req)
+// @Summary Create new template
+// @Description Create a new workspace template.
+// @Accept json
+// @Produce json
+// @Param template body model.Template true "Data needed for creating a workspace template"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates [post]
+func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
+	var template model.Template
+	err := c.BindJSON(&template)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Bad Request(Invalid Request Body)"})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	template := model.Template{
-		Parameters:   req.Parameters,
-		Access_level: req.Access_level,
-		File_name:    req.File_name,
-	}
-	res := tc.TemplateRepo.Create(&template)
-	if res.Error != nil {
-		c.JSON(400, gin.H{
-			"status": 400,
-			"post":   res.Error,
+
+	res := tc.TemplateUsecase.Create(&template)
+	if res != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"status": 200,
-		"post":   template,
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 }
 
-// read all templates
-func (tc *TemplateControllor) GetAllTemplates(c *gin.Context) {
+// @Summary Get all templates
+// @Description Get all workspace templates.
+// @Produce json
+// @Success 200 {object} []model.Template
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates [get]
+func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	var templates []model.Template
 
-	tc.TemplateRepo.Find(&templates)
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": templates,
-	})
-}
-
-// update template with id
-func (tc *TemplateControllor) UpdateOneTemplate(c *gin.Context) {
-	//get id
-	id := c.Param("id")
-	err := c.Bind(&req)
+	templates, err := tc.TemplateUsecase.GetAll()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Bad Request(Invalid Request Body)"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
 		return
 	}
+	c.JSON(http.StatusOK, templates)
+}
+
+// @Summary Update template
+// @Description Update an existing workspace template.
+// @Accept json
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Param template body model.Template true "Updated template data"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates/:id [put]
+func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
+	//get id
 	var template model.Template
-	tc.TemplateRepo.First(&template, id)
-	if template.Id == 0 {
-		c.JSON(404, gin.H{
-			"status":  404,
-			"message": "The Template Id is invalid",
+	err := c.BindJSON(&template)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
-	//update
-	tc.TemplateRepo.Model(&template).Updates(model.Template{
-		Parameters:   req.Parameters,
-		Access_level: req.Access_level,
-		File_name:    req.File_name,
-	})
-	//respond
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": template,
+	if id <= 0 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "template id must be a positive integer",
+		})
+		return
+	}
+	//tc.TemplateUsecase.First(&template, id)
+	err = tc.TemplateUsecase.Update(&template, uint(id))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 
 }
 
-// delete template with id
-func (tc *TemplateControllor) DeleteTemplate(c *gin.Context) {
-	id := c.Param("id")
+// @Summary Delete template
+// @Description Delete a workspace template.
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Router /templates/:id [delete]
+func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+	if id <= 0 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "template id must be a positive integer",
+		})
+		return
+	}
 
-	tc.TemplateRepo.Delete(&model.Template{}, id)
+	err = tc.TemplateUsecase.Delete(uint(id))
 
-	c.JSON(200, gin.H{
-		"status":  200,
-		"message": "successfully delete template",
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
 	})
 }

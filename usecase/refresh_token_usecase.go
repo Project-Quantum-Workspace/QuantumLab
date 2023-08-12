@@ -6,10 +6,10 @@ import (
 )
 
 type refreshTokenUsecase struct {
-	userRepository model.UserRepo
+	userRepository model.UserRepository
 }
 
-func NewRefreshTokenUsecase(userRepository model.UserRepo) model.RefreshTokenUsecase {
+func NewRefreshTokenUsecase(userRepository model.UserRepository) model.RefreshTokenUsecase {
 	return &refreshTokenUsecase{
 		userRepository: userRepository,
 	}
