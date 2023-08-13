@@ -104,6 +104,8 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 // @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
 // @Failure 500 {object} model.ErrorResponse "Workspace Not Found"
 // @Router /workspaces/{id} [get]
+//
+// vulnerability: a user can peek another user's workspace metadata
 func (controller *WorkspaceController) GetByID(c *gin.Context) {
 	var workspace model.Workspace
 
