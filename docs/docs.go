@@ -825,9 +825,6 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "icon": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
