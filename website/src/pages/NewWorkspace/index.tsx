@@ -146,6 +146,9 @@ const NewWorkspaceForm = () => {
           description: data.message,
           duration: 3,
         });
+        setTimeout(() => {
+          <Link to="/workspace" />;
+        }, 3000);
       } else if (response.status === 400) {
         notification.error({
           message: 'JSON Parse Error',
