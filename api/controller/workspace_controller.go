@@ -19,15 +19,15 @@ type WorkspaceController struct {
 // @Tags workspaces
 // @Accept json
 // @Produce json
-// @Param workspace body model.Workspace true "New workspace with the ID of owner"
+// @Param workspace body model.CreateWorkspaceRequest true "New workspace with the ID of owner"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
 // @Router /workspaces [post]
 func (controller *WorkspaceController) Create(c *gin.Context) {
-	var workspace model.Workspace
+	var workspaceRequest model.CreateWorkspaceRequest
 
-	err := c.BindJSON(&workspace)
+	err := c.BindJSON(&workspaceRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
@@ -35,10 +35,13 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 		return
 	}
 
+	workspace := workspaceRequest.Workspace
+	userID := workspaceRequest.UserID
+
 	// get last accessed timestamp
 	workspace.LastAccessed = time.Now()
 
-	err = controller.WorkspaceUsecase.Create(&workspace)
+	err = controller.WorkspaceUsecase.Create(&workspace, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
