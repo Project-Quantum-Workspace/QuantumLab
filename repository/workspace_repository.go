@@ -16,12 +16,23 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 	}
 }
 
-func (repo *workspaceRepository) Create(workspace *model.Workspace) error {
-	// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
-	// Omit `Template` to forbid auto create of Templates
-	// skip the insertion of new user but include the insertion of the association
-	result := repo.qlDB.Omit("ID", "Template", "Users.*").Create(workspace)
-	return result.Error
+func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
+	err := repo.qlDB.Transaction(func(tx *gorm.DB) error {
+		// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
+		result := tx.Omit("ID").Create(workspace)
+		if result.Error != nil {
+			return result.Error
+		}
+		result = tx.Create(&model.UserWorkspace{
+			UserID:      userID,
+			WorkspaceID: workspace.ID,
+		})
+		if result.Error != nil {
+			return result.Error
+		}
+		return nil
+	})
+	return err
 }
 
 func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
