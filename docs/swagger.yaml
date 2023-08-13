@@ -2,7 +2,7 @@ basePath: /api
 definitions:
   model.CreateWorkspaceRequest:
     properties:
-      userId:
+      userID:
         type: integer
       workspace:
         $ref: '#/definitions/model.Workspace'
@@ -448,11 +448,11 @@ paths:
     delete:
       description: Delete a workspace by its ID.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -472,13 +472,13 @@ paths:
       tags:
       - workspaces
     get:
-      description: Get a workspace by its ID.
+      description: Get a workspace by its UUID.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -494,7 +494,7 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Get workspace by ID
+      summary: Get workspace by UUID
       tags:
       - workspaces
     patch:
@@ -502,11 +502,11 @@ paths:
       - application/json
       description: Update specific fields of a workspace.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       - description: Updated workspace metadata
         in: body
         name: workspace
@@ -536,11 +536,11 @@ paths:
       description: Get all workspaces of a user. An empty array is returned if the
         user has no workspace.
       parameters:
-      - description: User ID
+      - description: User UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:

@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// vulnerability: a user can peek or manipulate another user's workspace metadata
 type WorkspaceController struct {
 	WorkspaceUsecase model.WorkspaceUsecase
 }
@@ -58,7 +59,7 @@ func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
 // @Description Get all workspaces of a user. An empty array is returned if the user has no workspace.
 // @Tags workspaces
 // @Produce json
-// @Param id path uint true "User ID"
+// @Param uuid path string true "User UUID"
 // @Success 200 {object} []model.Workspace
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
@@ -89,11 +90,11 @@ func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 	c.JSON(http.StatusOK, workspaces)
 }
 
-// @Summary Get workspace by ID
-// @Description Get a workspace by its ID.
+// @Summary Get workspace by UUID
+// @Description Get a workspace by its UUID.
 // @Tags workspaces
 // @Produce json
-// @Param id path uint true "Workspace ID"
+// @Param uuid path string true "Workspace UUID"
 // @Success 200 {object} model.Workspace
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
@@ -125,7 +126,7 @@ func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
 // @Tags workspaces
 // @Accept json
 // @Produce json
-// @Param id path uint true "Workspace ID"
+// @Param uuid path string true "Workspace UUID"
 // @Param workspace body model.Workspace true "Updated workspace metadata"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Invalid ID / Request Parse Error"
@@ -169,7 +170,7 @@ func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 // @Description Delete a workspace by its ID.
 // @Tags workspaces
 // @Produce json
-// @Param id path uint true "Workspace ID"
+// @Param uuid path string true "Workspace UUID"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
@@ -190,7 +191,6 @@ func (wc *WorkspaceController) DeleteWorkspace(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, model.SuccessResponse{
 		Message: "success",
 	})
