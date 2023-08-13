@@ -15,7 +15,6 @@ type Workspace struct {
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
 	LastAccessed time.Time `json:"lastAccessed"`
-	Icon         string    `json:"icon"`
 	TemplateID   uint      `json:"templateId"`
 	Template     Template  `json:"template"`
 }

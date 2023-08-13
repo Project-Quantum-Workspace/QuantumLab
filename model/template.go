@@ -5,6 +5,7 @@ type Template struct {
 	Parameters  string `json:"parameters"`
 	AccessLevel string `json:"accessLevel"`
 	Filename    string `json:"filename"`
+	Icon        string `json:"icon"` // base64 string
 }
 
 type TemplateRepository interface {
