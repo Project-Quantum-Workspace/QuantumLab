@@ -2,6 +2,7 @@ package model
 
 type User struct {
 	ID              uint        `json:"id"`
+	UUID            string      `json:"uuid"`
 	Email           string      `json:"email"`
 	Password        string      `json:"password"`
 	AccessLevel     uint        `json:"accessLevel"`

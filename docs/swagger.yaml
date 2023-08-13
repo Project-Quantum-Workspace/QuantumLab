@@ -2,8 +2,8 @@ basePath: /api
 definitions:
   model.CreateWorkspaceRequest:
     properties:
-      userId:
-        type: integer
+      userUuid:
+        type: string
       workspace:
         $ref: '#/definitions/model.Workspace'
     type: object
@@ -75,6 +75,8 @@ definitions:
       type:
         type: string
       updatedAt:
+        type: string
+      uuid:
         type: string
     type: object
 info:
@@ -238,7 +240,7 @@ paths:
       - application/json
       description: Create a workspace.
       parameters:
-      - description: New workspace with the ID of owner
+      - description: New workspace with the UUID of owner
         in: body
         name: workspace
         required: true
@@ -262,15 +264,15 @@ paths:
       summary: Create workspace
       tags:
       - workspaces
-  /workspaces/{id}:
+  /workspaces/{uuid}:
     delete:
       description: Delete a workspace by its ID.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -278,10 +280,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.SuccessResponse'
-        "400":
-          description: Illegal Workspace ID
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Database Query Error
           schema:
@@ -290,13 +288,13 @@ paths:
       tags:
       - workspaces
     get:
-      description: Get a workspace by its ID.
+      description: Get a workspace by its UUID.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -304,15 +302,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Workspace'
-        "400":
-          description: Illegal Workspace ID
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Workspace Not Found
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Get workspace by ID
+      summary: Get workspace by UUID
       tags:
       - workspaces
     patch:
@@ -320,11 +314,11 @@ paths:
       - application/json
       description: Update specific fields of a workspace.
       parameters:
-      - description: Workspace ID
+      - description: Workspace UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       - description: Updated workspace metadata
         in: body
         name: workspace
@@ -349,16 +343,16 @@ paths:
       summary: Update workspace
       tags:
       - workspaces
-  /workspaces/users/{id}:
+  /workspaces/users/{uuid}:
     get:
       description: Get all workspaces of a user. An empty array is returned if the
         user has no workspace.
       parameters:
-      - description: User ID
+      - description: User UUID
         in: path
-        name: id
+        name: uuid
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -368,10 +362,6 @@ paths:
             items:
               $ref: '#/definitions/model.Workspace'
             type: array
-        "400":
-          description: Illegal User ID
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Database Query Error
           schema:
