@@ -18,11 +18,20 @@ type Workspace struct {
 	Icon         string    `json:"icon"`
 	TemplateID   uint      `json:"templateId"`
 	Template     Template  `json:"template"`
-	Users        []User    `json:"users" gorm:"many2many:user_workspaces;"`
+}
+
+type UserWorkspace struct {
+	UserID      uint `json:"userId"`
+	WorkspaceID uint `json:"workspaceId"`
+}
+
+type CreateWorkspaceRequest struct {
+	Workspace Workspace `json:"workspace"`
+	UserID    uint      `json:"userId"`
 }
 
 type WorkspaceRepository interface {
-	Create(workspace *Workspace) error
+	Create(workspace *Workspace, userID uint) error
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
@@ -30,7 +39,7 @@ type WorkspaceRepository interface {
 }
 
 type WorkspaceUsecase interface {
-	Create(workspace *Workspace) error
+	Create(workspace *Workspace, userID uint) error
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
