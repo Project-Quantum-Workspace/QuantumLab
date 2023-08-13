@@ -530,6 +530,10 @@ const docTemplate = `{
                 "filename": {
                     "type": "string"
                 },
+                "icon": {
+                    "description": "base64 string",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -545,9 +549,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "description": {
-                    "type": "string"
-                },
-                "icon": {
                     "type": "string"
                 },
                 "id": {
