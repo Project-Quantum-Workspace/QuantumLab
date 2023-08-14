@@ -39,24 +39,9 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userUUID str
 }
 
 func (repo *workspaceRepository) GetAllByUser(userUUID string) ([]model.Workspace, error) {
-	var workspaces []model.Workspace
-	err := repo.qlDB.Transaction(func(tx *gorm.DB) error {
-		var user model.User
-		result := tx.Select("id").Where("uuid = ?", userUUID).First(&user)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		association := tx.Joins("Template").
-			Model(&user).Association("Workspaces")
-		if association.Error != nil {
-			return association.Error
-		}
-		err := association.Find(&workspaces)
-		return err
-	})
-
-	return workspaces, err
+	var user model.User
+	result := repo.qlDB.Preload("Workspaces.Template").Where("uuid = ?", userUUID).First(&user)
+	return user.Workspaces, result.Error
 }
 
 func (repo *workspaceRepository) GetByUUID(uuid string) (model.Workspace, error) {
