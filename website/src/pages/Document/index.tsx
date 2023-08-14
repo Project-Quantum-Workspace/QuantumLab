@@ -27,14 +27,11 @@ const App: React.FC = () => {
         <h1 style={{
           color: 'blue',
           fontFamily: 'serif',
-        }}>composer</h1>
+        }}>EG card antd</h1>
         <p>Card content</p>
-        <button onClick={handleNavigation}>to composer </button>  
+        <button onClick={handleNavigation}>eg navigation to composer </button>  
       </Card>
     </div>
-
   );
 }
-
-
 export default App;

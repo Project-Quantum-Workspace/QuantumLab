@@ -21,6 +21,8 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
+import route from "mock/route";
+
 export default [
   {
     name: 'login',
@@ -29,16 +31,16 @@ export default [
     component: './Login',
   },
 
- 
   {
-    name:'home',
-    path:'/home',
+    name: 'home',
+    path: '/home',
     icon: 'home',
-    component:'./Home'
+    component: './Home'
+
   },
 
   {
-    path: '/Composer',
+    path: '/composer',
     name: 'Composer',
     icon: 'AppstoreOutlined',
     component: './Composer',
@@ -51,51 +53,51 @@ export default [
     component: './Workspace',
   },
 
-  
+
   {
     path: '/workspace/new',
     component: './NewWorkspace',
     hideInMenu: true,
   },
-  
-  
+
+
 
   {
-    path: '/JobMoniter',
+    path: '/jobMoniter',
     name: 'Job Moniter',
     icon: 'FundProjectionScreenOutlined',
     component: './JobMoniter',
   },
 
   {
-    path: '/BackendStatus',
+    path: '/backendStatus',
     name: 'Backend Status',
     icon: 'DatabaseOutlined',
     component: './BackendStatus',
   },
 
   {
-    path: '/AnalyseTool',
+    path: '/analyseTool',
     name: 'Analyse Tool',
     icon: 'FileSearchOutlined',
     component: './AnalyseTool',
   },
 
   {
-    path: '/Document',
+    path: '/document',
     name: 'Document',
     icon: 'ReadOutlined',
     component: './Document',
   },
 
   {
-    path: '/Setting',
+    path: '/setting',
     name: 'Setting',
     icon: 'SettingOutlined',
     component: './Setting',
   },
 
-  {
+/*   {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
@@ -111,15 +113,15 @@ export default [
         component: './Admin',
       },
     ],
-  },
+  }, */
 
-/*   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
- */
+  /*   {
+      name: 'list.table-list',
+      icon: 'table',
+      path: '/list',
+      component: './TableList',
+    },
+   */
 
   {
     path: '/',
