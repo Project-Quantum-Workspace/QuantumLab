@@ -159,7 +159,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
 
-          logo={<img alt="logo" src="/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
+          logo={<img alt="logo" src="/public/icons/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
         
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
