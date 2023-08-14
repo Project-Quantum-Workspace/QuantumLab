@@ -14,7 +14,7 @@ import { Link } from 'umi';
 const { Title } = Typography;
 const { Option } = Select;
 
-const NewWorkspaceForm = () => {
+const NewWorkspace = () => {
   const [form] = Form.useForm();
 
   type Question = {
@@ -278,4 +278,4 @@ const NewWorkspaceForm = () => {
   );
 };
 
-export default NewWorkspaceForm;
+export default NewWorkspace;
