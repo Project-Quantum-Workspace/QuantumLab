@@ -39,9 +39,22 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userUUID str
 }
 
 func (repo *workspaceRepository) GetAllByUser(userUUID string) ([]model.Workspace, error) {
-	var user model.User
-	result := repo.qlDB.Preload("Workspaces.Template").Where("uuid = ?", userUUID).First(&user)
-	return user.Workspaces, result.Error
+	// gorm sucks!!
+	var workspaces []model.Workspace
+	result := repo.qlDB.Raw(`
+		SELECT workspaces.*,
+		templates.id AS "Template__id",
+		templates.parameters AS "Template__parameters",
+		templates.access_level AS "Template__access_level",
+		templates.filename AS "Template__filename",
+		templates.icon AS "Template__icon"
+		FROM workspaces
+		INNER JOIN user_workspaces ON workspaces.id = user_workspaces.workspace_id
+		INNER JOIN users ON users.id = user_workspaces.user_id
+		LEFT JOIN templates ON workspaces.template_id = templates.id
+		WHERE users.uuid = ?
+	`, userUUID).Scan(&workspaces)
+	return workspaces, result.Error
 }
 
 func (repo *workspaceRepository) GetByUUID(uuid string) (model.Workspace, error) {
