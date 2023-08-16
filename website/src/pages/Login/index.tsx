@@ -115,7 +115,7 @@ const Login: React.FC = () => {
         });
         if (msg.accessToken) {
           localStorage.setItem('token', msg.accessToken);
-          
+
         }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
