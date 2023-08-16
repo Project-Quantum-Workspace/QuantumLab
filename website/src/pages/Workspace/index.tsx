@@ -1,13 +1,14 @@
-
 import { Button, Tabs } from 'antd';
 import React, { useState } from 'react';
 import ProjectsTable from './components/ProjectsTable';
 import TemplateTable from './components/TemplateTable';
-import { history} from '@umijs/max';
+import { history, useModel} from '@umijs/max';
 
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
   const [viewT, setViewT] = useState(false);
+  const { initialState } = useModel('@@initialState');
+ 
   const Onchange = (key: string) => {
     if (key === '1') {
       setViewP(true);
@@ -64,8 +65,8 @@ const App: React.FC = () => {
           + New Workspace
         </Button>
       </div>
-      {viewP && <ProjectsTable data={"1"} />}
-      {viewT && <TemplateTable data='1'/>}
+      {viewP && <ProjectsTable data={initialState?.currentUser?.id} />}
+      {viewT && <TemplateTable data={initialState?.currentUser?.id}/>}
 
     </>
   );
