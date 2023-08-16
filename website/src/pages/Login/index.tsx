@@ -103,19 +103,24 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // Login
-      const msg = await login({ ...values, type });
-      if (msg.status === 'ok') {
+      const obj = {
+        email: values.email,
+        password: values.password
+      }
+      const msg = await login({ ...obj });
+      if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: 'Login successful!',
         });
         if (msg.accessToken) {
           localStorage.setItem('token', msg.accessToken);
+          
         }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        //const urlParams = new URL(window.location.href).searchParams;
+        history.push('/');
         return;
       }
       // If it fails to set user error message
@@ -154,7 +159,8 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
 
-          logo={<img alt="logo" src={logo} style={{ width: '80%', height: 'auto' }}/>}
+          logo={<img alt="logo" src="/public/icons/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
+        
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
@@ -198,22 +204,22 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="email"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
                 placeholder={intl.formatMessage({
                   id: 'pages.login.username.placeholder',
-                  defaultMessage: 'Username',
+                  defaultMessage: 'Email',
                 })}
                 rules={[
                   {
                     required: true,
                     message: (
                       <FormattedMessage
-                        id="pages.login.username.required"
-                        defaultMessage="Please input your username!"
+                        id="pages.login.email.required"
+                        defaultMessage="Please input your email!"
                       />
                     ),
                   },

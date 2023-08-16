@@ -12,15 +12,15 @@
 export default {
   // Uncomment the following and adjust as needed if you need to customize the local development server.
   dev: {
-     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
-     '/api/': {
-       // The address to be proxied
-       target: 'http://localhost:8080',
-       // Configuring this allows proxying from http to https
-       // Features dependent on origin may need this, e.g. cookies
-       changeOrigin: true,
-     },
-   },
+    // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
+    '/api/': {
+      // The address to be proxied
+      target: 'http://localhost:8080',
+      // Configuring this allows proxying from http to https
+      // Features dependent on origin may need this, e.g. cookies
+      changeOrigin: true,
+    },
+  },
 
   /**
    * @name Detailed proxy configuration
