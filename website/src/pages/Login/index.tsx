@@ -115,7 +115,7 @@ const Login: React.FC = () => {
         });
         if (msg.accessToken) {
           localStorage.setItem('token', msg.accessToken);
-          
+
         }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -160,7 +160,7 @@ const Login: React.FC = () => {
           }}
 
           logo={<img alt="logo" src="/public/icons/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
-        
+
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{

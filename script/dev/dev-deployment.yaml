@@ -1,19 +1,25 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: branch-job
+  name: quantumlab-dev-deployment
   namespace: quantumlab-dev
   labels:
-    app: branch
+    app: quantumlab-dev-deployment
+  annotations:
+    kubernetes.io/change-cause: "Pipeline updated, job ID: JOB_ID"
 spec:
-  ttlSecondsAfterFinished: 86400
-  backoffLimit: 3
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantumlab-dev-deployment
   template:
+    metadata:
+      labels:
+        app: quantumlab-dev-deployment
     spec:
-      restartPolicy: Never
       containers:
-        - name: branch
-          image: projectquantumlab/quantumlab-dev:tag
+        - name: quantumlab-dev
+          image: projectquantumlab/quantumlab:dev
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -29,30 +35,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: branch-service
+  name: quantumlab-dev-service
   namespace: quantumlab-dev
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.8.81
 spec:
   selector:
-    job-name: branch-job
+    app: quantumlab-dev-deployment
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: branch-ingressroute
-  namespace: quantumlab-dev
-  annotations:
-    kubernetes.io/ingress.class: traefik
-spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`example.com`)
-      kind: Rule
-      services:
-        - name: branch-service
-          namespace: quantumlab-dev
-          port: 8080
+  type: LoadBalancer
+
