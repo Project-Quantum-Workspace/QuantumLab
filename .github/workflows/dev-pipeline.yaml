@@ -79,9 +79,6 @@ jobs:
         with:
           version: v1.53
 
-      - name: Run backend tests
-        run: go test -v ./...
-
       - name: Build Backend
         run: go build -o ./build/quantumlab ./cmd/main.go
 
@@ -155,6 +152,29 @@ jobs:
         run: |
           echo image_tag=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.version'] }} >> $GITHUB_OUTPUT
 
+  backend-unit-test:
+    runs-on: ubuntu-latest
+    needs:
+      - backend
+      - frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.20.0'
+
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.run_id }}-frontend
+          path: website/dist
+
+      - name: Run unit tests
+        run: go test -v ./...
+
 #  run-e2e-tests:
 #    runs-on: ubuntu-latest
 #    needs:
@@ -184,6 +204,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-image
+      - backend-unit-test
     steps:
       - name: Checkout
         uses: actions/checkout@v3
