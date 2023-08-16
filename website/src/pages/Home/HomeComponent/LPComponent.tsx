@@ -62,12 +62,12 @@ export const SmallCard: React.FC<{
     title:string;
     index:number;
     desc:string;
-    href:string;
+    src:string;
     btName:string;
     img:string;
-}>=({title, href,index,desc,btName,img})=>{
+}>=({title, src,index,desc,btName,img})=>{
    const Onclick=()=>{
-    history.push(href)
+    history.push(src)
    }
     return(
 

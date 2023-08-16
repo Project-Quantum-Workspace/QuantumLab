@@ -3,7 +3,7 @@ import { Button, Tabs } from 'antd';
 import React, { useState } from 'react';
 import ProjectsTable from './components/ProjectsTable';
 import TemplateTable from './components/TemplateTable';
-
+import { history} from '@umijs/max';
 
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
@@ -29,7 +29,7 @@ const App: React.FC = () => {
         </>}
       {viewT &&
         <>
-          <h1 style={{fontSize:"25px"}}>Templates</h1>
+          <h1 style={{fontSize:"25px"}}>My Templates</h1>
           <p style={{ color: "rgba(0,0,0,.6)",width:"70%",height:"50px" }}>Quickly create your new workspace from self-defined templates
           </p>
         </>}
@@ -53,17 +53,19 @@ const App: React.FC = () => {
           onChange={Onchange}
         />
         <Button type="primary"
-          href='/workspace/new'
+          
           style={{
             width: "150px",
             backgroundColor:'#0F56B3',
             marginTop: "8px"
-          }}>
+          }}
+          onClick={()=>{history.push('/workspace/new')}}
+          >
           + New Workspace
         </Button>
       </div>
       {viewP && <ProjectsTable data={"1"} />}
-      {viewT && <TemplateTable/>}
+      {viewT && <TemplateTable data='1'/>}
 
     </>
   );
