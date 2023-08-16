@@ -1,12 +1,15 @@
 package controller
 
 import (
-	"net/http"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strings"
+
 )
 
 type LoginController struct {
@@ -65,4 +68,38 @@ func (lc *LoginController) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, loginResponse)
+}
+
+// CheckUser
+// @Summary Gets user details based on the current token
+// @Description Authenticates a token and retrieves associated user information
+func (lc *LoginController) CheckUser(c *gin.Context) {
+	authHeader := c.Request.Header.Get("Authorization")
+	tokens := strings.Split(authHeader, " ")
+	if len(tokens) == 2 {
+		authToken := tokens[1]
+		auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
+			return
+		}
+		if auth {
+			userID, err := tokenutil.ExtractIDFromToken(authToken, lc.Env.AccessJWTSecret)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, there is no ID!"})
+				print(err)
+				return
+			}
+			user, err := lc.LoginUsecase.FindUser(userID)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})
+				return
+			}
+			c.JSON(http.StatusOK, user)
+			return
+		}
+	} else {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, There is no token!"})
+		return
+	}
 }
