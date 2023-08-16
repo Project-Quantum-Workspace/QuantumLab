@@ -15,7 +15,7 @@ type TemplateData={
     
 }
 interface Props{
-  data:string
+  data:number | undefined
 }
 
 const columns:ColumnsType<TemplateData>=[

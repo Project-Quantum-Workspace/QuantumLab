@@ -19,7 +19,7 @@ const Settings: ProLayoutProps & {
   // breakpoint: false,
   title: 'QuantumLab',
   pwa: true,
-  logo: '/icons/logo.svg',
+  logo: '/public/icons/logo.svg',
   iconfontUrl: '',
   token: {
     // Refer to the TS declaration, demo in the document, and modify the style through token

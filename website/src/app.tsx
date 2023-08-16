@@ -31,7 +31,7 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser(token,{
         skipErrorHandler: true,
       });
-      return msg.email;
+      return {...msg,name:'LoisW',avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
     } catch (error) {
       history.push(loginPath);
     }
