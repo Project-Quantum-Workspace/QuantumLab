@@ -1,28 +1,30 @@
 import { ColumnsType } from 'antd/es/table'
-import React, { Component } from 'react'
-import AwsIcon from '../../../assets/aws.svg'
+import React, { Component, useEffect, useState } from 'react'
+import AwsIcon from '@/assets/aws.svg'
 import moment from 'moment'
-import LabIcon from '../../../assets/Lab_logo.svg'
-import {Space, Table} from 'antd'
+import LabIcon from '@/assets/Lab_logo.svg'
+import { Space, Table } from 'antd'
 import { Link } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
+import { getAccessibleTemplates } from '@/services/quantumlab/template'
+import { PageLoading } from '@ant-design/pro-components'
 
-type TemplateData={
-    id: number,
-    name: string,
-    createdAt: string,
-    accessLevel: number,
-    
+type TemplateData = {
+  id: number,
+  filename: string,
+  createdAt: string,
+  accessLevel: number,
+
 }
-interface Props{
-  data:number | undefined
+interface Props {
+  data: number | undefined
 }
 
-const columns:ColumnsType<TemplateData>=[
+const columns: ColumnsType<TemplateData> = [
   {
-    title:'',
-    key:'templateId',
-    dataIndex:'id',
+    title: '',
+    key: 'templateId',
+    dataIndex: 'id',
     render: (id) => {
       return (<>
         {id === 1 ?
@@ -34,21 +36,21 @@ const columns:ColumnsType<TemplateData>=[
   },
   {
     title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'filename',
+    key: 'filename',
     render: (text) => <a style={{ fontSize: '15px', fontWeight: 'bold', color: 'black' }}>{text}</a>
   },
-   {
+  {
     title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    render:(t)=><a style={{ fontSize: '15px',  color: 'black' }}>{moment(t).format("MMM Do YYYY")}</a>
+    render: (t) => <a style={{ fontSize: '15px', color: 'black' }}>{moment(t).format("MMM Do YYYY")}</a>
   },
-   {
+  {
     title: 'Access Level',
     dataIndex: 'accessLevel',
     key: 'accessLevel',
-    
+
   },
   {
     title: ' ',
@@ -64,29 +66,47 @@ const columns:ColumnsType<TemplateData>=[
   },
 ]
 
-const TemplateTable =(props:Props)=> {
-  
-    return <Table columns={columns} dataSource={td}
-    rowKey={t => String(t.id)}/>
-  
+const TemplateTable = (props: Props) => {
+  const [templates, setTemplates] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  useEffect(()=>{
+    getAccessibleTemplates()
+    .then((res)=>{
+      setTemplates(res);
+      setLoading(false);
+    })
+    .catch((error)=>{
+      console.log(error);
+      setError(error.message);
+    })
+  },[])
+  if(error)return <><h1>{error
+  }</h1></>
+  if(loading){
+    return <PageLoading/>
+  }
+  return <Table columns={columns} dataSource={templates}
+    rowKey={t => String(t.id)} />
+
 }
 
-const td: TemplateData[]=[
+const td: TemplateData[] = [
   {
     id: 1,
-    name: 'AWS Machine Learning Template 1',
+    filename: 'AWS Machine Learning Template 1',
     createdAt: "2023-08-10T15:04:05Z",
     accessLevel: 2
   },
-   {
+  {
     id: 2,
-    name: 'AWS Machine Learning Template 1',
+    filename: 'AWS Machine Learning Template 1',
     createdAt: "2023-08-10T15:04:05Z",
     accessLevel: 2
   },
   {
     id: 3,
-    name: 'AWS Machine Learning Template 1',
+    filename: 'AWS Machine Learning Template 1',
     createdAt: "2023-08-10T15:04:05Z",
     accessLevel: 2
   },
