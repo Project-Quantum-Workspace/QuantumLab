@@ -1,7 +1,7 @@
 import {Button } from 'antd';
 import styled from "styled-components";
-import ComposerPNG from "../../../../public/icons/Composer.png";
-import WorkspacePNG from "../../../../public/icons/Rectangle 57.png"
+import ComposerPNG from "../../../assets/composer.svg";
+import WorkspacePNG from "../../../assets/workspace.svg"
 import CircularLoading from './Circular/CircularLoading';
 import { history} from '@umijs/max';
 /****
@@ -72,7 +72,7 @@ export const SmallCard: React.FC<{
     return(
 
         <StyledCard>
-            {img=='c'&&<StyledImg src={ComposerPNG} style={{width:"60px"}}/>}
+            {img=='c'&&<StyledImg src={ComposerPNG} style={{width:"70px"}}/>}
             {img=='w'&&<StyledImg src={WorkspacePNG}/>}
            
             <p>{desc}</p>
