@@ -204,5 +204,5 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           curl -s -H "Content-Type: application/json" -X POST \
-          -d '{ "tag": "dev" }' \
+          -d '{ "id": "${{ github.run_id }}" }' \
           ${{ secrets.DEV_DEPLOYMENT_HOOK }}
