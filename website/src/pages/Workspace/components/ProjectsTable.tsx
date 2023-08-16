@@ -45,7 +45,8 @@ const columns: ColumnsType<WorkspaceInfoDTO> = [
     title: 'Last Accessed',
     dataIndex: 'lastAccessed',
     key: 'lastAccessed',
-    render:(t)=><a style={{ fontSize: '15px',  color: 'black' }}>{moment(t, "YYYYMMDD").fromNow()}</a>
+    render:(t)=>
+    <a style={{ fontSize: '15px',  color: 'black' }}>{moment(moment(t).format("MMM Do YYYY"), "YYYYMMDD").fromNow()}</a>
   },
 
   {
