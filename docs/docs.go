@@ -484,9 +484,9 @@ const docTemplate = `{
                 "summary": "Get all workspaces by user",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -518,19 +518,19 @@ const docTemplate = `{
         },
         "/workspaces/{id}": {
             "get": {
-                "description": "Get a workspace by its UUID.",
+                "description": "Get a workspace by its ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "workspaces"
                 ],
-                "summary": "Get workspace by UUID",
+                "summary": "Get workspace by ID",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -567,9 +567,9 @@ const docTemplate = `{
                 "summary": "Delete workspace",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -609,9 +609,9 @@ const docTemplate = `{
                 "summary": "Update workspace",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -652,7 +652,7 @@ const docTemplate = `{
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {
-                "userID": {
+                "userId": {
                     "type": "integer"
                 },
                 "workspace": {
