@@ -16,7 +16,7 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 	}
 }
 
-func (repo *workspaceRepository) Create(workspace *model.Workspace, userUUID string) error {
+func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
 	err := repo.qlDB.Transaction(func(tx *gorm.DB) error {
 		// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
 		// Omit `Template` to forbid auto create of Templates
@@ -24,13 +24,8 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userUUID str
 		if result.Error != nil {
 			return result.Error
 		}
-		var user model.User
-		result = tx.Select("id").Where("uuid = ?", userUUID).First(&user)
-		if result.Error != nil {
-			return result.Error
-		}
 		result = tx.Create(&model.UserWorkspace{
-			UserID:      user.ID,
+			UserID:      userID,
 			WorkspaceID: workspace.ID,
 		})
 		return result.Error
@@ -38,38 +33,30 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userUUID str
 	return err
 }
 
-func (repo *workspaceRepository) GetAllByUser(userUUID string) ([]model.Workspace, error) {
-	// gorm sucks!!
+func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
 	var workspaces []model.Workspace
-	result := repo.qlDB.Raw(`
-		SELECT workspaces.*,
-		templates.id AS "Template__id",
-		templates.parameters AS "Template__parameters",
-		templates.access_level AS "Template__access_level",
-		templates.filename AS "Template__filename",
-		templates.icon AS "Template__icon"
-		FROM workspaces
-		INNER JOIN user_workspaces ON workspaces.id = user_workspaces.workspace_id
-		INNER JOIN users ON users.id = user_workspaces.user_id
-		LEFT JOIN templates ON workspaces.template_id = templates.id
-		WHERE users.uuid = ?
-	`, userUUID).Scan(&workspaces)
-	return workspaces, result.Error
+	association := repo.qlDB.Joins("Template").
+		Model(&model.User{ID: userID}).Association("Workspaces")
+	if association.Error != nil {
+		return workspaces, association.Error
+	}
+	err := association.Find(&workspaces)
+	return workspaces, err
 }
 
-func (repo *workspaceRepository) GetByUUID(uuid string) (model.Workspace, error) {
+func (repo *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
 	var workspace model.Workspace
-	result := repo.qlDB.Joins("Template").First(&workspace, "uuid = ?", uuid)
+	result := repo.qlDB.Joins("Template").First(&workspace, id)
 	return workspace, result.Error
 }
 
-func (repo *workspaceRepository) Update(workspace *model.Workspace, uuid string) error {
-	result := repo.qlDB.Model(&model.Workspace{}).Omit("ID", "UUID", "Template").
-		Where("uuid = ?", uuid).Updates(*workspace)
+func (repo *workspaceRepository) Update(workspace *model.Workspace) error {
+	result := repo.qlDB.Model(&workspace).
+		Omit("ID", "UUID", "Template").Updates(*workspace)
 	return result.Error
 }
 
-func (repo *workspaceRepository) Delete(uuid string) error {
-	result := repo.qlDB.Where("uuid = ?", uuid).Delete(&model.Workspace{})
+func (repo *workspaceRepository) Delete(id uint) error {
+	result := repo.qlDB.Delete(&model.Workspace{}, id)
 	return result.Error
 }

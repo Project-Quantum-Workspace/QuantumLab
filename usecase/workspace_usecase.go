@@ -12,22 +12,22 @@ func NewWorkspaceUsecase(workspaceRepository model.WorkspaceRepository) model.Wo
 	}
 }
 
-func (usecase *workspaceUsecase) Create(workspace *model.Workspace, userUUID string) error {
-	return usecase.workspaceRepository.Create(workspace, userUUID)
+func (usecase *workspaceUsecase) Create(workspace *model.Workspace, userID uint) error {
+	return usecase.workspaceRepository.Create(workspace, userID)
 }
 
-func (usecase *workspaceUsecase) GetAllByUser(userUUID string) ([]model.Workspace, error) {
-	return usecase.workspaceRepository.GetAllByUser(userUUID)
+func (usecase *workspaceUsecase) GetAllByUser(userID uint) ([]model.Workspace, error) {
+	return usecase.workspaceRepository.GetAllByUser(userID)
 }
 
-func (usecase *workspaceUsecase) GetByUUID(uuid string) (model.Workspace, error) {
-	return usecase.workspaceRepository.GetByUUID(uuid)
+func (usecase *workspaceUsecase) GetByID(id uint) (model.Workspace, error) {
+	return usecase.workspaceRepository.GetByID(id)
 }
 
-func (usecase *workspaceUsecase) Update(workspace *model.Workspace, uuid string) error {
-	return usecase.workspaceRepository.Update(workspace, uuid)
+func (usecase *workspaceUsecase) Update(workspace *model.Workspace) error {
+	return usecase.workspaceRepository.Update(workspace)
 }
 
-func (usecase *workspaceUsecase) Delete(uuid string) error {
-	return usecase.workspaceRepository.Delete(uuid)
+func (usecase *workspaceUsecase) Delete(id uint) error {
+	return usecase.workspaceRepository.Delete(id)
 }
