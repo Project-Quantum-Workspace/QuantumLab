@@ -257,7 +257,7 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "New workspace with the UUID of owner",
+                        "description": "New workspace with the ID of owner",
                         "name": "workspace",
                         "in": "body",
                         "required": true,
@@ -288,7 +288,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/workspaces/users/{uuid}": {
+        "/workspaces/users/{id}": {
             "get": {
                 "description": "Get all workspaces of a user. An empty array is returned if the user has no workspace.",
                 "produces": [
@@ -300,9 +300,9 @@ const docTemplate = `{
                 "summary": "Get all workspaces by user",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -317,6 +317,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "400": {
+                        "description": "Illegal User ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Database Query Error",
                         "schema": {
@@ -326,21 +332,21 @@ const docTemplate = `{
                 }
             }
         },
-        "/workspaces/{uuid}": {
+        "/workspaces/{id}": {
             "get": {
-                "description": "Get a workspace by its UUID.",
+                "description": "Get a workspace by its ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "workspaces"
                 ],
-                "summary": "Get workspace by UUID",
+                "summary": "Get workspace by ID",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -350,6 +356,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Workspace"
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal Workspace ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
@@ -371,9 +383,9 @@ const docTemplate = `{
                 "summary": "Delete workspace",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -383,6 +395,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal Workspace ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
@@ -407,9 +425,9 @@ const docTemplate = `{
                 "summary": "Update workspace",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Workspace UUID",
-                        "name": "uuid",
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -450,8 +468,8 @@ const docTemplate = `{
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {
-                "userUuid": {
-                    "type": "string"
+                "userId": {
+                    "type": "integer"
                 },
                 "workspace": {
                     "$ref": "#/definitions/model.Workspace"

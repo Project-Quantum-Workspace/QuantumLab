@@ -27,21 +27,21 @@ type UserWorkspace struct {
 
 type CreateWorkspaceRequest struct {
 	Workspace Workspace `json:"workspace"`
-	UserUUID  string    `json:"userUuid"`
+	UserID    uint      `json:"userId"`
 }
 
 type WorkspaceRepository interface {
-	Create(workspace *Workspace, userUUID string) error
-	GetAllByUser(userUUID string) ([]Workspace, error)
-	GetByUUID(uuid string) (Workspace, error)
-	Update(workspace *Workspace, uuid string) error
-	Delete(uuid string) error
+	Create(workspace *Workspace, userID uint) error
+	GetAllByUser(userID uint) ([]Workspace, error)
+	GetByID(id uint) (Workspace, error)
+	Update(workspace *Workspace) error
+	Delete(id uint) error
 }
 
 type WorkspaceUsecase interface {
-	Create(workspace *Workspace, userUUID string) error
-	GetAllByUser(userUUID string) ([]Workspace, error)
-	GetByUUID(uuid string) (Workspace, error)
-	Update(workspace *Workspace, uuid string) error
-	Delete(uuid string) error
+	Create(workspace *Workspace, userID uint) error
+	GetAllByUser(userID uint) ([]Workspace, error)
+	GetByID(id uint) (Workspace, error)
+	Update(workspace *Workspace) error
+	Delete(id uint) error
 }
