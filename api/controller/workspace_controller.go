@@ -2,9 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
@@ -67,21 +67,15 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
-	userID, err := strconv.Atoi(c.Param("id"))
+	userID, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if userID <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "user id must be a positive integer",
+			Message: "invalid user id",
 		})
 		return
 	}
 
-	workspaces, err = controller.WorkspaceUsecase.GetAllByUser(uint(userID))
+	workspaces, err = controller.WorkspaceUsecase.GetAllByUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
@@ -108,21 +102,15 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 func (controller *WorkspaceController) GetByID(c *gin.Context) {
 	var workspace model.Workspace
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
 
-	workspace, err = controller.WorkspaceUsecase.GetByID(uint(id))
+	workspace, err = controller.WorkspaceUsecase.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
@@ -147,16 +135,10 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 func (controller *WorkspaceController) Update(c *gin.Context) {
 	var workspace model.Workspace
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
@@ -170,7 +152,7 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 	}
 
 	// workspace ID in payload should match the path variable
-	workspace.ID = uint(id)
+	workspace.ID = id
 	err = controller.WorkspaceUsecase.Update(&workspace)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
@@ -194,21 +176,15 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
 // @Router /workspaces/{id} [delete]
 func (controller *WorkspaceController) Delete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
 
-	err = controller.WorkspaceUsecase.Delete(uint(id))
+	err = controller.WorkspaceUsecase.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
