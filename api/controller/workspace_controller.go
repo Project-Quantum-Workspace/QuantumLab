@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// vulnerability: a user can peek or manipulate another user's workspace metadata
 type WorkspaceController struct {
 	WorkspaceUsecase model.WorkspaceUsecase
 }
@@ -21,11 +20,11 @@ type WorkspaceController struct {
 // @Accept json
 // @Produce json
 // @Param workspace body model.CreateWorkspaceRequest true "New workspace with the ID of owner"
-// @Success 200 {object} model.SuccessResponse
+// @Success 201 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 500 {object} model.ErrorResponse "Uexpected System Error"
 // @Router /workspaces [post]
-func (controller *WorkspaceController) Create(c *gin.Context) {
+func (wc *WorkspaceController) Create(c *gin.Context) {
 	var workspaceRequest model.CreateWorkspaceRequest
 
 	err := c.BindJSON(&workspaceRequest)
@@ -42,15 +41,15 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 	// get last accessed timestamp
 	workspace.LastAccessed = time.Now()
 
-	err = controller.WorkspaceUsecase.Create(&workspace, userID)
+	err = wc.WorkspaceUsecase.Create(&workspace, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, model.SuccessResponse{
+	c.JSON(http.StatusCreated, model.SuccessResponse{
 		Message: "success",
 	})
 }
@@ -61,10 +60,10 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "User ID"
 // @Success 200 {object} []model.Workspace
-// @Failure 400 {object} model.ErrorResponse "Illegal User ID"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/users/{id} [get]
-func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
+func (wc *WorkspaceController) GetAllByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
 	userID, err := validationutil.ValidateID(c.Param("id"))
@@ -75,10 +74,10 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 		return
 	}
 
-	workspaces, err = controller.WorkspaceUsecase.GetAllByUser(userID)
+	workspaces, err = wc.WorkspaceUsecase.GetAllByUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -96,10 +95,10 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.Workspace
-// @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
-// @Failure 500 {object} model.ErrorResponse "Workspace Not Found"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [get]
-func (controller *WorkspaceController) GetByID(c *gin.Context) {
+func (wc *WorkspaceController) GetByID(c *gin.Context) {
 	var workspace model.Workspace
 
 	id, err := validationutil.ValidateID(c.Param("id"))
@@ -110,10 +109,10 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 		return
 	}
 
-	workspace, err = controller.WorkspaceUsecase.GetByID(id)
+	workspace, err = wc.WorkspaceUsecase.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -129,10 +128,10 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 // @Param id path uint true "Workspace ID"
 // @Param workspace body model.Workspace true "Updated workspace metadata"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID / Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [patch]
-func (controller *WorkspaceController) Update(c *gin.Context) {
+func (wc *WorkspaceController) Update(c *gin.Context) {
 	var workspace model.Workspace
 
 	id, err := validationutil.ValidateID(c.Param("id"))
@@ -146,14 +145,14 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 	err = c.BindJSON(&workspace)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
 
 	// workspace ID in payload should match the path variable
 	workspace.ID = id
-	err = controller.WorkspaceUsecase.Update(&workspace)
+	err = wc.WorkspaceUsecase.Update(&workspace)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: err.Error(),
@@ -172,10 +171,10 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [delete]
-func (controller *WorkspaceController) Delete(c *gin.Context) {
+func (wc *WorkspaceController) Delete(c *gin.Context) {
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -184,10 +183,10 @@ func (controller *WorkspaceController) Delete(c *gin.Context) {
 		return
 	}
 
-	err = controller.WorkspaceUsecase.Delete(id)
+	err = wc.WorkspaceUsecase.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
