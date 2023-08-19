@@ -47,6 +47,23 @@ definitions:
       parameters:
         type: string
     type: object
+  model.User:
+    properties:
+      accessLevel:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      quantumlabToken:
+        type: string
+      workspaces:
+        items:
+          $ref: '#/definitions/model.Workspace'
+        type: array
+    type: object
   model.Workspace:
     properties:
       createdAt:
@@ -80,6 +97,23 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
+  /auth/currUser:
+    get:
+      consumes:
+      - application/json
+      description: Authenticates a token and retrieves associated user information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "401":
+          description: You are not authorized, There is no token!
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Gets user details based on the current token
   /auth/login:
     post:
       consumes:
