@@ -254,6 +254,23 @@ paths:
       summary: Invite and create users
       tags:
       - user admin
+  /auth/currUser:
+    get:
+      consumes:
+      - application/json
+      description: Authenticates a token and retrieves associated user information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "401":
+          description: You are not authorized, There is no token!
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Gets user details based on the current token
   /auth/login:
     post:
       consumes:
