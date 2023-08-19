@@ -29,6 +29,15 @@ func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 	return user, result.Error
 }
 
+func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
+	var RID []int
+	result := ur.qlDB.Raw(`SELECT role_id FROM user_role WHERE user_role.user_id = ?`, uid).Scan(&RID)
+	if result.Error != nil {
+		return RID, result.Error
+	}
+	return RID, result.Error
+}
+
 func (ur *userRepository) GetRegisteredEmails(emailList []string) ([]string, error) {
 	var registeredEmailList []string
 	result := ur.qlDB.Model(&model.User{}).
@@ -73,13 +82,4 @@ func (ur *userRepository) Update(user model.User) error {
 		return nil
 	})
 	return err
-}
-
-func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
-	var RID []int
-	result := ur.qlDB.Raw(`SELECT role_id FROM user_role WHERE user_role.user_id = ?`, uid).Scan(&RID)
-	if result.Error != nil {
-		return RID, result.Error
-	}
-	return RID, result.Error
 }
