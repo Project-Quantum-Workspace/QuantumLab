@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// vulnerability: a user can peek or manipulate another user's workspace metadata
 type WorkspaceController struct {
 	WorkspaceUsecase model.WorkspaceUsecase
 }
