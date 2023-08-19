@@ -1,15 +1,14 @@
 package controller
 
 import (
-
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 )
 
 type LoginController struct {
@@ -26,8 +25,7 @@ type LoginController struct {
 // @Param credential body model.LoginRequest true "login credential"
 // @Success 200 {object} model.LoginResponse
 // @Failure 400 {object} model.ErrorResponse "Bad Request (Invalid Email)"
-// @Failure 401 {object} model.ErrorResponse "Incorrect Password"
-// @Failure 404 {object} model.ErrorResponse "Email Not Found"
+// @Failure 401 {object} model.ErrorResponse "Incorrect Email or Password"
 // @Failure 500 {object} model.ErrorResponse "Error Creating Access/Refresh Token"
 // @Router /auth/login [post]
 func (lc *LoginController) Login(c *gin.Context) {
@@ -40,14 +38,9 @@ func (lc *LoginController) Login(c *gin.Context) {
 	}
 
 	user, err := lc.LoginUsecase.FindUser(request.Email)
-	if err != nil {
-		c.JSON(http.StatusNotFound, model.ErrorResponse{Message: "Email Not Found"})
-		return
-	}
-
 	// TODO: Hash Passwords
-	if user.Password != request.Password {
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Incorrect Password"})
+	if err != nil || user.Password != request.Password {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Incorrect Email or Password"})
 		return
 	}
 

@@ -7,28 +7,34 @@ import (
 )
 
 type userRepository struct {
-	database *gorm.DB
+	qlDB *gorm.DB
 }
 
 func NewUserRepository(db *gorm.DB) model.UserRepository {
 	return &userRepository{
-		database: db,
+		qlDB: db,
 	}
 }
 
 func (ur *userRepository) Create(user *model.User) error {
-	result := ur.database.Create(&user)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := ur.qlDB.Create(&user)
+	return result.Error
 }
 
 func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 	var user model.User
-	result := ur.database.Where("email = ?", email).First(&user)
-	if result.Error != nil {
-		return user, result.Error
-	}
-	return user, nil
+	result := ur.qlDB.Where("email = ?", email).First(&user)
+	return user, result.Error
+}
+
+func (ur *userRepository) GetByID(id uint) (model.User, error) {
+	var user model.User
+	result := ur.qlDB.Omit("password").First(&user, id)
+	return user, result.Error
+}
+
+func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
+	var users []model.UserListItem
+	result := ur.qlDB.Model(&model.User{}).Find(&users)
+	return users, result.Error
 }
