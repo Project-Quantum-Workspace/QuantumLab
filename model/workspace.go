@@ -16,16 +16,17 @@ type Workspace struct {
 	UpdatedAt    time.Time `json:"updatedAt"`
 	LastAccessed time.Time `json:"lastAccessed"`
 	TemplateID   uint      `json:"templateId"`
+	Template     Template  `json:"template"`
+}
+
+type UserWorkspace struct {
+	UserID      uint `json:"userId"`
+	WorkspaceID uint `json:"workspaceId"`
 }
 
 type CreateWorkspaceRequest struct {
 	Workspace Workspace `json:"workspace"`
 	UserID    uint      `json:"userId"`
-}
-
-type UserWorkspaces struct {
-	UserID      uint `json:"userId"`
-	WorkspaceID uint `json:"workspaceId"`
 }
 
 type WorkspaceRepository interface {
