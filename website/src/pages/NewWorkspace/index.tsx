@@ -27,11 +27,18 @@ const NewWorkspace = () => {
   type Template = {
     accessLevel: string;
     filename: string;
+    parameters: string;
+    id: number; // Assuming an ID is part of the template
+  };
+
+  type Template2 = {
+    accessLevel: string;
+    filename: string;
     parameters: Question[];
     id: number; // Assuming an ID is part of the template
   };
 
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template2 | null>(null);
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
@@ -99,34 +106,28 @@ const NewWorkspace = () => {
 
   const onFinish = async (values: any) => {
     try {
-      const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
-        (acc, question) => {
-          acc[question.name] = values[question.name];
-          return acc;
-        },
-        {},
-      );
 
       // Adjust data to fit the new format
       const adjustedValues = {
-        userId: 1, // or any other user ID you need to set
+        userId: 1, // Assuming this is the correct ID you want to set.
         workspace: {
           createdAt: new Date().toISOString(),
-          description: values.description,
-          id: 111,
+          description: values.description || "string",
+          id: 111, // Assuming this is the correct ID you want to set.
           lastAccessed: new Date().toISOString(),
-          name: values.name,
-          parameters: JSON.stringify(parameters), // Stringify the parameters
-          state: values.state,
+          name: values.name || "string",
+          parameters: JSON.stringify(selectedTemplate?.parameters) || "string",
+          state: "string",
           tags: values.tags
             .split(',')
             .map((tag: string) => tag.trim())
-            .join(','),
-          templateId: values.template_id,
-          type: values.type,
-          updatedAt: new Date().toISOString(),
-        },
+            .join(',') || "string",
+          templateId: selectedTemplate?.id || 0,
+          type: values.type || "string",
+          updatedAt: new Date().toISOString()
+        }
       };
+
 
       console.log('adjustedValues:', adjustedValues);
 
