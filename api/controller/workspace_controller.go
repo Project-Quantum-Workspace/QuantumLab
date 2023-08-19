@@ -145,7 +145,7 @@ func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 	err = c.BindJSON(&workspace)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
