@@ -57,13 +57,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Incorrect Password",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Email Not Found",
+                        "description": "Incorrect Email or Password",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -98,7 +92,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -142,7 +136,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -189,13 +183,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Request Parse Error",
+                        "description": "Invalid ID / Request Parse Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -234,7 +228,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -267,8 +261,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessResponse"
                         }
@@ -280,7 +274,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Uexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -318,13 +312,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal User ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -359,13 +353,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal Workspace ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Workspace Not Found",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -398,13 +392,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal Workspace ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -449,13 +443,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Request Parse Error",
+                        "description": "Invalid ID / Request Parse Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }

@@ -12,8 +12,8 @@ func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
 
 	NewLoginRouter(env, db, apiRouterGroup)
 	NewSignupRouter(db, apiRouterGroup)
-
-	TemplateRouter(db, apiRouterGroup)
-	NewWorkspaceRouter(db, apiRouterGroup)
 	NewUserAdminRouter(db, apiRouterGroup)
+
+	NewTemplateRouter(db, apiRouterGroup)
+	NewWorkspaceRouter(db, apiRouterGroup)
 }
