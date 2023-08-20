@@ -9,6 +9,7 @@ type User struct {
 	AccessLevel     uint        `json:"accessLevel"`
 	QuantumlabToken string      `json:"quantumlabToken"`
 	Avatar          string      `json:"avatar"`
+	Roles           []Role      `json:"roles" gorm:"many2many:user_roles;"`
 	Workspaces      []Workspace `json:"workspaces" gorm:"many2many:user_workspaces;"`
 }
 
@@ -18,7 +19,13 @@ type UserListItem struct {
 	UUID          string `json:"uuid"`
 	Email         string `json:"email"`
 	AccountStatus bool   `json:"accountStatus"`
+	Roles         []Role `json:"roles" gorm:"many2many:user_roles;joinForeignKey:user_id"`
 	AccessLevel   uint   `json:"accessLevel"`
+}
+
+type Role struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 type UserAdminUsecase interface {
@@ -31,4 +38,5 @@ type UserRepository interface {
 	GetByEmail(email string) (User, error)
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)
+	// Update(user User) error
 }
