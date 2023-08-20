@@ -138,7 +138,8 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: join(__dirname, '../../docs/swagger.json'),
+      // schemaPath: join(__dirname, '../../docs/swagger.json'),
+      schemaPath: "https://raw.githubusercontent.com/Project-Quantum-Workspace/QuantumLab/main/docs/swagger.json",
       mock: false,
     },
   ],

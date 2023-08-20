@@ -4,6 +4,7 @@ import StoppedIcon from '../../../assets/stopped.svg';
 import PendingIcon from '../../../assets/pending.svg';
 import FailedIcon from '../../../assets/failed.svg';
 import ConnectingIcon from '../../../assets/connecting.svg';
+
 import { StatusType } from '../utils/types/projectItemTypes';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { CaretRightFilled, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
@@ -54,11 +55,13 @@ const ProjectStatus = (props: StatusProps) => {
       fontSize: '15px!important',
       fontStyle: 'normal',
       fontWeight: '600!important',
+
       lineHeight: '24px!important', /* 150% */
       letterSpacing: '0.08px',
     };
   });
   return (
+
     <div  className={statusLabelClass} 
     style={{
       display:'flex',
@@ -69,6 +72,8 @@ const ProjectStatus = (props: StatusProps) => {
       {iconType}
       <StyledT>{status}</StyledT>
     </div>
+
+
   );
 };
 

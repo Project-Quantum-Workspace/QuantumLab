@@ -1,11 +1,12 @@
 import { 
   ToolsetItemType, 
   ToolsetType, 
-  WorkspaceInfoDTO,
+
+  WorkspaceInfoMetaData,
   WorkspaceInfoClass
 } from "../utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
-import ProjectItemIcon from '../../../assets/projectImg1.svg';
+
 import {
   Button,
   Col,
@@ -13,6 +14,8 @@ import {
   Image,
   message,
   Row, 
+  Result,
+
   Space,
   Typography,
 } from 'antd';
@@ -23,25 +26,39 @@ import { getWorkspace } from "@/services/quantumlab/workspace";
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useEffect, useState } from 'react';
 
+import { TemplateMetaData } from "../utils/types/TemplateTypes";
+import { FrownOutlined } from '@ant-design/icons';
+
+
 const WorkspaceInfo: React.FC = () => {
   const { Title, Text, Paragraph } = Typography;
   const { workspaceId } = useParams()
-  const [workspace, setWorkspace] = useState<WorkspaceInfoClass>(new WorkspaceInfoClass())
-  const intl = useIntl();
 
+  const [workspace, setWorkspace] = useState<WorkspaceInfoClass|undefined>(undefined)
+  const intl = useIntl();
   useEffect(() => {
     getWorkspace(workspaceId as string)
        .then((res) => {
-        
           if (!res.message){
-            const dto: WorkspaceInfoDTO = {
+            const templateDto: TemplateMetaData = {
+              id: res.template.id,
+              filename: res.template.filename,
+              parameters: res.template.parameters,
+              accessLevel: res.template.accessLevel,
+              icon: res.template.icon
+            }
+            const dto: WorkspaceInfoMetaData = {
+
               id: res.id,
               name: res.name,
               createdAt: res.createdAt,
               lastAccessed: res.lastAccessed,
               updatedAt: res.updatedAt,
               description: res.description,
-              template_id: res.template_id,
+
+              templateId: res.templateId,
+              template: templateDto,
+
               state: res.state,
               type: res.type,
               parameters: res.parameters,
@@ -64,7 +81,9 @@ const WorkspaceInfo: React.FC = () => {
        });
     }, []);
 
-  const toolsets: ToolsetItemType[] = [
+
+    const toolsets: ToolsetItemType[] = [
+
     {
       type: ToolsetType.Jupyter,
       // link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
@@ -137,7 +156,6 @@ const WorkspaceInfo: React.FC = () => {
       height: '83px',
       borderRadius: '8px',
       backgroundColor: 'white',
-      // /* Inside auto layout */
 
       flex: '1',
       order: '0',
@@ -196,10 +214,14 @@ const WorkspaceInfo: React.FC = () => {
   const handleBack = () => {
     history.push('/workspace');
   };
-  
+
+
   return (
     <>
-      <div>
+    {workspace ? (
+      <>
+        <div>
+
         <Button 
           type="text" 
           icon={<ArrowLeftOutlined />}
@@ -217,7 +239,9 @@ const WorkspaceInfo: React.FC = () => {
         <Image
           width={96}
           height={96}
-          src={ProjectItemIcon}
+
+          src={workspace.templateIcon}
+
         />
         <div>
           <Row>
@@ -228,11 +252,13 @@ const WorkspaceInfo: React.FC = () => {
           <Row>
             <Space size='large'>
               <>
-                <Title className={projectAttrClass}>{"Status: "}</Title>
-                <ProjectStatus status={workspace?.state} margin={true}/>
+
+                <Title className={projectAttrClass}>{"Status:"}</Title>
+                <ProjectStatus status={workspace?.state}/>
               </>
               <Title className={projectAttrClass}>{"Owner: Lois"}</Title>
-              <Title className={projectAttrClass}>{"Template: Melbourne Research Cloud QC Template 1"}</Title>
+              <Title className={projectAttrClass}>{"Template: " + workspace?.templateName}</Title>
+
             </Space>
           </Row>
         </div>
@@ -280,6 +306,18 @@ const WorkspaceInfo: React.FC = () => {
           )}
         </div>
       </div>
+
+    </>) : (
+      <> 
+        <Result
+          icon={<FrownOutlined />}
+          title="Workspace Not Found"
+        
+        />
+      </>
+    )}
+      
+
     </>
   )
 }

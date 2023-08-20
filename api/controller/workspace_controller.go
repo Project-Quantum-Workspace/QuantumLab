@@ -16,9 +16,10 @@ type WorkspaceController struct {
 
 // @Summary Create workspace
 // @Description Create a workspace.
+// @Tags workspaces
 // @Accept json
 // @Produce json
-// @Param create_workspace_request body model.CreateWorkspaceRequest true "Workspace create request with workspace metadata and userID"
+// @Param workspace body model.CreateWorkspaceRequest true "New workspace with the ID of owner"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
@@ -55,12 +56,13 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 
 // @Summary Get all workspaces by user
 // @Description Get all workspaces of a user. An empty array is returned if the user has no workspace.
+// @Tags workspaces
 // @Produce json
 // @Param id path uint true "User ID"
 // @Success 200 {object} []model.Workspace
 // @Failure 400 {object} model.ErrorResponse "Illegal User ID"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /workspaces/users/:id [get]
+// @Router /workspaces/users/{id} [get]
 func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
@@ -95,12 +97,15 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 
 // @Summary Get workspace by ID
 // @Description Get a workspace by its ID.
+// @Tags workspaces
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.Workspace
 // @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
 // @Failure 500 {object} model.ErrorResponse "Workspace Not Found"
-// @Router /workspaces/:id [get]
+// @Router /workspaces/{id} [get]
+//
+// vulnerability: a user can peek another user's workspace metadata
 func (controller *WorkspaceController) GetByID(c *gin.Context) {
 	var workspace model.Workspace
 
@@ -131,6 +136,7 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 
 // @Summary Update workspace
 // @Description Update specific fields of a workspace.
+// @Tags workspaces
 // @Accept json
 // @Produce json
 // @Param id path uint true "Workspace ID"
@@ -138,7 +144,7 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /workspaces/:id [patch]
+// @Router /workspaces/{id} [patch]
 func (controller *WorkspaceController) Update(c *gin.Context) {
 	var workspace model.Workspace
 
@@ -180,12 +186,13 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 
 // @Summary Delete workspace
 // @Description Delete a workspace by its ID.
+// @Tags workspaces
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
 // @Failure 500 {object} model.ErrorResponse "Database Query Error"
-// @Router /workspaces/:id [delete]
+// @Router /workspaces/{id} [delete]
 func (controller *WorkspaceController) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
