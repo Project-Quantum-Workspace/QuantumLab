@@ -7,11 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
+func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine) {
 	apiRouterGroup := engine.Group("/api")
 	NewLoginRouter(env, db, apiRouterGroup)
 	NewSignupRouter(db, apiRouterGroup)
 	//template router
 	TemplateRouter(db, apiRouterGroup)
 	NewWorkspaceRouter(db, apiRouterGroup)
+	NewResultRouter(rdb, apiRouterGroup)
 }
