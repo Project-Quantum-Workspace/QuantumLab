@@ -38,3 +38,28 @@ func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
 	result := ur.qlDB.Model(&model.User{}).Preload("Roles").Find(&users)
 	return users, result.Error
 }
+
+func (ur *userRepository) Update(user model.User) error {
+	err := ur.qlDB.Transaction(func(tx *gorm.DB) error {
+		var result *gorm.DB
+		omit := []string{"ID", "UUID", "Workspaces", "Roles"}
+		if user.Password == "" {
+			omit = append(omit, "Password")
+			result = ur.qlDB.Model(&user).Select("*").
+				Omit(omit...).Updates(user)
+		} else {
+			result = ur.qlDB.Model(&user).Select("*").
+				Omit(omit...).Updates(user)
+		}
+		if result.Error != nil {
+			return result.Error
+		}
+		if user.Roles != nil {
+			err := ur.qlDB.Model(&user).Omit("Roles.*").
+				Association("Roles").Replace(user.Roles)
+			return err
+		}
+		return nil
+	})
+	return err
+}

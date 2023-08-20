@@ -19,3 +19,8 @@ func (uau *userAdminUsecase) GetUserList() ([]model.UserListItem, error) {
 func (uau *userAdminUsecase) GetUserDetail(id uint) (model.User, error) {
 	return uau.userRepository.GetByID(id)
 }
+
+func (uau *userAdminUsecase) Update(user model.User) error {
+	// TODO: hash the password
+	return uau.userRepository.Update(user)
+}

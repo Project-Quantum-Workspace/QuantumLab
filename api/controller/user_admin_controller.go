@@ -44,3 +44,36 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
+func (uac *UserAdminController) Update(c *gin.Context) {
+	var user model.User
+
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid user id",
+		})
+		return
+	}
+
+	err = c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	user.ID = id
+	err = uac.UserAdminUsecase.Update(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "success",
+	})
+}

@@ -31,6 +31,7 @@ type Role struct {
 type UserAdminUsecase interface {
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (User, error)
+	Update(user User) error
 }
 
 type UserRepository interface {
@@ -38,5 +39,5 @@ type UserRepository interface {
 	GetByEmail(email string) (User, error)
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)
-	// Update(user User) error
+	Update(user User) error
 }
