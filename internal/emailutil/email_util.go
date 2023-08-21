@@ -1,6 +1,7 @@
 package emailutil
 
 import (
+	"fmt"
 	"net/smtp"
 	"os"
 	"strings"
@@ -9,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func SendInvitation(users []model.User, emailServer string, from string, secret string) {
+func SendInvitation(users []model.User, host string, port uint, from string, secret string) {
 	bytes, err := os.ReadFile("docs/email_templates/invite_user_template.txt")
 	if err != nil {
 		logrus.Errorf("error loading template file: %v:", err.Error())
@@ -25,13 +26,13 @@ func SendInvitation(users []model.User, emailServer string, from string, secret 
 		messages[user.Email] = msg
 	}
 
-	sendEmails(emailServer, from, secret, messages)
+	sendEmails(host, port, from, secret, messages)
 }
 
-func sendEmails(serverAddr string, from string, password string, messages map[string]string) {
-	auth := smtp.PlainAuth("", from, password, "smtp.gmail.com")
+func sendEmails(host string, port uint, from string, password string, messages map[string]string) {
+	auth := smtp.PlainAuth("", from, password, host)
 	for to, msg := range messages {
-		err := sendOne(serverAddr, auth, from, to, msg)
+		err := sendOne(fmt.Sprintf("%v:%v", host, port), auth, from, to, msg)
 		if err != nil {
 			logrus.Errorf("error sending email (from: %v, to: %v): %v", from, to, err.Error())
 		}

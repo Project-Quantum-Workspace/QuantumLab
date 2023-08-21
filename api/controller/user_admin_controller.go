@@ -34,7 +34,8 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 
 	err = uac.UserAdminUsecase.InviteUsers(
 		emailList,
-		uac.Env.EmailServiceServer,
+		uac.Env.EmailServiceHost,
+		uac.Env.EmailServicePort,
 		uac.Env.EmailServiceAddress,
 		uac.Env.EmailServiceSecret,
 	)

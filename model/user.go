@@ -26,7 +26,8 @@ type UserListItem struct {
 type UserAdminUsecase interface {
 	InviteUsers(
 		emailList []string,
-		emailServer string,
+		host string,
+		port uint,
 		from string,
 		secret string,
 	) error

@@ -25,7 +25,8 @@ func NewUserAdminUsecase(
 }
 
 func (uau *userAdminUsecase) InviteUsers(
-	emailList []string, emailServer string, from string, secret string,
+	emailList []string, host string,
+	port uint, from string, secret string,
 ) error {
 	users := make([]model.User, len(emailList))
 	role, err := uau.roleRepository.GetByName("Researcher")
@@ -58,7 +59,7 @@ func (uau *userAdminUsecase) InviteUsers(
 	}
 
 	// send emails to invited users
-	emailutil.SendInvitation(users, emailServer, from, secret)
+	emailutil.SendInvitation(users, host, port, from, secret)
 	return nil
 }
 
