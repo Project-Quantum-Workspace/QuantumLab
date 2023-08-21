@@ -24,7 +24,12 @@ type UserListItem struct {
 }
 
 type UserAdminUsecase interface {
-	InviteUsers(emailList []string) error
+	InviteUsers(
+		emailList []string,
+		emailServer string,
+		from string,
+		secret string,
+	) error
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (User, error)
 	UpdateUser(user User) error

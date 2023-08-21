@@ -3,12 +3,14 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
 )
 
 type UserAdminController struct {
+	Env              *bootstrap.Env
 	UserAdminUsecase model.UserAdminUsecase
 }
 
@@ -23,10 +25,22 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 		return
 	}
 
-	err = uac.UserAdminUsecase.InviteUsers(emailList)
+	if len(emailList) > 10 {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "too many users to invite",
+		})
+		return
+	}
+
+	err = uac.UserAdminUsecase.InviteUsers(
+		emailList,
+		uac.Env.EmailServiceServer,
+		uac.Env.EmailServiceAddress,
+		uac.Env.EmailServiceSecret,
+	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: "unexpacted system error",
+			Message: "unexpected system error",
 		})
 		return
 	}

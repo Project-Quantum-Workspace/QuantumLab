@@ -11,7 +11,7 @@ func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
 	apiRouterGroup := engine.Group("/api")
 
 	NewLoginRouter(env, db, apiRouterGroup)
-	NewUserAdminRouter(db, apiRouterGroup)
+	NewUserAdminRouter(env, db, apiRouterGroup)
 
 	NewTemplateRouter(db, apiRouterGroup)
 	NewWorkspaceRouter(db, apiRouterGroup)
