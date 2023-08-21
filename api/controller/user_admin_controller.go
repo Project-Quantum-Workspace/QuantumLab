@@ -13,9 +13,9 @@ type UserAdminController struct {
 }
 
 func (uac *UserAdminController) InviteUsers(c *gin.Context) {
-	var users []model.User
+	var emailList []string
 
-	err := c.BindJSON(&users)
+	err := c.BindJSON(&emailList)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
@@ -23,7 +23,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 		return
 	}
 
-	err = uac.UserAdminUsecase.InviteUsers(users)
+	err = uac.UserAdminUsecase.InviteUsers(emailList)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpacted system error",

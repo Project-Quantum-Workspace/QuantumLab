@@ -10,8 +10,9 @@ import (
 
 func NewUserAdminRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	ur := repository.NewUserRepository(db)
+	rr := repository.NewRoleRepository(db)
 	uac := controller.UserAdminController{
-		UserAdminUsecase: usecase.NewUserAdminUsecase(ur),
+		UserAdminUsecase: usecase.NewUserAdminUsecase(ur, rr),
 	}
 
 	userAdminRouterGroup := apiRouterGroup.Group("/admin/users")

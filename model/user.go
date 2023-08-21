@@ -23,13 +23,8 @@ type UserListItem struct {
 	AccessLevel   uint   `json:"accessLevel"`
 }
 
-type Role struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
-
 type UserAdminUsecase interface {
-	InviteUsers(users []User) error
+	InviteUsers(emailList []string) error
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (User, error)
 	UpdateUser(user User) error
