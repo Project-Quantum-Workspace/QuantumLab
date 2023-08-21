@@ -12,22 +12,22 @@ func NewWorkspaceUsecase(workspaceRepository model.WorkspaceRepository) model.Wo
 	}
 }
 
-func (wu *workspaceUsecase) Create(workspace *model.Workspace, userID uint) error {
+func (wu *workspaceUsecase) CreateWorkspace(workspace *model.Workspace, userID uint) error {
 	return wu.workspaceRepository.Create(workspace, userID)
 }
 
-func (wu *workspaceUsecase) GetAllByUser(userID uint) ([]model.Workspace, error) {
+func (wu *workspaceUsecase) GetWorkspacesByUser(userID uint) ([]model.Workspace, error) {
 	return wu.workspaceRepository.GetAllByUser(userID)
 }
 
-func (wu *workspaceUsecase) GetByID(id uint) (model.Workspace, error) {
+func (wu *workspaceUsecase) GetWorkspace(id uint) (model.Workspace, error) {
 	return wu.workspaceRepository.GetByID(id)
 }
 
-func (wu *workspaceUsecase) Update(workspace *model.Workspace) error {
+func (wu *workspaceUsecase) UpdateWorkspace(workspace *model.Workspace) error {
 	return wu.workspaceRepository.Update(workspace)
 }
 
-func (wu *workspaceUsecase) Delete(id uint) error {
+func (wu *workspaceUsecase) DeleteWorkspace(id uint) error {
 	return wu.workspaceRepository.Delete(id)
 }

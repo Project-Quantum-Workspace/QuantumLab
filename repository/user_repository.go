@@ -16,8 +16,10 @@ func NewUserRepository(db *gorm.DB) model.UserRepository {
 	}
 }
 
-func (ur *userRepository) Create(user *model.User) error {
-	result := ur.qlDB.Create(&user)
+func (ur *userRepository) CreateBatch(users []model.User) error {
+	result := ur.qlDB.
+		Omit("ID", "UUID", "Workspaces", "Roles.*").
+		Create(&users)
 	return result.Error
 }
 

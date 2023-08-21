@@ -12,6 +12,30 @@ type UserAdminController struct {
 	UserAdminUsecase model.UserAdminUsecase
 }
 
+func (uac *UserAdminController) InviteUsers(c *gin.Context) {
+	var users []model.User
+
+	err := c.BindJSON(&users)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
+	err = uac.UserAdminUsecase.InviteUsers(users)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpacted system error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, model.SuccessResponse{
+		Message: "success",
+	})
+}
+
 func (uac *UserAdminController) GetUserList(c *gin.Context) {
 	users, err := uac.UserAdminUsecase.GetUserList()
 	if err != nil {
@@ -45,7 +69,7 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func (uac *UserAdminController) Update(c *gin.Context) {
+func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 	var user model.User
 
 	id, err := validationutil.ValidateID(c.Param("id"))
@@ -65,7 +89,7 @@ func (uac *UserAdminController) Update(c *gin.Context) {
 	}
 
 	user.ID = id
-	err = uac.UserAdminUsecase.Update(user)
+	err = uac.UserAdminUsecase.UpdateUser(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",

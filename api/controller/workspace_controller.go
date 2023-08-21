@@ -24,7 +24,7 @@ type WorkspaceController struct {
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Uexpected System Error"
 // @Router /workspaces [post]
-func (wc *WorkspaceController) Create(c *gin.Context) {
+func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
 	var workspaceRequest model.CreateWorkspaceRequest
 
 	err := c.BindJSON(&workspaceRequest)
@@ -41,7 +41,7 @@ func (wc *WorkspaceController) Create(c *gin.Context) {
 	// get last accessed timestamp
 	workspace.LastAccessed = time.Now()
 
-	err = wc.WorkspaceUsecase.Create(&workspace, userID)
+	err = wc.WorkspaceUsecase.CreateWorkspace(&workspace, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -63,7 +63,7 @@ func (wc *WorkspaceController) Create(c *gin.Context) {
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/users/{id} [get]
-func (wc *WorkspaceController) GetAllByUser(c *gin.Context) {
+func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
 	userID, err := validationutil.ValidateID(c.Param("id"))
@@ -74,7 +74,7 @@ func (wc *WorkspaceController) GetAllByUser(c *gin.Context) {
 		return
 	}
 
-	workspaces, err = wc.WorkspaceUsecase.GetAllByUser(userID)
+	workspaces, err = wc.WorkspaceUsecase.GetWorkspacesByUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -98,7 +98,7 @@ func (wc *WorkspaceController) GetAllByUser(c *gin.Context) {
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [get]
-func (wc *WorkspaceController) GetByID(c *gin.Context) {
+func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
 	var workspace model.Workspace
 
 	id, err := validationutil.ValidateID(c.Param("id"))
@@ -109,7 +109,7 @@ func (wc *WorkspaceController) GetByID(c *gin.Context) {
 		return
 	}
 
-	workspace, err = wc.WorkspaceUsecase.GetByID(id)
+	workspace, err = wc.WorkspaceUsecase.GetWorkspace(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -131,7 +131,7 @@ func (wc *WorkspaceController) GetByID(c *gin.Context) {
 // @Failure 400 {object} model.ErrorResponse "Invalid ID / Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [patch]
-func (wc *WorkspaceController) Update(c *gin.Context) {
+func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 	var workspace model.Workspace
 
 	id, err := validationutil.ValidateID(c.Param("id"))
@@ -152,7 +152,7 @@ func (wc *WorkspaceController) Update(c *gin.Context) {
 
 	// workspace ID in payload should match the path variable
 	workspace.ID = id
-	err = wc.WorkspaceUsecase.Update(&workspace)
+	err = wc.WorkspaceUsecase.UpdateWorkspace(&workspace)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -174,7 +174,7 @@ func (wc *WorkspaceController) Update(c *gin.Context) {
 // @Failure 400 {object} model.ErrorResponse "Invalid ID"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [delete]
-func (wc *WorkspaceController) Delete(c *gin.Context) {
+func (wc *WorkspaceController) DeleteWorkspace(c *gin.Context) {
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -183,7 +183,7 @@ func (wc *WorkspaceController) Delete(c *gin.Context) {
 		return
 	}
 
-	err = wc.WorkspaceUsecase.Delete(id)
+	err = wc.WorkspaceUsecase.DeleteWorkspace(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",

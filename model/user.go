@@ -29,13 +29,14 @@ type Role struct {
 }
 
 type UserAdminUsecase interface {
+	InviteUsers(users []User) error
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (User, error)
-	Update(user User) error
+	UpdateUser(user User) error
 }
 
 type UserRepository interface {
-	Create(user *User) error
+	CreateBatch(users []User) error
 	GetByEmail(email string) (User, error)
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)

@@ -15,7 +15,8 @@ func NewUserAdminRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	}
 
 	userAdminRouterGroup := apiRouterGroup.Group("/admin/users")
+	userAdminRouterGroup.POST("/invite", uac.InviteUsers)
 	userAdminRouterGroup.GET("", uac.GetUserList)
 	userAdminRouterGroup.GET("/:id", uac.GetUserDetail)
-	userAdminRouterGroup.PUT("/:id", uac.Update)
+	userAdminRouterGroup.PUT("/:id", uac.UpdateUser)
 }
