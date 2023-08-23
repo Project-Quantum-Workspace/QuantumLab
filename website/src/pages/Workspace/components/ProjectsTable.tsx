@@ -125,33 +125,5 @@ const ProjectsTable = (props: Props) => {
     rowKey={workspaces => String(workspaces.id)} />;
 
 }
-const ws: WorkspaceInfoMetaData[] = [
-  {
-    id: 1,
-    // icon: string;
-    name: 'AWS Example Project',
-    createdAt: "2023-08-10T15:04:05Z",
-    lastAccessed: "2023-08-10T15:04:05Z",
-    updatedAt: "2023-08-10T15:04:05Z",
-    description: "",
-    templateId: 1,
-    state: 'Stopped',
-    tags: 'CPU, Qiskit',
-
-  },
-  {
-    id: 2,
-    // icon: string;
-    name: 'AWS Example Project',
-    createdAt: "2023-08-10T15:04:05Z",
-    lastAccessed: "2023-08-10T15:04:05Z",
-    updatedAt: "2023-08-10T15:04:05Z",
-    description: "",
-    templateId: 1,
-    state: 'Stopped',
-    tags: 'CPU, Qiskit',
-
-  }
-]
 
 export default ProjectsTable

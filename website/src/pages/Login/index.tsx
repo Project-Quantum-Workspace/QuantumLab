@@ -108,6 +108,7 @@ const Login: React.FC = () => {
         password: values.password
       }
       const msg = await login({ ...obj });
+      
       if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',

@@ -1,10 +1,4 @@
 import React from 'react';
-import RunningIcon from '../../../assets/running.svg';
-import StoppedIcon from '../../../assets/stopped.svg';
-import PendingIcon from '../../../assets/pending.svg';
-import FailedIcon from '../../../assets/failed.svg';
-import ConnectingIcon from '../../../assets/connecting.svg';
-
 import { StatusType } from '../utils/types/projectItemTypes';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { CaretRightFilled, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
