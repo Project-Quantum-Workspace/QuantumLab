@@ -26,6 +26,7 @@ const columns: ColumnsType<TemplateData> = [
     key: 'templateId',
     dataIndex: 'id',
     render: (id) => {
+      
       return (<>
         {id === 1 ?
           <img src={AwsIcon}></img>
@@ -91,24 +92,5 @@ const TemplateTable = (props: Props) => {
 
 }
 
-const td: TemplateData[] = [
-  {
-    id: 1,
-    filename: 'AWS Machine Learning Template 1',
-    createdAt: "2023-08-10T15:04:05Z",
-    accessLevel: 2
-  },
-  {
-    id: 2,
-    filename: 'AWS Machine Learning Template 1',
-    createdAt: "2023-08-10T15:04:05Z",
-    accessLevel: 2
-  },
-  {
-    id: 3,
-    filename: 'AWS Machine Learning Template 1',
-    createdAt: "2023-08-10T15:04:05Z",
-    accessLevel: 2
-  },
-]
+
 export default TemplateTable

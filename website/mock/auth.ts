@@ -24,7 +24,7 @@ const getAccess = () => {
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
   // 支持值为 Object 和 Array
-  'GET /api/auth/currentUser': (req: Request, res: Response) => {
+  'GET /api/auth/currUser': (req: Request, res: Response) => {
     if (!getAccess()) {
       res.status(401).send({
         data: {
@@ -63,12 +63,13 @@ export default {
       });
     }
   },
-  'POST /api/login': async (req: Request, res: Response) => {
-    const { password, username, type } = req.body;
-    await waitTime(2000);
-    if (password === 'admin' && username === 'admin') {
+  'POST /api/auth/login': async (req: Request, res: Response) => {
+    const { password, email, type } = req.body;
+    
+    await waitTime(200);
+    if (password === 'admin' && email === 'admin') {
       res.send({
-        status: 'ok',
+        status: 'Logged In Successfully',
         type,
         currentAuthority: 'admin',
         accessToken: 'admin-token',
@@ -77,9 +78,9 @@ export default {
       access = 'admin';
       return;
     }
-    if (password === 'user' && username === 'user') {
+    if (password === 'user' && email === 'user') {
       res.send({
-        status: 'ok',
+        status: 'Logged In Successfully',
         type,
         currentAuthority: 'user',
         accessToken: 'user-token',
