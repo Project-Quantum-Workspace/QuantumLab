@@ -36,7 +36,7 @@ export default {
       });
       return;
     }
-    if(req.headers.authorization==='Bearer admin-token'){
+    if (req.headers.authorization === 'Bearer admin-token') {
       res.send({
         success: true,
         data: {
@@ -49,7 +49,7 @@ export default {
         },
       });
     }
-    if(req.headers.authorization==='Bearer user-token'){
+    if (req.headers.authorization === 'Bearer user-token') {
       res.send({
         success: true,
         data: {
@@ -62,9 +62,8 @@ export default {
         },
       });
     }
-
   },
-  'POST /api/auth/login': async (req: Request, res: Response) => {
+  'POST /api/login': async (req: Request, res: Response) => {
     const { password, username, type } = req.body;
     await waitTime(2000);
     if (password === 'admin' && username === 'admin') {
@@ -136,5 +135,21 @@ export default {
       message: 'Unauthorized',
       path: '/base/category/list',
     });
+  },
+  'POST /api/workspace/create': (req: any, res: any) => {
+    // Simulate an asynchronous API response with a delay (e.g., 500ms)
+    setTimeout(() => {
+      // Get the form data from the request body
+      const formData = req.body;
+
+      // You can log the received form data to check if it's correct
+      console.log('Received form data:', formData);
+
+      // Return a mocked response
+      res.status(200).send({
+        success: true,
+        message: 'Form submission successful!',
+      });
+    }, 500);
   },
 };

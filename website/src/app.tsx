@@ -8,6 +8,7 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from '@/services/quantumlab/auth';
 import React from 'react';
+
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
 
@@ -30,7 +31,7 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser(token,{
         skipErrorHandler: true,
       });
-      return msg.data;
+      return msg.email;
     } catch (error) {
       history.push(loginPath);
     }
@@ -54,6 +55,7 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+  
   return {
     /* <SelectLang key="SelectLang" /> */
     actionsRender: () => [<Search key="Search"/>,<Feedback key="doc" />],

@@ -28,6 +28,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "auth"
+                ],
                 "summary": "Log a user in",
                 "parameters": [
                     {
@@ -80,6 +83,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "templates"
+                ],
                 "summary": "Get all templates",
                 "responses": {
                     "200": {
@@ -106,6 +112,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "templates"
                 ],
                 "summary": "Create new template",
                 "parameters": [
@@ -141,7 +150,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/templates/:id": {
+        "/templates/{id}": {
             "put": {
                 "description": "Update an existing workspace template.",
                 "consumes": [
@@ -149,6 +158,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "templates"
                 ],
                 "summary": "Update template",
                 "parameters": [
@@ -195,6 +207,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "templates"
+                ],
                 "summary": "Delete template",
                 "parameters": [
                     {
@@ -236,11 +251,14 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "workspaces"
+                ],
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "Workspace create request with workspace metadata and userID",
-                        "name": "create_workspace_request",
+                        "description": "New workspace with the ID of owner",
+                        "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -270,11 +288,58 @@ const docTemplate = `{
                 }
             }
         },
-        "/workspaces/:id": {
+        "/workspaces/users/{id}": {
+            "get": {
+                "description": "Get all workspaces of a user. An empty array is returned if the user has no workspace.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaces"
+                ],
+                "summary": "Get all workspaces by user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Workspace"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Illegal User ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Database Query Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces/{id}": {
             "get": {
                 "description": "Get a workspace by its ID.",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "workspaces"
                 ],
                 "summary": "Get workspace by ID",
                 "parameters": [
@@ -311,6 +376,9 @@ const docTemplate = `{
                 "description": "Delete a workspace by its ID.",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "workspaces"
                 ],
                 "summary": "Delete workspace",
                 "parameters": [
@@ -351,6 +419,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "workspaces"
+                ],
                 "summary": "Update workspace",
                 "parameters": [
                     {
@@ -379,47 +450,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Request Parse Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Database Query Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/workspaces/users/:id": {
-            "get": {
-                "description": "Get all workspaces of a user. An empty array is returned if the user has no workspace.",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get all workspaces by user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.Workspace"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Illegal User ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -500,6 +530,10 @@ const docTemplate = `{
                 "filename": {
                     "type": "string"
                 },
+                "icon": {
+                    "description": "base64 string",
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -534,6 +568,9 @@ const docTemplate = `{
                 },
                 "tags": {
                     "type": "string"
+                },
+                "template": {
+                    "$ref": "#/definitions/model.Template"
                 },
                 "templateId": {
                     "type": "integer"

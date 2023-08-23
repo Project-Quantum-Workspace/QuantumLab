@@ -59,16 +59,17 @@ export default [
     component: './NewWorkspace',
     hideInMenu: true,
   },
-
-
-
+  {
+    path: '/workspace/:workspaceId',
+    component: './Workspace/WorkspaceInfo',
+    hideInMenu: true,
+  },
   {
     path: '/jobMoniter',
     name: 'Job Moniter',
     icon: 'FundProjectionScreenOutlined',
     component: './JobMoniter',
   },
-
   {
     path: '/backendStatus',
     name: 'Backend Status',
