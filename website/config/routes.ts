@@ -55,12 +55,7 @@ export default [
     hideInMenu: true,
   },
   
-  {
-    name: 'workspaceInfo',
-    path: '/workspace/:id',
-    component: './Workspace/WorkspaceInfo',
-    hideInMenu: true
-  },
+  
   {
     path: '/admin',
     name: 'admin',

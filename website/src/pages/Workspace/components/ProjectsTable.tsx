@@ -6,7 +6,7 @@ import ProjectStatus from './ProjectStatus';
 import AwsIcon from '../../../assets/aws.svg'
 import LabIcon from '../../../assets/Lab_logo.svg'
 import { getAllWorkspace } from '@/services/quantumlab/workspace';
-import { WorkspaceInfoDTO } from '../utils/types/WorkspaceTypes';
+import { WorkspaceInfoMetaData } from '../utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
 import moment from 'moment';
 import { PageLoading } from '@ant-design/pro-components';
@@ -15,7 +15,7 @@ import { PageLoading } from '@ant-design/pro-components';
 interface Props {
   data: number | undefined
 }
-const columns: ColumnsType<WorkspaceInfoDTO> = [
+const columns: ColumnsType<WorkspaceInfoMetaData> = [
   {
     title: '',
     key: 'templateId',
@@ -100,7 +100,7 @@ const columns: ColumnsType<WorkspaceInfoDTO> = [
 ]
 const ProjectsTable = (props: Props) => {
   const data = props.data;
-  const [workspaces, setworkspces] = useState(ws);
+  const [workspaces, setworkspces] = useState([]);
   const [loading,setLoading] = useState(true);
   const [error,setError] = useState("");
   useEffect(() => {
@@ -125,7 +125,7 @@ const ProjectsTable = (props: Props) => {
     rowKey={workspaces => String(workspaces.id)} />;
 
 }
-const ws: WorkspaceInfoDTO[] = [
+const ws: WorkspaceInfoMetaData[] = [
   {
     id: 1,
     // icon: string;
@@ -134,7 +134,7 @@ const ws: WorkspaceInfoDTO[] = [
     lastAccessed: "2023-08-10T15:04:05Z",
     updatedAt: "2023-08-10T15:04:05Z",
     description: "",
-    template_id: 1,
+    templateId: 1,
     state: 'Stopped',
     tags: 'CPU, Qiskit',
 
@@ -147,7 +147,7 @@ const ws: WorkspaceInfoDTO[] = [
     lastAccessed: "2023-08-10T15:04:05Z",
     updatedAt: "2023-08-10T15:04:05Z",
     description: "",
-    template_id: 1,
+    templateId: 1,
     state: 'Stopped',
     tags: 'CPU, Qiskit',
 
