@@ -40,7 +40,6 @@ const WorkspaceInfo: React.FC = () => {
     getWorkspace(workspaceId as string)
        .then((res) => {
           if (res){
-            console.log(res)
             const templateDto: TemplateMetaData = {
               id: res.template.id,
               filename: res.template.filename,
