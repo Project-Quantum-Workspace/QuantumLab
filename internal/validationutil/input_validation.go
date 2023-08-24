@@ -64,7 +64,7 @@ func validateDatatype(dataType map[string]string) error {
 }
 
 func validateColumnCount(columnCount int, columnName []string,
-	columnDatatype map[string]string, columnData map[string][]string) error {
+	columnDatatype map[string]string, columnData map[string][]interface{}) error {
 
 	if len(columnName) != columnCount {
 		errorMessage := fmt.Sprintf("column number is %d, but received %d column names",
@@ -82,7 +82,7 @@ func validateColumnCount(columnCount int, columnName []string,
 	return nil
 }
 
-func validateRowCount(rowCount int, columnData map[string][]string) error {
+func validateRowCount(rowCount int, columnData map[string][]interface{}) error {
 	for key, value := range columnData {
 		if len(value) != rowCount {
 			errorMessage := fmt.Sprintf("row number is %d, but received %d rows of data in %s column",
@@ -105,7 +105,7 @@ func validateTableName(tableName string) error {
 }
 
 func validateColumnName(columnName []string) error {
-	cp, err := regexp.Compile("^[a-z_]+$")
+	cp, err := regexp.Compile("^[a-z0-9_]+$")
 	if err != nil {
 		return err
 	}

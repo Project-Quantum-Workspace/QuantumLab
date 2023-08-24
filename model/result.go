@@ -6,7 +6,7 @@ type CreateTableRequest struct {
 	RowCount       int
 	ColumnName     []string
 	ColumnDatatype map[string]string
-	ColumnData     map[string][]string
+	ColumnData     map[string][]interface{}
 }
 
 type ResultRepository interface {
