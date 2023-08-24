@@ -1,10 +1,11 @@
 package repository
 
 import (
+	"errors"
+	"fmt"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"gorm.io/gorm"
 	"regexp"
-	"strconv"
 )
 
 type resultRepository struct {
@@ -62,6 +63,7 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 		}
 		return false
 	}
+
 	for i < table.RowCount {
 		insertDataSQL = "INSERT INTO " + table.TableName + " ("
 		for j, col := range table.ColumnName {
@@ -79,24 +81,25 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 				insertDataSQL += " ,"
 			}
 			if stringCheck(dataType) {
+				if data, ok := table.ColumnData[col][i].(string); ok {
+					args = append(args, data)
+				} else {
+					dropTableSQL := fmt.Sprintf("DROP TABLE %s", table.TableName)
+					repo.qlRDB.Exec(dropTableSQL)
+					return errors.New("data type is inconsistent as claimed")
+				}
 				args = append(args, table.ColumnData[col][i])
 			} else if intCheck(dataType) {
-				data, err := strconv.Atoi(table.ColumnData[col][i])
-				if err != nil {
-					return err
-				}
-				args = append(args, data)
+				args = append(args, int(table.ColumnData[col][i].(float64)))
 			} else if floatCheck(dataType) {
-				data, err := strconv.ParseFloat(table.ColumnData[col][i], 64)
-				if err != nil {
-					return err
-				}
-				args = append(args, data)
+				args = append(args, table.ColumnData[col][i].(float64))
 			}
 		}
 		insertDataSQL += ");"
 		result = repo.qlRDB.Exec(insertDataSQL, args...)
 		if result.Error != nil {
+			dropTableSQL := fmt.Sprintf("DROP TABLE %s", table.TableName)
+			repo.qlRDB.Exec(dropTableSQL)
 			return result.Error
 		}
 		i += 1
