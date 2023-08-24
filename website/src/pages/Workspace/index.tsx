@@ -193,6 +193,14 @@ const App: React.FC = () => {
          }}>
           Go to Workspace
           </Button>
+
+        <Button type="primary"
+                href='/workspace/2'
+                style={{
+                  width:"200px"
+                }}>
+          Go to Workspace Info
+        </Button>
       <Form
         layout="inline"
         className="components-table-demo-control-bar"
