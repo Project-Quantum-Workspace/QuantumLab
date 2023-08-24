@@ -54,23 +54,34 @@ func ValidateTableCreationRequest(table *model.CreateTableRequest) error {
 }
 
 func validateDatatype(dataType map[string]string) error {
-	for _, dt := range dataType {
-		supportedDatatype := []string{
-			"smallint", "integer", "int", "bigint",
-			"real", "double precision",
-			"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
-			"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-		for _, pattern := range supportedDatatype {
-			result, err := regexp.MatchString(pattern, dt)
-			if err != nil {
-				return err
-			}
-			if result {
-				return nil
+	patterns := []string{
+		"^smallint$", "^integer$", "^int$", "^bigint$",
+		"^real$", "^double precision$",
+		"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
+		"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
+	var compiledPatterns []*regexp.Regexp
+	for _, p := range patterns {
+		re, err := regexp.Compile(p)
+		if err != nil {
+			return err
+		}
+		compiledPatterns = append(compiledPatterns, re)
+	}
+	valid := false
+	for key, value := range dataType {
+		valid = false
+		for _, cp := range compiledPatterns {
+			if cp.MatchString(value) {
+				valid = true
+				break
 			}
 		}
+		if !valid {
+			errorMessage := fmt.Sprintf("data type %s in column %s not supported", value, key)
+			return errors.New(errorMessage)
+		}
 	}
-	return errors.New("datatype not supported")
+	return nil
 }
 
 func validateColumnCount(columnCount int, columnName []string,
@@ -115,13 +126,14 @@ func validateTableName(tableName string) error {
 }
 
 func validateColumnName(columnName []string) error {
+	cp, err := regexp.Compile("^[a-z_]+$")
+	if err != nil {
+		return err
+	}
 	for _, col := range columnName {
-		valid, err := regexp.MatchString("^[a-z_]+$", col)
-		if err != nil {
-			return err
-		}
-		if !valid {
-			return errors.New("invalid column name")
+		if !cp.MatchString(col) {
+			errorMessage := fmt.Sprintf("invalid column name %s", col)
+			return errors.New(errorMessage)
 		}
 	}
 	return nil
