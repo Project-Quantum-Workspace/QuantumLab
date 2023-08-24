@@ -18,7 +18,7 @@ type Env struct {
 	AccessJWTExpiryHour  int    `mapstructure:"ACCESS_JWT_EXPIRY_HOUR"`
 	RefreshJWTExpiryHour int    `mapstructure:"REFRESH_JWT_EXPIRY_HOUR"`
 	EmailServiceHost     string `mapstructure:"EMAIL_SERVICE_HOST"`
-	EmailServicePort     uint   `mapstructure:"EMAIL_SERVICE_PORT"`
+	EmailServicePort     int    `mapstructure:"EMAIL_SERVICE_PORT"`
 	EmailServiceAddress  string `mapstructure:"EMAIL_SERVICE_ADDRESS"`
 	EmailServiceSecret   string `mapstructure:"EMAIL_SERVICE_SECRET"`
 }

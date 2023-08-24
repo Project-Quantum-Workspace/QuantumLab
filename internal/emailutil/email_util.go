@@ -1,44 +1,62 @@
 package emailutil
 
 import (
-	"fmt"
-	"net/smtp"
 	"os"
 	"strings"
 
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/sirupsen/logrus"
+	"gopkg.in/gomail.v2"
 )
 
-func SendInvitation(users []model.User, host string, port uint, from string, secret string) {
-	bytes, err := os.ReadFile("docs/email_templates/invite_user_template.txt")
+func SendUserInvitation(userEmail string, userPassword string,
+	host string, port int, from string, secret string,
+) error {
+	bytes, err := os.ReadFile("docs/email_templates/invite_user_template.html")
 	if err != nil {
 		logrus.Errorf("error loading template file: %v:", err.Error())
-		return
+		return err
 	}
 
-	msgTemplate := string(bytes)
-	messages := make(map[string]string)
-	for _, user := range users {
-		replacer := strings.NewReplacer(
-			"[recipient]", user.Email, "[email]", user.Email, "[password]", user.Password)
-		msg := replacer.Replace(msgTemplate)
-		messages[user.Email] = msg
-	}
-
-	sendEmails(host, port, from, secret, messages)
+	emailTemplate := string(bytes)
+	replacer := strings.NewReplacer("{email}", userEmail, "{password}", userPassword)
+	emailBody := replacer.Replace(emailTemplate)
+	err = sendEmail(host, port, from, secret, userEmail,
+		"Welcome to QuantumLab!", "text/html", emailBody)
+	return err
 }
 
-func sendEmails(host string, port uint, from string, password string, messages map[string]string) {
-	auth := smtp.PlainAuth("", from, password, host)
-	for to, msg := range messages {
-		err := sendOne(fmt.Sprintf("%v:%v", host, port), auth, from, to, msg)
-		if err != nil {
-			logrus.Errorf("error sending email (from: %v, to: %v): %v", from, to, err.Error())
-		}
+func sendEmail(host string, port int,
+	from string, secret string, to string,
+	subject string, contentType string, body string,
+) error {
+	err := send(host, port, from, secret, []string{to}, subject, contentType, body)
+	if err != nil {
+		logrus.Errorf("error sending email (from: %v, to: %v): %v", from, to, err.Error())
 	}
+	return err
 }
 
-func sendOne(serverAddr string, auth smtp.Auth, from string, to string, msg string) error {
-	return smtp.SendMail(serverAddr, auth, from, []string{to}, []byte(msg))
+func sendGroupEmail(host string, port int,
+	from string, secret string, to []string,
+	subject string, contentType string, body string,
+) error {
+	err := send(host, port, from, secret, to, subject, contentType, body)
+	if err != nil {
+		logrus.Errorf("error sending group email: %v", err.Error())
+	}
+	return err
+}
+
+func send(host string, port int,
+	from string, secret string, to []string,
+	subject string, contentType string, body string,
+) error {
+	msg := gomail.NewMessage()
+	msg.SetHeader("From", from)
+	msg.SetHeader("To", to...)
+	msg.SetHeader("Subject", subject)
+	msg.SetBody(contentType, body)
+
+	dialer := gomail.NewDialer(host, port, from, secret)
+	return dialer.DialAndSend(msg)
 }

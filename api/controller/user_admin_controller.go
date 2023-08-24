@@ -25,28 +25,22 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 		return
 	}
 
-	if len(emailList) > 10 {
+	if len(emailList) > 100 {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: "too many users to invite",
 		})
 		return
 	}
 
-	err = uac.UserAdminUsecase.InviteUsers(
+	uac.UserAdminUsecase.InviteUsers(
 		emailList,
 		uac.Env.EmailServiceHost,
 		uac.Env.EmailServicePort,
 		uac.Env.EmailServiceAddress,
 		uac.Env.EmailServiceSecret,
 	)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: "unexpected system error",
-		})
-		return
-	}
 
-	c.JSON(http.StatusCreated, model.SuccessResponse{
+	c.JSON(http.StatusAccepted, model.SuccessResponse{
 		Message: "success",
 	})
 }
