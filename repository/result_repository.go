@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"errors"
-	"fmt"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"gorm.io/gorm"
 	"regexp"
+	"strconv"
 )
 
 type resultRepository struct {
@@ -19,6 +19,10 @@ func NewResultRepository(qlDB *gorm.DB) model.ResultRepository {
 }
 
 func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
+	validation := validationutil.ValidateTableCreationRequest(table)
+	if validation != nil {
+		return validation
+	}
 	createTableSQL := "CREATE TABLE " + table.TableName + " ("
 	for i, col := range table.ColumnName {
 		createTableSQL += col + " " + table.ColumnDatatype[col]
@@ -34,6 +38,31 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 
 	i := 0
 	insertDataSQL := ""
+	intCheck := func(dt string) bool {
+		return dt == "smallint" ||
+			dt == "integer" ||
+			dt == "int" ||
+			dt == "bigint"
+	}
+	floatCheck := func(dt string) bool {
+		return dt == "real" ||
+			dt == "double precision"
+	}
+	stringCheck := func(dt string) bool {
+		stringDatatype := []string{
+			"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
+			"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
+		for _, pattern := range stringDatatype {
+			match, err := regexp.MatchString(pattern, dt)
+			if err != nil {
+				return false
+			}
+			if match {
+				return true
+			}
+		}
+		return false
+	}
 	for i < table.RowCount {
 		insertDataSQL = "INSERT INTO " + table.TableName + " ("
 		for j, col := range table.ColumnName {
@@ -43,62 +72,35 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 			}
 		}
 		insertDataSQL += ") VALUES ("
+		args := []interface{}{}
 		for j, col := range table.ColumnName {
-			err := checkDatatype(table.ColumnDatatype[col])
-			if err != nil {
-				return err
-			}
-			insertDataSQL += generateValueSQL(table.ColumnDatatype[col],
-				table.ColumnData[col][i])
+			dataType := table.ColumnDatatype[col]
+			insertDataSQL += "?"
 			if j < table.ColumnCount-1 {
 				insertDataSQL += " ,"
 			}
+			if stringCheck(dataType) {
+				args = append(args, table.ColumnData[col][i])
+			} else if intCheck(dataType) {
+				data, err := strconv.Atoi(table.ColumnData[col][i])
+				if err != nil {
+					return err
+				}
+				args = append(args, data)
+			} else if floatCheck(dataType) {
+				data, err := strconv.ParseFloat(table.ColumnData[col][i], 64)
+				if err != nil {
+					return err
+				}
+				args = append(args, data)
+			}
 		}
 		insertDataSQL += ");"
-		result = repo.qlRDB.Exec(insertDataSQL)
+		result = repo.qlRDB.Exec(insertDataSQL, args...)
 		if result.Error != nil {
-			fmt.Println(insertDataSQL)
 			return result.Error
 		}
 		i += 1
 	}
 	return nil
-}
-
-func checkDatatype(datatype string) error {
-	supportedDatatype := []string{
-		"smallint", "integer", "int", "bigint",
-		"real", "double precision",
-		"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
-		"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-	for _, dt := range supportedDatatype {
-		result, err := regexp.MatchString(dt, datatype)
-		if err != nil {
-			return err
-		}
-		if result {
-			return nil
-		}
-	}
-	return errors.New("datatype not supported")
-}
-
-func generateValueSQL(datatype string, data string) string {
-	stringDatatype := []string{
-		"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
-		"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-	match := false
-	result := ""
-	for _, dt := range stringDatatype {
-		match, _ = regexp.MatchString(dt, datatype)
-		if match {
-			break
-		}
-	}
-	if match {
-		result += `'` + data + `'`
-	} else {
-		result += data
-	}
-	return result
 }
