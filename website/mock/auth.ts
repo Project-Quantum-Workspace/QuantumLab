@@ -65,7 +65,7 @@ export default {
   },
   'POST /api/auth/login': async (req: Request, res: Response) => {
     const { password, email, type } = req.body;
-    
+
     await waitTime(200);
     if (password === 'admin' && email === 'admin') {
       res.send({

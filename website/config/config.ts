@@ -1,6 +1,5 @@
 // https://umijs.org/config/
 import { defineConfig } from '@umijs/max';
-import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
@@ -14,7 +13,7 @@ export default defineConfig({
    * @doc https://umijs.org/docs/api/config#hash
    */
   hash: true,
-  mock:false,
+  // mock: false,
 
   /**
    * @name Compatibility settings
@@ -140,7 +139,8 @@ export default defineConfig({
     {
       requestLibPath: "import { request } from '@umijs/max'",
       // schemaPath: join(__dirname, '../../docs/swagger.json'),
-      schemaPath: "https://raw.githubusercontent.com/Project-Quantum-Workspace/QuantumLab/main/docs/swagger.json",
+      schemaPath:
+        'https://raw.githubusercontent.com/Project-Quantum-Workspace/QuantumLab/main/docs/swagger.json',
       mock: false,
     },
   ],
@@ -149,14 +149,11 @@ export default defineConfig({
   },
   requestRecord: {},
 
-
   publicPath: process.env.NODE_ENV === 'production' ? '/public/' : '/',
 
-  favicons: ['/public/favicon.ico']
+  favicons: ['/public/favicon.ico'],
   // manifest: {
   //   basePath: '/',
   // }
   // Pack static file into static directory
-
-
 });
