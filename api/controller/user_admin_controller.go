@@ -32,7 +32,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 		return
 	}
 
-	uac.UserAdminUsecase.InviteUsers(
+	err = uac.UserAdminUsecase.InviteUsers(
 		emailList,
 		uac.Env.EmailServiceHost,
 		uac.Env.EmailServicePort,
@@ -40,8 +40,15 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 		uac.Env.EmailServiceSecret,
 	)
 
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusAccepted, model.SuccessResponse{
-		Message: "success",
+		Message: "request accepted. please allow up to 10 minutes for the email feedback",
 	})
 }
 

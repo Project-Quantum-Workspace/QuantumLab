@@ -33,7 +33,8 @@ type UserAdminUsecase interface {
 		host string,
 		port int,
 		from string,
-		secret string)
+		secret string,
+	) error
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (User, error)
 	UpdateUser(user User) error
@@ -42,7 +43,9 @@ type UserAdminUsecase interface {
 type UserRepository interface {
 	CreateBatch(users []User) error
 	GetByEmail(email string) (User, error)
+	GetRegisteredEmails(emailList []string) ([]string, error)
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)
 	Update(user User) error
+	GetAdminEmailList() ([]string, error)
 }

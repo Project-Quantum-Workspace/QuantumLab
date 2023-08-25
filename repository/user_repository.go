@@ -29,6 +29,13 @@ func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 	return user, result.Error
 }
 
+func (ur *userRepository) GetRegisteredEmails(emailList []string) ([]string, error) {
+	var registeredEmailList []string
+	result := ur.qlDB.Model(&model.User{}).
+		Select("email").Where("email IN ?", emailList).Find(&registeredEmailList)
+	return registeredEmailList, result.Error
+}
+
 func (ur *userRepository) GetByID(id uint) (model.User, error) {
 	var user model.User
 	result := ur.qlDB.Omit("password").Preload("Roles").First(&user, id)
@@ -64,4 +71,11 @@ func (ur *userRepository) Update(user model.User) error {
 		return nil
 	})
 	return err
+}
+
+func (ur *userRepository) GetAdminEmailList() ([]string, error) {
+	var adminEmailList []string
+	result := ur.qlDB.Model(&model.User{}).Where("account_status = ?", true).
+		Preload("Roles", "name = ?", "Administrator").Find(&adminEmailList)
+	return adminEmailList, result.Error
 }
