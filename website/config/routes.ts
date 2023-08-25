@@ -55,7 +55,7 @@ export default [
   },
 
   {
-    path: '/admin',
+    path: '/user',
     component: './AdminUserList',
   },
 

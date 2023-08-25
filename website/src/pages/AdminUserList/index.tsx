@@ -23,14 +23,6 @@ const AdminUserList: React.FC = () => {
       .then((data) => {
         setUsers(data);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching users:', error);
-        notification.error({
-          message: 'Error',
-          description: 'Failed to fetch user list.',
-        });
-        setLoading(false);
       });
   }, []);
 
@@ -45,72 +37,52 @@ const AdminUserList: React.FC = () => {
       accessLevel,
     };
 
-    try {
-      const response = await fetch('/api/admin/users', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+    const response = await fetch('/api/admin/users', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (response.ok) {
-        return { success: true, uuid };
-      } else {
-        const data = await response.json();
-        return { success: false, uuid, error: data.error };
-      }
-    } catch (error) {
-      console.error('Network error:', error);
-      return { success: false, uuid, error: error.message };
+    if (response.ok) {
+      // Since the backend only returns success, update the local state based on the changes made
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.uuid === uuid ? { ...user, accountStatus: status, accessLevel } : user,
+        ),
+      );
+
+      console.log(`${uuid} updated successfully!`);
+    } else {
+      // Handle error here (e.g., show notification to the user)
+      console.log(`${uuid} failed!!`);
     }
   };
 
   const setUsersStatus = async (status: number) => {
-    const results = await Promise.allSettled(
-      selectedRowKeys.map((uuid) => updateUserStatus(uuid, status)),
-    );
-
-    const failedUpdates: { uuid: string; error: string }[] = [];
-
-    results.forEach((result) => {
-      if (
-        result.status === 'rejected' ||
-        (result.status === 'fulfilled' && !result.value.success)
-      ) {
-        failedUpdates.push({
-          uuid: result.reason.uuid,
-          error: result.reason.error,
-        });
-      }
+    await Promise.all(selectedRowKeys.map((uuid) => updateUserStatus(uuid, status)));
+    notification.success({
+      message: 'Update Successful',
+      description: `Successfully updated ${selectedRowKeys.length} users.`,
     });
-
-    if (failedUpdates.length) {
-      notification.error({
-        message: 'Update Failed',
-        description: `Failed to update ${failedUpdates.length} users.`,
-      });
-    } else {
-      notification.success({
-        message: 'Update Successful',
-        description: `Successfully updated ${selectedRowKeys.length} users.`,
-      });
-    }
   };
 
-  const onSelectChange = (newSelectedRowKeys: string[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
+  // rowSelection object indicates the need for row selection
   const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: (newSelectedRowKeys: React.Key[]) => {
+      setSelectedRowKeys(newSelectedRowKeys as string[]);
+    },
   };
 
   const columns = [
     {
       title: 'Email',
       dataIndex: 'email',
+    },
+    {
+      title: 'User ID',
+      dataIndex: 'id',
     },
     {
       title: 'Role',
@@ -128,7 +100,6 @@ const AdminUserList: React.FC = () => {
   };
 
   const handleOk = () => {
-    // Handle the invitation logic here. For now, I'm closing the modal.
     setIsModalVisible(false);
     notification.success({
       message: 'Invitations Sent',
@@ -146,7 +117,7 @@ const AdminUserList: React.FC = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16 }}>
+      <div>
         <Button type="primary" onClick={showModal}>
           Invite New
         </Button>
@@ -166,31 +137,25 @@ const AdminUserList: React.FC = () => {
         >
           Set Inactive
         </Button>
-        <span style={{ marginLeft: 8 }}>
-          {selectedRowKeys.length ? `Selected ${selectedRowKeys.length} users` : ''}
-        </span>
       </div>
+
       <Table
-        rowSelection={rowSelection}
+        rowSelection={{
+          ...rowSelection,
+        }}
         columns={columns}
         dataSource={users}
         rowKey="uuid"
         loading={loading}
       />
-      <Modal
-        title="Invite New Users"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
+
+      <Modal title="Invite New Users" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <Input.TextArea
           value={inviteEmails}
           onChange={onInviteEmailsChange}
           placeholder="Enter emails, separated by new lines"
         />
-        <p style={{ marginTop: 10 }}>
-          The new users will be created with default password and access level 1.
-        </p>
+        <p>The new users will be created with default password and access level 1.</p>
       </Modal>
     </div>
   );
