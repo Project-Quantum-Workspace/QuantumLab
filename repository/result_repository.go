@@ -88,7 +88,6 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 					repo.qlRDB.Exec(dropTableSQL)
 					return errors.New("data type is inconsistent as claimed")
 				}
-				args = append(args, table.ColumnData[col][i])
 			} else if intCheck(dataType) {
 				args = append(args, int(table.ColumnData[col][i].(float64)))
 			} else if floatCheck(dataType) {
