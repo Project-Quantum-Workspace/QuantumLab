@@ -1,4 +1,4 @@
-// mock/adminUserList.ts
+import { Request, Response } from 'express';
 
 const users = [
   {
@@ -20,11 +20,11 @@ const users = [
 ];
 
 export default {
-  'GET /api/admin/users': (req, res) => {
+  'GET /api/admin/users': (req: Request, res: Response) => {
     res.send(users);
   },
 
-  'PATCH /api/admin/users': (req, res) => {
+  'PATCH /api/admin/users': (req: Request, res: Response) => {
     const { uuid, accountStatus, accessLevel } = req.body;
 
     const user = users.find((u) => u.uuid === uuid);
@@ -37,5 +37,16 @@ export default {
     user.accessLevel = accessLevel;
 
     res.send({ message: 'User updated successfully' });
+  },
+
+  'POST /api/admin/users/invite': (req: Request, res: Response) => {
+    const { body } = req;
+
+    console.log('Inviting the following emails:', body.emails);
+
+    // Return a successful response:
+    res.status(200).send({
+      message: 'Invitations sent successfully!',
+    });
   },
 };

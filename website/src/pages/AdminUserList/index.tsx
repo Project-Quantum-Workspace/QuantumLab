@@ -1,5 +1,6 @@
-import { Button, Input, Modal, Table, notification } from 'antd';
+import { Button, Table, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
+import InviteUsersModal from './inviteUsersModal';
 
 type User = {
   email: string;
@@ -15,7 +16,6 @@ const AdminUserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [inviteEmails, setInviteEmails] = useState<string>('');
 
   useEffect(() => {
     fetch('/api/admin/users')
@@ -99,20 +99,51 @@ const AdminUserList: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
+  const handleSend = async (emails: string[]) => {
+    // Constructing the payload for the request
+    const payload = {
+      emails,
+    };
+
+    try {
+      const response = await fetch('/api/admin/users/invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json(); // Assuming your server returns some JSON data
+        // Handle success scenario here
+        notification.success({
+          message: 'Invitations Sent',
+          description: data.message || 'Invitations have been sent successfully.',
+        });
+      } else {
+        const data = await response.json(); // Extract error message from response, if any
+        // Handle error scenario here
+        notification.error({
+          message: 'Failed to Send Invitations',
+          description: data.error || 'There was an error sending the invitations.',
+        });
+      }
+    } catch (error) {
+      // Handle unexpected errors here
+      notification.error({
+        message: 'Network Error',
+        description: 'An unexpected error occurred. Please try again later.',
+      });
+    }
+
+    // Close the modal after sending the invitations
     setIsModalVisible(false);
-    notification.success({
-      message: 'Invitations Sent',
-      description: 'Invitations have been sent to the provided emails.',
-    });
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-  };
-
-  const onInviteEmailsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInviteEmails(e.target.value);
   };
 
   return (
@@ -149,14 +180,7 @@ const AdminUserList: React.FC = () => {
         loading={loading}
       />
 
-      <Modal title="Invite New Users" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <Input.TextArea
-          value={inviteEmails}
-          onChange={onInviteEmailsChange}
-          placeholder="Enter emails, separated by new lines"
-        />
-        <p>The new users will be created with default password and access level 1.</p>
-      </Modal>
+      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel} />
     </div>
   );
 };

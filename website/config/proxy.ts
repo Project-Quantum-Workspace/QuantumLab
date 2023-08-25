@@ -1,5 +1,3 @@
-const USE_MOCK= false;
-
 const proxyConfig = {
   dev: {
     '/api/': {
@@ -23,4 +21,4 @@ const proxyConfig = {
   },
 };
 
-export default USE_MOCK ? {} : proxyConfig;
+export default proxyConfig;
