@@ -54,6 +54,8 @@ func (ur *userRepository) Update(user model.User) error {
 		omit := []string{"ID", "UUID", "Workspaces", "Roles"}
 		if user.Password == "" {
 			omit = append(omit, "Password")
+			// add Select("*") to inlude non-zero field
+			// gorm sucks!!
 			result = ur.qlDB.Model(&user).Select("*").
 				Omit(omit...).Updates(user)
 		} else {
