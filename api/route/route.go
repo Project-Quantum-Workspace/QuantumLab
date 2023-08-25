@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/Project-Quantum-Workspace/QuantumLab/api/middleware"
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 
 	"github.com/gin-gonic/gin"
@@ -8,10 +9,12 @@ import (
 )
 
 func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
-	apiRouterGroup := engine.Group("/api")
-	NewLoginRouter(env, db, apiRouterGroup)
-	NewSignupRouter(db, apiRouterGroup)
+	publicApiRouterGroup := engine.Group("/api")
+	NewLoginRouter(env, db, publicApiRouterGroup)
+	NewSignupRouter(db, publicApiRouterGroup)
 	//template router
-	TemplateRouter(db, apiRouterGroup)
-	NewWorkspaceRouter(db, apiRouterGroup)
+	privateApiRouterGroup := engine.Group("/api")
+	privateApiRouterGroup.Use(middleware.JwtAuthenticator(env.AccessJWTSecret))
+	TemplateRouter(db, privateApiRouterGroup)
+	NewWorkspaceRouter(db, privateApiRouterGroup)
 }
