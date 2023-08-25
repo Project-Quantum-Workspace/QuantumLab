@@ -43,7 +43,7 @@ definitions:
       filename:
         type: string
       icon:
-        description: base64 string
+        description: A Base64-encoded string
         type: string
       id:
         type: integer
@@ -173,13 +173,12 @@ paths:
           description: Database Query Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Get all templates
       tags:
       - templates
     post:
       consumes:
       - application/json
-      description: Create a new workspace template.
+      description: Create a new template.
       parameters:
       - description: Data needed for creating a workspace template
         in: body
@@ -202,7 +201,6 @@ paths:
           description: Database Query Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Create new template
       tags:
       - templates
   /templates/{id}:
@@ -229,7 +227,6 @@ paths:
           description: Database Query Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Delete template
       tags:
       - templates
     put:
@@ -263,7 +260,6 @@ paths:
           description: Database Query Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Update template
       tags:
       - templates
   /workspaces:

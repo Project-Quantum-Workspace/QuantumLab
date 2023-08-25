@@ -2,6 +2,7 @@ package tokenutil
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
@@ -76,4 +77,13 @@ func ExtractClaimsFromToken(requestToken string, secret string) (claims jwt.MapC
 	}
 
 	return claims, nil
+}
+
+func ExtractAccessLevelFromToken(requestToken string, secret string) (accessLevel string, err error) {
+	claims, err := ExtractClaimsFromToken(requestToken, secret)
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+	return fmt.Sprintf("%v", claims["accessLevel"].(float64)), nil
 }

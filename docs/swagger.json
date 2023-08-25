@@ -104,7 +104,6 @@
                 "tags": [
                     "templates"
                 ],
-                "summary": "Get all templates",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -124,7 +123,7 @@
                 }
             },
             "post": {
-                "description": "Create a new workspace template.",
+                "description": "Create a new template.",
                 "consumes": [
                     "application/json"
                 ],
@@ -134,7 +133,6 @@
                 "tags": [
                     "templates"
                 ],
-                "summary": "Create new template",
                 "parameters": [
                     {
                         "description": "Data needed for creating a workspace template",
@@ -180,7 +178,6 @@
                 "tags": [
                     "templates"
                 ],
-                "summary": "Update template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -228,7 +225,6 @@
                 "tags": [
                     "templates"
                 ],
-                "summary": "Delete template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -549,7 +545,7 @@
                     "type": "string"
                 },
                 "icon": {
-                    "description": "base64 string",
+                    "description": "A Base64-encoded string",
                     "type": "string"
                 },
                 "id": {

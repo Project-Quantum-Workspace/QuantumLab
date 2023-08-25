@@ -16,8 +16,8 @@ func NewTemplateUsecase(templateRepository model.TemplateRepository) model.Templ
 func (usecase *templateUsecase) Create(template *model.Template) error {
 	return usecase.templateRepository.Create(template)
 }
-func (usecase *templateUsecase) GetAll() ([]model.Template, error) {
-	return usecase.templateRepository.GetAll()
+func (usecase *templateUsecase) GetAll(accessLevel string) ([]model.Template, error) {
+	return usecase.templateRepository.GetAll(accessLevel)
 }
 func (usecase *templateUsecase) GetByID(id uint) (model.Template, error) {
 	return usecase.templateRepository.GetByID(id)

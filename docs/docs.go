@@ -112,7 +112,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Get all templates",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -132,7 +131,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new workspace template.",
+                "description": "Create a new template.",
                 "consumes": [
                     "application/json"
                 ],
@@ -142,7 +141,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Create new template",
                 "parameters": [
                     {
                         "description": "Data needed for creating a workspace template",
@@ -188,7 +186,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Update template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -236,7 +233,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Delete template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -557,7 +553,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "icon": {
-                    "description": "base64 string",
+                    "description": "A Base64-encoded string",
                     "type": "string"
                 },
                 "id": {
