@@ -1,0 +1,38 @@
+
+.rating{
+    position:relative;
+    width:100px;
+    height: 100px;
+    
+}
+.rating h2{
+    position: absolute;
+    top: 25%;
+    left:50%;
+    transform: translate(-50%,50%);
+    font-size: 3em;
+    font-weight: 500;
+    color: rgb(42, 148, 42);
+}
+.block{
+    position:absolute;
+    width: 1.5px;
+    height: 12px;
+    background: #4acb51;
+    left: 50%;
+    transform-origin: 50% 50px;
+    animation-name:appear;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    opacity: 0; 
+    
+   
+}
+@keyframes appear {
+  
+    to{
+        opacity: 1;
+    }
+}

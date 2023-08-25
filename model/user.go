@@ -12,4 +12,5 @@ type User struct {
 type UserRepository interface {
 	Create(user *User) error
 	GetByEmail(email string) (User, error)
+	GetRoleID(uid uint) ([]int, error)
 }
