@@ -14,6 +14,15 @@ type UserAdminController struct {
 	UserAdminUsecase model.UserAdminUsecase
 }
 
+// @Summary Invite and create users
+// @Description Invite and create new users.
+// @Tags user admin
+// @Accept json
+// @Produce json
+// @Param emailList body []string true "List of user emails to send invitation"
+// @Success 202 {object} model.SuccessResponse "Request Accepted"
+// @Failure 400 {object} model.ErrorResponse "Bad Request"
+// @Router /admin/users/invite [post]
 func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 	var emailList []string
 
@@ -52,6 +61,13 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 	})
 }
 
+// @Summary Get user list
+// @Description Get all users to list in the table.
+// @Tags user admin
+// @Produce json
+// @Success 200 {object} []model.UserListItem
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /admin/users [get]
 func (uac *UserAdminController) GetUserList(c *gin.Context) {
 	users, err := uac.UserAdminUsecase.GetUserList()
 	if err != nil {
@@ -63,6 +79,15 @@ func (uac *UserAdminController) GetUserList(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// @Summary Get user detail
+// @Description Get detailed information of a user.
+// @Tags user admin
+// @Produce json
+// @Param id path uint true "User ID"
+// @Success 200 {object} model.User
+// @Failure 400 {object} model.ErrorResponse "Bad Request"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /admin/users/{id} [get]
 func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 	var user model.User
 
@@ -85,6 +110,17 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// @Summary Update user
+// @Description Update a user.
+// @Tags user admin
+// @Accept json
+// @Produce json
+// @Param id path uint true "User ID"
+// @Param user body model.User true "Updated user information"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Bad Request"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /admin/users/{id} [put]
 func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 	var user model.User
 
