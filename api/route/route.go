@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
+func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine) {
 	publicApiRouterGroup := engine.Group("/api")
 	NewLoginRouter(env, db, publicApiRouterGroup)
 
@@ -17,4 +17,5 @@ func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine) {
 	NewUserAdminRouter(env, db, privateApiRouterGroup)
 	NewTemplateRouter(db, privateApiRouterGroup)
 	NewWorkspaceRouter(db, privateApiRouterGroup)
+	NewResultRouter(rdb, privateApiRouterGroup)
 }
