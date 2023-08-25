@@ -48,4 +48,5 @@ type UserRepository interface {
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)
 	Update(user User) error
+	GetAdminEmailList() ([]string, error)
 }
