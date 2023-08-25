@@ -1,12 +1,12 @@
 package usecase
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/emailutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/generatorutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/sliceutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
@@ -44,12 +44,17 @@ func (uau *userAdminUsecase) InviteUsers(
 
 	// send emails to invited users
 	go func() {
+		start := time.Now()
 		users := sendUserInvitations(processedEmailList, host, port, from, secret, role)
+		timeElapsed := time.Since(start)
+		logrus.Infof("sendUserInvitations took %s", timeElapsed)
+
 		err = uau.userRepository.CreateBatch(users)
 		if err != nil {
 			logrus.Errorf("error creating users: %v", err.Error())
 		}
 	}()
+
 	return nil
 }
 
@@ -64,13 +69,6 @@ func (uau *userAdminUsecase) GetUserDetail(id uint) (model.User, error) {
 func (uau *userAdminUsecase) UpdateUser(user model.User) error {
 	// TODO: hash the password
 	return uau.userRepository.Update(user)
-}
-
-func generateRandomPassword(length uint) string {
-	b := make([]byte, length)
-	rand.Read(b)
-	password := base64.StdEncoding.EncodeToString(b)
-	return password
 }
 
 func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, error) {
@@ -102,21 +100,15 @@ func sendUserInvitations(emailList []string,
 	var wg sync.WaitGroup
 
 	for i, email := range emailList {
-		password := generateRandomPassword(16)
+		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
+		qlToken := generatorutil.GenerateQuantumLabToken()
 		wg.Add(1)
 
 		go func(index int, email string) {
 			defer wg.Done()
 			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
 			if err == nil {
-				userArray[index] = model.User{
-					Email:           email,
-					Password:        password,
-					AccountStatus:   true,
-					AccessLevel:     1,
-					QuantumlabToken: "asdfghjkl",
-					Roles:           []model.Role{role},
-				}
+				userArray[index] = defaultUser(email, password, qlToken, role)
 			}
 		}(i, email)
 	}
@@ -130,4 +122,17 @@ func sendUserInvitations(emailList []string,
 	}
 
 	return users
+}
+
+func defaultUser(email string, password string, qlToken string, role model.Role) model.User {
+	return model.User{
+		Email:           email,
+		Password:        password,
+		FirstName:       "Quantum",
+		LastName:        "Researcher",
+		AccountStatus:   true,
+		AccessLevel:     1,
+		QuantumlabToken: qlToken,
+		Roles:           []model.Role{role},
+	}
 }

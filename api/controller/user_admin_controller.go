@@ -48,7 +48,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, model.SuccessResponse{
-		Message: "Request accepted. Please check the quantumlab email service's sent emails for more details.",
+		Message: "Request accepted. Please check the service email account for more detail.",
 	})
 }
 

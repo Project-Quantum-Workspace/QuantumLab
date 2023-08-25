@@ -36,17 +36,6 @@ func sendEmail(host string, port int,
 	return err
 }
 
-func sendGroupEmail(host string, port int,
-	from string, secret string, to []string,
-	subject string, contentType string, body string,
-) error {
-	err := send(host, port, from, secret, to, subject, contentType, body)
-	if err != nil {
-		logrus.Errorf("error sending group email: %v", err.Error())
-	}
-	return err
-}
-
 func send(host string, port int,
 	from string, secret string, to []string,
 	subject string, contentType string, body string,
