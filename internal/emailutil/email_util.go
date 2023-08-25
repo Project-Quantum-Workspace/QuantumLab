@@ -13,7 +13,7 @@ func SendUserInvitation(userEmail string, userPassword string,
 ) error {
 	bytes, err := os.ReadFile("docs/email_templates/invite_user_template.html")
 	if err != nil {
-		logrus.Errorf("error loading template file: %v:", err.Error())
+		logrus.Errorf("error loading email template: %v:", err.Error())
 		return err
 	}
 

@@ -72,10 +72,3 @@ func (ur *userRepository) Update(user model.User) error {
 	})
 	return err
 }
-
-func (ur *userRepository) GetAdminEmailList() ([]string, error) {
-	var adminEmailList []string
-	result := ur.qlDB.Model(&model.User{}).Where("account_status = ?", true).
-		Preload("Roles", "name = ?", "Administrator").Find(&adminEmailList)
-	return adminEmailList, result.Error
-}

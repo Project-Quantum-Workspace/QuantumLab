@@ -44,7 +44,7 @@ func (uau *userAdminUsecase) InviteUsers(
 
 	// send emails to invited users
 	go func() {
-		users, _ := sendUserInvitations(processedEmailList, host, port, from, secret, role)
+		users := sendUserInvitations(processedEmailList, host, port, from, secret, role)
 		err = uau.userRepository.CreateBatch(users)
 		if err != nil {
 			logrus.Errorf("error creating users: %v", err.Error())
@@ -96,9 +96,9 @@ func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, 
 
 func sendUserInvitations(emailList []string,
 	host string, port int, from string, secret string, role model.Role,
-) ([]model.User, []string) {
+) []model.User {
+	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
-	failedEmailArray := make([]string, len(emailList))
 	var wg sync.WaitGroup
 
 	for i, email := range emailList {
@@ -108,9 +108,7 @@ func sendUserInvitations(emailList []string,
 		go func(index int, email string) {
 			defer wg.Done()
 			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
-			if err != nil {
-				failedEmailArray[index] = email
-			} else {
+			if err == nil {
 				userArray[index] = model.User{
 					Email:           email,
 					Password:        password,
@@ -125,21 +123,11 @@ func sendUserInvitations(emailList []string,
 
 	wg.Wait()
 	var users []model.User
-	var failedEmailList []string
-
 	for _, user := range userArray {
 		if user.Email != "" {
 			users = append(users, user)
 		}
 	}
 
-	for _, failedEmail := range failedEmailArray {
-		if failedEmail != "" {
-			failedEmailList = append(failedEmailList, failedEmail)
-		}
-	}
-
-	return users, failedEmailList
+	return users
 }
-
-// func sendUserInvitationFeedback

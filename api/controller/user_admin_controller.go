@@ -48,7 +48,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, model.SuccessResponse{
-		Message: "request accepted. please allow up to 10 minutes for the email feedback",
+		Message: "Request accepted. Please check the quantumlab email service's sent emails for more details.",
 	})
 }
 

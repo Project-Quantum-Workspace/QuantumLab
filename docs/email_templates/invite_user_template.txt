@@ -1,9 +1,0 @@
-To: [recipient]
-Subject: Welcome to QuantumLab!
-You are invited to join QuantumLab. An account has been created for you. The following is your login credential, and please change your password ASAP for security concern.
-
-Username: [email]
-Password: [password]
-
-Cheers!
-QuantumLab Team
