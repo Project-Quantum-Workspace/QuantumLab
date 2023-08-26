@@ -24,7 +24,7 @@ const getAccess = () => {
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
   // 支持值为 Object 和 Array
-  'GET /api/auth/currentUser': (req: Request, res: Response) => {
+  'GET /api/auth/currUser': (req: Request, res: Response) => {
     if (!getAccess()) {
       res.status(401).send({
         data: {
@@ -36,7 +36,7 @@ export default {
       });
       return;
     }
-    if(req.headers.authorization==='Bearer admin-token'){
+    if (req.headers.authorization === 'Bearer admin-token') {
       res.send({
         success: true,
         data: {
@@ -49,7 +49,7 @@ export default {
         },
       });
     }
-    if(req.headers.authorization==='Bearer user-token'){
+    if (req.headers.authorization === 'Bearer user-token') {
       res.send({
         success: true,
         data: {
@@ -62,14 +62,14 @@ export default {
         },
       });
     }
-
   },
-  'POST /api/login': async (req: Request, res: Response) => {
-    const { password, username, type } = req.body;
-    await waitTime(2000);
-    if (password === 'admin' && username === 'admin') {
+  'POST /api/auth/login': async (req: Request, res: Response) => {
+    const { password, email, type } = req.body;
+    
+    await waitTime(200);
+    if (password === 'admin' && email === 'admin') {
       res.send({
-        status: 'ok',
+        status: 'Logged In Successfully',
         type,
         currentAuthority: 'admin',
         accessToken: 'admin-token',
@@ -78,9 +78,9 @@ export default {
       access = 'admin';
       return;
     }
-    if (password === 'user' && username === 'user') {
+    if (password === 'user' && email === 'user') {
       res.send({
-        status: 'ok',
+        status: 'Logged In Successfully',
         type,
         currentAuthority: 'user',
         accessToken: 'user-token',
@@ -136,5 +136,21 @@ export default {
       message: 'Unauthorized',
       path: '/base/category/list',
     });
+  },
+  'POST /api/workspace/create': (req: any, res: any) => {
+    // Simulate an asynchronous API response with a delay (e.g., 500ms)
+    setTimeout(() => {
+      // Get the form data from the request body
+      const formData = req.body;
+
+      // You can log the received form data to check if it's correct
+      console.log('Received form data:', formData);
+
+      // Return a mocked response
+      res.status(200).send({
+        success: true,
+        message: 'Form submission successful!',
+      });
+    }, 500);
   },
 };

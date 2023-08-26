@@ -55,6 +55,7 @@ export default [
     hideInMenu: true,
   },
   
+  
   {
     path: '/admin',
     name: 'admin',
