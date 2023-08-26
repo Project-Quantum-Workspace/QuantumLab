@@ -2,7 +2,6 @@ import { ColumnsType } from 'antd/es/table'
 import React, { Component } from 'react'
 import AwsIcon from '../../../assets/aws.svg'
 import moment from 'moment'
-import LabIcon from '../../../assets/Lab_logo.svg'
 import {Space, Table} from 'antd'
 import { Link } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
@@ -27,7 +26,7 @@ const columns:ColumnsType<TemplateData>=[
       return (<>
         {id === 1 ?
           <img src={AwsIcon}></img>
-          : <img src={LabIcon}></img>
+          : <img src='/favicon.ico'></img>
         }
       </>)
     }

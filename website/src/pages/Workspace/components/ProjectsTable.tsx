@@ -4,7 +4,6 @@ import { Space, Table, Tag } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
 import AwsIcon from '../../../assets/aws.svg'
-import LabIcon from '../../../assets/Lab_logo.svg'
 import { getAllWorkspace } from '@/services/quantumlab/workspace';
 import { WorkspaceInfoDTO } from '../utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
@@ -24,7 +23,7 @@ const columns: ColumnsType<WorkspaceInfoDTO> = [
       return (<>
         {id === 1 ?
           <img src={AwsIcon}></img>
-          : <img src={LabIcon}></img>
+          : <img src='/favicon.ico'></img>
         }
       </>)
     }
