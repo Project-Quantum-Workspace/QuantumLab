@@ -4,8 +4,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag} from 'antd';
 import { CaretRightOutlined, CloudFilled, DoubleRightOutlined, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
 import { styled } from 'styled-components';
-import ProjectStatus from '@/assets/ProjectStatus';
-import { StatusType } from './utils/types/projectItemTypes';
 
 const StyledT = styled.p`
 margin-left: 5px;
@@ -48,19 +46,22 @@ interface WorkspaceData{
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render:(text)=>(
-        <>
-        {text==='Running' &&<ProjectStatus status={StatusType.Running}/>}
-        {text==='Stopped' &&<ProjectStatus status={StatusType.Stopped}/>}
-        {text==='Pending' &&<ProjectStatus status={StatusType.Pending}/>}
-        {text==='Connecting' &&<ProjectStatus status={StatusType.Connecting}/>}
-        {text==='Failed' &&<ProjectStatus status={StatusType.Failed}/>}
+      render:(text)=>{
+        
+        return (
+          <div style={{display:'flex',flexDirection:'row',color:'#818181'}}>
+        {text==='Running' &&<CaretRightOutlined style={{color:"#2AB930"}}/>}
+        {text==='Stopped' &&
+       
+        <PauseCircleFilled style={{color:'#818181'}} /> 
+        }
+        {text==='Pending' &&<LoadingOutlined spin style={{color:'#ED9526'}}/>}
+        {text==='Connecting' &&<CloudFilled style={{color:'#1672EC'}}/>}
+        {text==='Failed' &&<WarningFilled style={{color:'#B9332A'}}/>}
         <StyledT>{text}</StyledT>
-        </>
-      )
-        
-        
-      
+        </div>
+        )
+      }
     },
     
     {
