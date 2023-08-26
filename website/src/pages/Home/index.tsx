@@ -10,7 +10,7 @@ const Home: React.FC =()=>{
       <StyledContainer>
       <SmallCard
       index={1}
-      src="/workspace"
+      href="/workspace"
       title="Composer"
       desc="Design Graphical Circuit with"
       btName='Launch'
@@ -18,7 +18,7 @@ const Home: React.FC =()=>{
       />
       <SmallCard
       index={1}
-      src="/workspace"
+      href="/workspace"
       title="Workspace"
       desc="Build quantum program in"
       btName='View Last'
@@ -30,7 +30,7 @@ const Home: React.FC =()=>{
      
       <SmallCard
       index={1}
-      src="/workspace"
+      href="/workspace"
       title="Job Monitor"
       desc="Monitor Your Current Works"
       btName='Create'
