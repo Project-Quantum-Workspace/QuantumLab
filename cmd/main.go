@@ -24,12 +24,13 @@ import (
 func main() {
 	app := bootstrap.App()
 	engine := gin.Default()
+	workspaceMonitor := make(map[string]string)
 
 	// Load website assets and router.
 	website.InitWebsite(engine)
 
 	// Load API router.
-	route.Setup(app.Env, app.DB, engine)
+	route.Setup(app.Env, app.DB, engine, workspaceMonitor)
 
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	engine.GET("/healthz", func(context *gin.Context) {

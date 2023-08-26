@@ -2,12 +2,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"github.com/Project-Quantum-Workspace/QuantumLab/agent/model"
 	"gopkg.in/yaml.v3"
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"time"
@@ -56,25 +58,24 @@ func issuePostRequest(status, msg string) {
 	quantumlabToken := conf.Metadata.Token
 	quantumlabURL := conf.Metadata.URL
 
-	params := url.Values{}
-	params.Add("workspaceID", workspaceID)
-	params.Add("workspaceOwner", workspaceOwner)
-	params.Add("quantumlabToken", quantumlabToken)
-	params.Add("workspaceStatus", status)
-	params.Add("msg", msg)
-
-	resp, err := http.PostForm(quantumlabURL, params)
-	if err != nil {
-		log.Println("Request Failed\t" + err.Error())
-		return
+	body := map[string]string{
+		"workspaceID":     workspaceID,
+		"workspaceOwner":  workspaceOwner,
+		"quantumlabToken": quantumlabToken,
+		"workspaceStatus": status,
+		"msg":             msg,
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}(resp.Body)
+
+	jsonBody, _ := json.Marshal(body)
+
+	resp, err := http.Post(quantumlabURL, "application/json", bytes.NewBuffer(jsonBody))
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bodyString := string(bodyBytes)
+	fmt.Println(bodyString)
 }
 
 func readAgentConf(filename string) (*model.Conf, error) {

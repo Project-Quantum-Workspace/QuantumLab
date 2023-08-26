@@ -1,9 +1,9 @@
 metadata:
   url: "http://localhost:8080/api/agent"
-  token: 8VPhp7XTbvM6jaDdbncwR7SK2nGww3nR
+  token: "ql_token"
 workspace:
-  owner: 81c64baa-ceae-4d7b-8586-1c2e7750d38f
-  id: 0ea0f39a-dfc9-431d-824c-9897f1217b44
+  owner: "e2c5f225-a951-4c2e-b581-5c0fc8f5f55e"
+  id: "2c4478a2-d0fd-420e-a8d2-652a50e43303"
 toolSet:
   - name: "vscode"
     url: "http://localhost:12000/?folder=/home/root"
