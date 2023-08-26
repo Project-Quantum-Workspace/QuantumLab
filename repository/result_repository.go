@@ -1,11 +1,9 @@
 package repository
 
 import (
-	"errors"
 	"fmt"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"gorm.io/gorm"
-	"regexp"
 )
 
 type resultRepository struct {
@@ -31,7 +29,6 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 	if result.Error != nil {
 		return result.Error
 	}
-
 	i := 0
 	insertDataSQL := ""
 	for i < table.RowCount {
@@ -44,12 +41,11 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 		}
 		insertDataSQL += ") VALUES ("
 		for j, col := range table.ColumnName {
-			err := checkDatatype(table.ColumnDatatype[col])
-			if err != nil {
-				return err
+			if table.ColumnDatatype[col] == "character varying(255)" {
+				insertDataSQL += `'` + table.ColumnData[col][i] + `'`
+			} else {
+				insertDataSQL += table.ColumnData[col][i]
 			}
-			insertDataSQL += generateValueSQL(table.ColumnDatatype[col],
-				table.ColumnData[col][i])
 			if j < table.ColumnCount-1 {
 				insertDataSQL += " ,"
 			}
@@ -63,42 +59,4 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 		i += 1
 	}
 	return nil
-}
-
-func checkDatatype(datatype string) error {
-	supportedDatatype := []string{
-		"smallint", "integer", "int", "bigint",
-		"real", "double precision",
-		"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
-		"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-	for _, dt := range supportedDatatype {
-		result, err := regexp.MatchString(dt, datatype)
-		if err != nil {
-			return err
-		}
-		if result {
-			return nil
-		}
-	}
-	return errors.New("datatype not supported")
-}
-
-func generateValueSQL(datatype string, data string) string {
-	stringDatatype := []string{
-		"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
-		"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-	match := false
-	result := ""
-	for _, dt := range stringDatatype {
-		match, _ = regexp.MatchString(dt, datatype)
-		if match {
-			break
-		}
-	}
-	if match {
-		result += `'` + data + `'`
-	} else {
-		result += data
-	}
-	return result
 }
