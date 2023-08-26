@@ -3,7 +3,7 @@ import  {SmallCard, StyledContainer} from './HomeComponent/LPComponent'
 import CircularLoading from './HomeComponent/Circular/CircularLoading'
 
 
-const Home: React.FC =()=>{
+const Home =()=>{
   return(
     <div>
       <h1>Hello, Lois</h1>

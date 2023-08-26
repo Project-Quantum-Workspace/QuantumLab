@@ -3,7 +3,6 @@ import styled from "styled-components";
 import ComposerPNG from "../../../../public/icons/Composer.png";
 import WorkspacePNG from "../../../../public/icons/Rectangle 57.png"
 import CircularLoading from './Circular/CircularLoading';
-import { history} from '@umijs/max';
 /****
  * padding card of landing page
  */
@@ -66,9 +65,7 @@ export const SmallCard: React.FC<{
     btName:string;
     img:string;
 }>=({title, href,index,desc,btName,img})=>{
-   const Onclick=()=>{
-    history.push(href)
-   }
+   
     return(
 
         <StyledCard>
@@ -90,7 +87,7 @@ export const SmallCard: React.FC<{
                 
                 
             }}
-            onClick={Onclick}
+            href={href}
             block
             >
                {btName}
