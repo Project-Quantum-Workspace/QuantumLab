@@ -135,3 +135,5 @@ func defaultUser(email string, password string, qlToken string, role model.Role)
 		Roles:           []model.Role{role},
 	}
 }
+
+// func sendUserInvitationFeedback
