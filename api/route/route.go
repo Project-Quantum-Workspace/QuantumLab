@@ -11,11 +11,11 @@ import (
 func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine) {
 	publicApiRouterGroup := engine.Group("/api")
 	NewLoginRouter(env, db, publicApiRouterGroup)
-	NewSignupRouter(db, publicApiRouterGroup)
+
 	privateApiRouterGroup := engine.Group("/api")
 	privateApiRouterGroup.Use(middleware.JwtAuthenticator(env.AccessJWTSecret))
-	//template router
-	TemplateRouter(db, privateApiRouterGroup)
+	NewUserAdminRouter(env, db, privateApiRouterGroup)
+	NewTemplateRouter(db, privateApiRouterGroup)
 	NewWorkspaceRouter(db, privateApiRouterGroup)
 	NewResultRouter(rdb, privateApiRouterGroup)
 }

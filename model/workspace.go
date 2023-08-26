@@ -6,6 +6,7 @@ import (
 
 type Workspace struct {
 	ID           uint      `json:"id"`
+	UUID         string    `json:"uuid"`
 	Name         string    `json:"name"`
 	Type         string    `json:"type"`
 	State        string    `json:"state"`
@@ -38,9 +39,9 @@ type WorkspaceRepository interface {
 }
 
 type WorkspaceUsecase interface {
-	Create(workspace *Workspace, userID uint) error
-	GetAllByUser(userID uint) ([]Workspace, error)
-	GetByID(id uint) (Workspace, error)
-	Update(workspace *Workspace) error
-	Delete(id uint) error
+	CreateWorkspace(workspace *Workspace, userID uint) error
+	GetWorkspacesByUser(userID uint) ([]Workspace, error)
+	GetWorkspace(id uint) (Workspace, error)
+	UpdateWorkspace(workspace *Workspace) error
+	DeleteWorkspace(id uint) error
 }

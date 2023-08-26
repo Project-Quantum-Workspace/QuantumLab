@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
@@ -21,25 +21,27 @@ type TemplateController struct {
 // @Param template body model.Template true "Data needed for creating a workspace template"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates [post]
 func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	var template model.Template
 	err := c.BindJSON(&template)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
 		return
 	}
 
 	res := tc.TemplateUsecase.Create(&template)
 	if res != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, model.SuccessResponse{
+	c.JSON(http.StatusCreated, model.SuccessResponse{
 		Message: "success",
 	})
 }
@@ -49,14 +51,16 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 // @Tags templates
 // @Produce json
 // @Success 200 {object} []model.Template
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	var templates []model.Template
 
 	templates, err := tc.TemplateUsecase.GetAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, templates)
@@ -70,8 +74,8 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 // @Param id path uint true "Template ID"
 // @Param template body model.Template true "Updated template data"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID / Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates/{id} [put]
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
@@ -81,25 +85,21 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
 	}
-	id, err := strconv.Atoi(c.Param("id"))
+
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "invalid template id",
 		})
 		return
 	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "template id must be a positive integer",
-		})
-		return
-	}
+
 	//tc.TemplateUsecase.First(&template, id)
-	err = tc.TemplateUsecase.Update(&template, uint(id))
+	err = tc.TemplateUsecase.Update(&template, id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -117,28 +117,22 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 // @Param id path uint true "Template ID"
 // @Success 200 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates/{id} [delete]
 func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "template id must be a positive integer",
+			Message: "invalid template id",
 		})
 		return
 	}
 
-	err = tc.TemplateUsecase.Delete(uint(id))
+	err = tc.TemplateUsecase.Delete(id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}

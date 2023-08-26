@@ -2,9 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
@@ -20,11 +20,11 @@ type WorkspaceController struct {
 // @Accept json
 // @Produce json
 // @Param workspace body model.CreateWorkspaceRequest true "New workspace with the ID of owner"
-// @Success 200 {object} model.SuccessResponse
+// @Success 201 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 500 {object} model.ErrorResponse "Uexpected System Error"
 // @Router /workspaces [post]
-func (controller *WorkspaceController) Create(c *gin.Context) {
+func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
 	var workspaceRequest model.CreateWorkspaceRequest
 
 	err := c.BindJSON(&workspaceRequest)
@@ -41,15 +41,15 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 	// get last accessed timestamp
 	workspace.LastAccessed = time.Now()
 
-	err = controller.WorkspaceUsecase.Create(&workspace, userID)
+	err = wc.WorkspaceUsecase.CreateWorkspace(&workspace, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, model.SuccessResponse{
+	c.JSON(http.StatusCreated, model.SuccessResponse{
 		Message: "success",
 	})
 }
@@ -60,30 +60,24 @@ func (controller *WorkspaceController) Create(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "User ID"
 // @Success 200 {object} []model.Workspace
-// @Failure 400 {object} model.ErrorResponse "Illegal User ID"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/users/{id} [get]
-func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
+func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
-	userID, err := strconv.Atoi(c.Param("id"))
+	userID, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if userID <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "user id must be a positive integer",
+			Message: "invalid user id",
 		})
 		return
 	}
 
-	workspaces, err = controller.WorkspaceUsecase.GetAllByUser(uint(userID))
+	workspaces, err = wc.WorkspaceUsecase.GetWorkspacesByUser(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -101,32 +95,24 @@ func (controller *WorkspaceController) GetAllByUser(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.Workspace
-// @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
-// @Failure 500 {object} model.ErrorResponse "Workspace Not Found"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [get]
-//
-// vulnerability: a user can peek another user's workspace metadata
-func (controller *WorkspaceController) GetByID(c *gin.Context) {
+func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
 	var workspace model.Workspace
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
 
-	workspace, err = controller.WorkspaceUsecase.GetByID(uint(id))
+	workspace, err = wc.WorkspaceUsecase.GetWorkspace(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -142,22 +128,16 @@ func (controller *WorkspaceController) GetByID(c *gin.Context) {
 // @Param id path uint true "Workspace ID"
 // @Param workspace body model.Workspace true "Updated workspace metadata"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID / Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [patch]
-func (controller *WorkspaceController) Update(c *gin.Context) {
+func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 	var workspace model.Workspace
 
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
@@ -170,11 +150,12 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 		return
 	}
 
-	workspace.ID = uint(id)
-	err = controller.WorkspaceUsecase.Update(&workspace)
+	// workspace ID in payload should match the path variable
+	workspace.ID = id
+	err = wc.WorkspaceUsecase.UpdateWorkspace(&workspace)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
@@ -190,28 +171,22 @@ func (controller *WorkspaceController) Update(c *gin.Context) {
 // @Produce json
 // @Param id path uint true "Workspace ID"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Illegal Workspace ID"
-// @Failure 500 {object} model.ErrorResponse "Database Query Error"
+// @Failure 400 {object} model.ErrorResponse "Invalid ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [delete]
-func (controller *WorkspaceController) Delete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (wc *WorkspaceController) DeleteWorkspace(c *gin.Context) {
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: err.Error(),
-		})
-		return
-	}
-	if id <= 0 {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "workspace id must be a positive integer",
+			Message: "invalid workspace id",
 		})
 		return
 	}
 
-	err = controller.WorkspaceUsecase.Delete(uint(id))
+	err = wc.WorkspaceUsecase.DeleteWorkspace(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: err.Error(),
+			Message: "unexpected system error",
 		})
 		return
 	}
