@@ -106,39 +106,28 @@ const NewWorkspace = () => {
 
   const onFinish = async (values: any) => {
     try {
-      // console.log('values:', values);
-
-      // Create parameters from selectedTemplate and form values
-      const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
-        (acc, question) => {
-          acc[question.name] = values[question.name];
-          return acc;
-        },
-        {},
-      );
-      console.log('parameters:', parameters);
 
       // Adjust data to fit the new format
       const adjustedValues = {
-        userId: 1,
+        userId: 1, // Assuming this is the correct ID you want to set.
         workspace: {
           createdAt: new Date().toISOString(),
-          description: values.description || 'string',
-          id: 111,
+          description: values.description || "string",
+          id: 111, // Assuming this is the correct ID you want to set.
           lastAccessed: new Date().toISOString(),
-          name: values.name || 'string',
-          parameters: JSON.stringify(parameters) || 'string',
-          state: 'string',
-          tags:
-            values.tags
-              .split(',')
-              .map((tag: string) => tag.trim())
-              .join(',') || 'string',
+          name: values.name || "string",
+          parameters: JSON.stringify(selectedTemplate?.parameters) || "string",
+          state: "string",
+          tags: values.tags
+            .split(',')
+            .map((tag: string) => tag.trim())
+            .join(',') || "string",
           templateId: selectedTemplate?.id || 0,
-          type: values.type || 'string',
-          updatedAt: new Date().toISOString(),
-        },
+          type: values.type || "string",
+          updatedAt: new Date().toISOString()
+        }
       };
+
 
       console.log('adjustedValues:', adjustedValues);
 
