@@ -77,7 +77,7 @@ func (ur *userRepository) Update(user model.User) error {
 
 func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
 	var RID []int
-	result := ur.qlDB.Raw(`SELECT role_id FROM user_role WHERE user_role.user_id = ?`, uid).Scan(&RID)
+	result := ur.database.Raw(`SELECT role_id FROM user_role WHERE user_role.user_id = ?`, uid).Scan(&RID)
 	if result.Error != nil {
 		return RID, result.Error
 	}
