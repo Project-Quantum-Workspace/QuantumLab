@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"gorm.io/gorm"
 	"regexp"
@@ -18,6 +19,10 @@ func NewResultRepository(qlDB *gorm.DB) model.ResultRepository {
 }
 
 func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
+	validation := validationutil.ValidateTableCreationRequest(table)
+	if validation != nil {
+		return validation
+	}
 	createTableSQL := "CREATE TABLE " + table.TableName + " ("
 	for i, col := range table.ColumnName {
 		createTableSQL += col + " " + table.ColumnDatatype[col]
