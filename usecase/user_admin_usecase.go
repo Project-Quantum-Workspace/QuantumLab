@@ -54,6 +54,7 @@ func (uau *userAdminUsecase) InviteUsers(
 			logrus.Errorf("error creating users: %v", err.Error())
 		}
 	}()
+
 	return nil
 }
 
@@ -135,5 +136,3 @@ func defaultUser(email string, password string, qlToken string, role model.Role)
 		Roles:           []model.Role{role},
 	}
 }
-
-// func sendUserInvitationFeedback
