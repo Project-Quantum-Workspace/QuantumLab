@@ -61,7 +61,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
-      render: (_: any, avatarChildren: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined) => {
+      render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
@@ -118,7 +118,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               disableUrlParams
               enableDarkTheme
               settings={initialState?.settings}
-              onSettingChange={(settings: any) => {
+              onSettingChange={(settings) => {
                 setInitialState((preInitialState) => ({
                   ...preInitialState,
                   settings,

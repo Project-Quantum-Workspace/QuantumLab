@@ -23,14 +23,11 @@ export type ProjectEventType = {
 };
 
 export type ProjectItemType = {
-  key:number;
   icon: string;
   name: string;
-  createdAt: string;
-  lastAccessed: string;
+  createDate: string;
+  lastAccessedDate: string;
   template: string;
-  status: StatusType | string;
+  status: StatusType;
   tags: string[];
 };
-
-
