@@ -1,0 +1,24 @@
+metadata:
+  url: "http://localhost:8080/api/agent"
+  token: 8VPhp7XTbvM6jaDdbncwR7SK2nGww3nR
+workspace:
+  owner: 81c64baa-ceae-4d7b-8586-1c2e7750d38f
+  id: 0ea0f39a-dfc9-431d-824c-9897f1217b44
+toolSet:
+  - name: "vscode"
+    url: "http://localhost:12000/?folder=/home/root"
+    healthCheck:
+      check: true
+      healthCheckEndpoint: "http://localhost:12000/healthz"
+      interval: 2
+      threshold: 10
+    config: { }
+  - name: "jupyter"
+    url: "http://localhost:13000"
+    healthCheck:
+      check: true
+      healthCheckEndpoint: "http://localhost:13000/healthz"
+      interval: 5
+      threshold: 10
+    config: { }
+

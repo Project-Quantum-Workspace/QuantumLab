@@ -2,8 +2,8 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
+	"github.com/Project-Quantum-Workspace/QuantumLab/agent/model"
+	"gopkg.in/yaml.v3"
 	"io"
 	"log"
 	"net/http"
@@ -13,15 +13,14 @@ import (
 	"time"
 )
 
-// An array consisting of the workspace ID and the QuantumLab token
-var credential [2]string
-
-// A struct consisting of environment variables
-var env = newEnv()
+var conf *model.Conf
 
 func main() {
-	// Get the workspace ID and the QuantumLab token from a file.
-	getCredential()
+	var err error
+	conf, err = readAgentConf("config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Execute the initialisation script.
 	cmd := exec.Command("./initialisation.sh")
@@ -50,40 +49,21 @@ func main() {
 	}
 }
 
-// getCredential gets the workspace ID and the corresponding QuantumLab token.
-func getCredential() {
-	file, err := os.Open("variables")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}(file)
-
-	i := 0
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		credential[i] = scanner.Text()
-		i++
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatalln(err)
-	}
-}
-
 // issuePostRequest issues a POST request to the QuantumLab server.
-func issuePostRequest(status, content string) {
-	params := url.Values{}
-	params.Add("workspace_id", credential[0])
-	params.Add("quantumlab_token", credential[1])
-	params.Add("workspace_status", status)
-	params.Add("content", content)
+func issuePostRequest(status, msg string) {
+	workspaceID := conf.Workspace.ID
+	workspaceOwner := conf.Workspace.Owner
+	quantumlabToken := conf.Metadata.Token
+	quantumlabURL := conf.Metadata.URL
 
-	resp, err := http.PostForm(
-		fmt.Sprintf("%v://%v:%v/agent/init", env.Protocol, env.QuantumLabHost, env.QuantumLabPort), params)
+	params := url.Values{}
+	params.Add("workspaceID", workspaceID)
+	params.Add("workspaceOwner", workspaceOwner)
+	params.Add("quantumlabToken", quantumlabToken)
+	params.Add("workspaceStatus", status)
+	params.Add("msg", msg)
+
+	resp, err := http.PostForm(quantumlabURL, params)
 	if err != nil {
 		log.Println("Request Failed\t" + err.Error())
 		return
@@ -92,6 +72,22 @@ func issuePostRequest(status, content string) {
 		err := Body.Close()
 		if err != nil {
 			log.Println(err)
+			return
 		}
 	}(resp.Body)
+}
+
+func readAgentConf(filename string) (*model.Conf, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	agentConf := &model.Conf{}
+	err = yaml.Unmarshal(data, agentConf)
+	if err != nil {
+		return nil, err
+	}
+
+	return agentConf, nil
 }
