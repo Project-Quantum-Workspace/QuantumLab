@@ -1,7 +1,7 @@
 
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import MyProject from './components/ProjectsTable';
+import MyProject from './myProject';
 
 
 const App: React.FC = () => {

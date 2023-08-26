@@ -4,9 +4,13 @@ import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag} from 'antd';
 import { CaretRightOutlined, CloudFilled, DoubleRightOutlined, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
 import { styled } from 'styled-components';
-import ProjectStatus from './ProjectStatus';
-import { StatusType } from '../utils/types/projectItemTypes';
-import AwsIcon from '../../../assets/aws.svg'
+import ProjectStatus from '@/assets/ProjectStatus';
+import { StatusType } from './utils/types/projectItemTypes';
+
+const StyledT = styled.p`
+margin-left: 5px;
+margin-bottom: 2px
+`
 
 interface WorkspaceData{
     key: number;
@@ -19,19 +23,6 @@ interface WorkspaceData{
     
   }
   const columns: ColumnsType<WorkspaceData> =[
-    {
-      title:'',
-      key:'icon',
-      dataIndex:'template',
-      render:(text)=>{
-        return (<>
-        {text.substring(0,3)==='AWS'?
-        <img src={AwsIcon}></img>
-        :<img src='/favicon.ico'></img>
-      }
-        </>)
-      }
-    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -59,11 +50,12 @@ interface WorkspaceData{
       key: 'status',
       render:(text)=>(
         <>
-        {text==='Running' &&<ProjectStatus status={StatusType.Running} margin={false}/>}
-        {text==='Stopped' &&<ProjectStatus status={StatusType.Stopped} margin={false}/>}
-        {text==='Pending' &&<ProjectStatus status={StatusType.Pending} margin={false}/>}
-        {text==='Connecting' &&<ProjectStatus status={StatusType.Connecting} margin={false}/>}
-        {text==='Failed' &&<ProjectStatus status={StatusType.Failed} margin={false}/>}
+        {text==='Running' &&<ProjectStatus status={StatusType.Running}/>}
+        {text==='Stopped' &&<ProjectStatus status={StatusType.Stopped}/>}
+        {text==='Pending' &&<ProjectStatus status={StatusType.Pending}/>}
+        {text==='Connecting' &&<ProjectStatus status={StatusType.Connecting}/>}
+        {text==='Failed' &&<ProjectStatus status={StatusType.Failed}/>}
+        <StyledT>{text}</StyledT>
         </>
       )
         
@@ -95,16 +87,15 @@ interface WorkspaceData{
     {
       title: ' ',
       key: 'action',
-      dataIndex: 'key',
-      render: (text) => (
+      render: () => (
         <Space size="middle">
-          <a href={'/workspace/'+`${text}`}><DoubleRightOutlined /></a>
+          <a><DoubleRightOutlined /></a>
         </Space>
       ),
     },
    
   ]
-const ProjectsTable: React.FC=()=>{
+const MyProject: React.FC=()=>{
   return <Table columns={columns} dataSource={data} />;
 
 }
@@ -132,7 +123,7 @@ const data: WorkspaceData[] =[
     name:'AWS Example Project',
     dateCreated: 'March 21,2023',
     lastAccessed:'2 weeks ago',
-    template:' Machine Learning Template 1',
+    template:'AWS Machine Learning Template 1',
     status:'Running',
     tags:['CPU']
   },
@@ -150,9 +141,9 @@ const data: WorkspaceData[] =[
     name:'AWS Example Project',
     dateCreated: 'March 21,2023',
     lastAccessed:'2 days ago',
-    template:' Machine Learning Template 1',
+    template:'AWS Machine Learning Template 1',
     status:'Failed',
     tags:['Qiskit','CPU']
   }
 ]
-export default ProjectsTable
+export default MyProject
