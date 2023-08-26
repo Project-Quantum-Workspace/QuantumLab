@@ -49,19 +49,15 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 			dt == "double precision"
 	}
 	stringCheck := func(dt string) bool {
-		patterns := []string{
+		stringDatatype := []string{
 			"^character varying\\(\\d+\\)$", "^varchar\\(\\d+\\)$",
 			"^character\\(\\d+\\)$", "^char\\(\\d+\\)$"}
-		var compiledPatterns []*regexp.Regexp
-		for _, p := range patterns {
-			re, err := regexp.Compile(p)
+		for _, pattern := range stringDatatype {
+			match, err := regexp.MatchString(pattern, dt)
 			if err != nil {
 				return false
 			}
-			compiledPatterns = append(compiledPatterns, re)
-		}
-		for _, cp := range compiledPatterns {
-			if cp.MatchString(dt) {
+			if match {
 				return true
 			}
 		}
@@ -76,7 +72,7 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 			}
 		}
 		insertDataSQL += ") VALUES ("
-		var args []interface{}
+		args := []interface{}{}
 		for j, col := range table.ColumnName {
 			dataType := table.ColumnDatatype[col]
 			insertDataSQL += "?"
