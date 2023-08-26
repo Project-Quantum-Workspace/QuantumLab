@@ -2,7 +2,7 @@ basePath: /api
 definitions:
   model.CreateWorkspaceRequest:
     properties:
-      userID:
+      userId:
         type: integer
       workspace:
         $ref: '#/definitions/model.Workspace'
@@ -448,11 +448,11 @@ paths:
     delete:
       description: Delete a workspace by its ID.
       parameters:
-      - description: Workspace UUID
+      - description: Workspace ID
         in: path
-        name: uuid
+        name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -472,13 +472,13 @@ paths:
       tags:
       - workspaces
     get:
-      description: Get a workspace by its UUID.
+      description: Get a workspace by its ID.
       parameters:
-      - description: Workspace UUID
+      - description: Workspace ID
         in: path
-        name: uuid
+        name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -494,7 +494,7 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Get workspace by UUID
+      summary: Get workspace by ID
       tags:
       - workspaces
     patch:
@@ -502,11 +502,11 @@ paths:
       - application/json
       description: Update specific fields of a workspace.
       parameters:
-      - description: Workspace UUID
+      - description: Workspace ID
         in: path
-        name: uuid
+        name: id
         required: true
-        type: string
+        type: integer
       - description: Updated workspace metadata
         in: body
         name: workspace
@@ -536,11 +536,11 @@ paths:
       description: Get all workspaces of a user. An empty array is returned if the
         user has no workspace.
       parameters:
-      - description: User UUID
+      - description: User ID
         in: path
-        name: uuid
+        name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
