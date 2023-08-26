@@ -13,7 +13,7 @@ import { PageLoading } from '@ant-design/pro-components';
 
 
 interface Props {
-  data: number | undefined
+  data: string
 }
 const columns: ColumnsType<WorkspaceInfoDTO> = [
   {
@@ -103,7 +103,7 @@ const ProjectsTable = (props: Props) => {
   const [loading,setLoading] = useState(true);
   const [error,setError] = useState("");
   useEffect(() => {
-    getAllWorkspace(String(data))
+    getAllWorkspace(data)
       .then((res) => {
         setworkspces(res);
         setLoading(false);

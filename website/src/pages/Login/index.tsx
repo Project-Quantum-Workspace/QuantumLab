@@ -108,7 +108,6 @@ const Login: React.FC = () => {
         password: values.password
       }
       const msg = await login({ ...obj });
-      
       if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -160,10 +159,7 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
 
-
-          logo={<img alt="logo" src={"/public/icons/logo.svg"} style={{ width: '80%', height: 'auto'}}/>}
-        
-
+          logo={<img alt="logo" src="/public/icons/logo.svg" style={{ width: '80%', height: 'auto'}}/>}
 
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
