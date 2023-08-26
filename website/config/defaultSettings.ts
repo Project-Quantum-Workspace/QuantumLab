@@ -1,4 +1,5 @@
 import { ProLayoutProps } from '@ant-design/pro-components';
+
 /**
  * @name ProLayoutProps configuration
  */
@@ -19,9 +20,7 @@ const Settings: ProLayoutProps & {
   // breakpoint: false,
   title: 'QuantumLab',
   pwa: true,
-
-  logo: '/public/icons/logo.svg',
-
+  logo: 'logo.svg',
   iconfontUrl: '',
   token: {
     // Refer to the TS declaration, demo in the document, and modify the style through token
