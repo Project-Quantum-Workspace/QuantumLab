@@ -94,17 +94,15 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 			return
 		}
 		if auth {
-			claims, err := tokenutil.ExtractClaimsFromToken(authToken, lc.Env.AccessJWTSecret)
+			userID, err := tokenutil.ExtractIDFromToken(authToken, lc.Env.AccessJWTSecret)
 			if err != nil {
 				c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, there is no ID!"})
 				print(err)
 				return
 			}
-			userEmail := claims["email"].(string)
-			user, err := lc.LoginUsecase.FindUser(userEmail)
+			user, err := lc.LoginUsecase.FindUser(userID)
 			if err != nil {
-				c.JSON(http.StatusUnauthorized,
-					model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})
+				c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})
 				return
 			}
 			c.JSON(http.StatusOK, user)
