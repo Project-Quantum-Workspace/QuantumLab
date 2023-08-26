@@ -11,7 +11,7 @@ type RefreshTokenResponse struct {
 
 type RefreshTokenUsecase interface {
 	FindUser(id string) (User, error)
-	CreateAccessToken(user *User, roles []int, secret string, expiry int) (accessToken string, err error)
-	CreateRefreshToken(user *User, roles []int, secret string, expiry int) (refreshToken string, err error)
+	CreateAccessToken(user *User, secret string, expiry int) (accessToken string, err error)
+	CreateRefreshToken(user *User, secret string, expiry int) (refreshToken string, err error)
 	ExtractIDFromToken(requestToken string, secret string) (string, error)
 }

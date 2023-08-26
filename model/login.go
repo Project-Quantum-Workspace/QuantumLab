@@ -7,9 +7,8 @@ type LoginRequest struct {
 
 type LoginUsecase interface {
 	FindUser(email string) (User, error)
-	CreateAccessToken(user *User, roles []int, secret string, expiry int) (accessToken string, err error)
-	CreateRefreshToken(user *User, roles []int, secret string, expiry int) (refreshToken string, err error)
-	GetRoleID(uid uint) ([]int, error)
+	CreateAccessToken(user *User, secret string, expiry int) (accessToken string, err error)
+	CreateRefreshToken(user *User, secret string, expiry int) (refreshToken string, err error)
 }
 
 type LoginResponse struct {

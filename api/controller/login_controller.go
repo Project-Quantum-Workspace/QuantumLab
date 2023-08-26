@@ -44,20 +44,12 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	roles, err := lc.LoginUsecase.GetRoleID(user.ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Could not find associated role"})
-		return
-	}
-
-	accessToken, err :=
-		lc.LoginUsecase.CreateAccessToken(&user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
+	accessToken, err := lc.LoginUsecase.CreateAccessToken(&user, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Access Token"})
 		return
 	}
-	refreshToken, err :=
-		lc.LoginUsecase.CreateRefreshToken(&user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
+	refreshToken, err := lc.LoginUsecase.CreateRefreshToken(&user, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Refresh Token"})
 		return
@@ -75,14 +67,6 @@ func (lc *LoginController) Login(c *gin.Context) {
 // CheckUser
 // @Summary Gets user details based on the current token
 // @Description Authenticates a token and retrieves associated user information
-// @Accept json
-// @Produce json
-// @Success 200 {object} model.User
-// @Failure 401 {object} model.ErrorResponse "Token is not authorized!"
-// @Failure 401 {object} model.ErrorResponse "You are not authorized, there is no ID!"
-// @Failure 401 {object} model.ErrorResponse "You are not authorized, could not find user from token!"
-// @Failure 401 {object} model.ErrorResponse "You are not authorized, There is no token!"
-// @Router /auth/currUser [get]
 func (lc *LoginController) CheckUser(c *gin.Context) {
 	authHeader := c.Request.Header.Get("Authorization")
 	tokens := strings.Split(authHeader, " ")

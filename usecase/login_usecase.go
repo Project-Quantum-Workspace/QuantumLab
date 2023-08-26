@@ -19,14 +19,10 @@ func (lu *loginUsecase) FindUser(email string) (model.User, error) {
 	return lu.userRepository.GetByEmail(email)
 }
 
-func (lu *loginUsecase) GetRoleID(uid uint) ([]int, error) {
-	return lu.userRepository.GetRoleID(uid)
+func (lu *loginUsecase) CreateAccessToken(user *model.User, secret string, expiry int) (accessToken string, err error) {
+	return tokenutil.CreateAccessToken(user, secret, expiry)
 }
 
-func (lu *loginUsecase) CreateAccessToken(user *model.User, roles []int, secret string, expiry int) (accessToken string, err error) {
-	return tokenutil.CreateAccessToken(user, roles, secret, expiry)
-}
-
-func (lu *loginUsecase) CreateRefreshToken(user *model.User, roles []int, secret string, expiry int) (refreshToken string, err error) {
-	return tokenutil.CreateRefreshToken(user, roles, secret, expiry)
+func (lu *loginUsecase) CreateRefreshToken(user *model.User, secret string, expiry int) (refreshToken string, err error) {
+	return tokenutil.CreateRefreshToken(user, secret, expiry)
 }

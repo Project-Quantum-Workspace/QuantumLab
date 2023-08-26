@@ -183,32 +183,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/currUser": {
-            "get": {
-                "description": "Authenticates a token and retrieves associated user information",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Gets user details based on the current token",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.User"
-                        }
-                    },
-                    "401": {
-                        "description": "You are not authorized, There is no token!",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
                 "description": "Log a user in if the provided email and password are correct.",

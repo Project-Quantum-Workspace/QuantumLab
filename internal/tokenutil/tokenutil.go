@@ -8,13 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CreateAccessToken(user *model.User, roles []int, secret string, expiry int) (accessToken string, err error) {
+func CreateAccessToken(user *model.User, secret string, expiry int) (accessToken string, err error) {
 	exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := &model.JwtCustomClaims{
-		Email:       user.Email,
-		UID:         user.ID,
-		AccessLevel: user.AccessLevel,
-		RoleID:      roles,
+		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
@@ -27,12 +24,9 @@ func CreateAccessToken(user *model.User, roles []int, secret string, expiry int)
 	return t, err
 }
 
-func CreateRefreshToken(user *model.User, roles []int, secret string, expiry int) (refreshToken string, err error) {
+func CreateRefreshToken(user *model.User, secret string, expiry int) (refreshToken string, err error) {
 	claimsRefresh := &model.JwtCustomRefreshClaims{
-		Email:       user.Email,
-		UID:         user.ID,
-		AccessLevel: user.AccessLevel,
-		RoleID:      roles,
+		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(expiry))),
 		},
