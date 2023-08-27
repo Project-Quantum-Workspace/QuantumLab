@@ -9,10 +9,10 @@ describe('New a Workspace Form', () => {
     cy.get('#tags').type("CPU, Quskit")
     cy.get('#description').type("a example test")
     cy.get('.ant-btn-primary').click()
-    cy.get('.ant-notification-notice-message').should('exist')
-    //TODO: verify the notification message
-
-    //TODO: notification vanished after 5s
+    cy.get('.ant-notification-notice-message').should('exist').contains('Database Query Error')
+  
+    cy.get('.ant-notification-notice-message',{timeout: 10000}).should('not.exist')
+    
   })
   it("Show error message when user submit without entering information", () => {
    
@@ -27,12 +27,12 @@ describe('New a Workspace Form', () => {
     cy.get('.ant-select-selector').click()
     cy.get('.ant-select-item-option-active > .ant-select-item-option-content').click()
     cy.get('.ant-btn-primary').click()
-    cy.get('.ant-notification-notice').should('exist')
-    //TODO: verify the notification message
-
-    //TODO: notification vanished after 5s
+    cy.get('.ant-notification-notice-message').should('exist').contains('Success')
+  
+    cy.get('.ant-notification-notice-message',{timeout: 10000}).should('not.exist')
   
   })
+  
   it("Template form is generated",()=>{
     cy.get('.ant-select-selector').click()
     cy.get('.ant-select-item-option-active > .ant-select-item-option-content').click()
