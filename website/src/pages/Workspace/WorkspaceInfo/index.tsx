@@ -45,7 +45,8 @@ const WorkspaceInfo: React.FC = () => {
               filename: res.template.filename,
               parameters: res.template.parameters,
               accessLevel: res.template.accessLevel,
-              icon: res.template.icon
+              icon: res.template.icon,
+              readme: res.template.readme
             }
             const dto: WorkspaceInfoMetaData = {
 
@@ -77,7 +78,7 @@ const WorkspaceInfo: React.FC = () => {
           }
        })
        .catch((error) => {
-          //console.log(error)
+          console.log(error)
        });
     }, []);
 
@@ -207,8 +208,8 @@ const WorkspaceInfo: React.FC = () => {
     );
   };
 
-  const renderToolset = (toolset: ToolsetItemType) => {
-    return <Toolset type={toolset.type} link={toolset.link} />;
+  const renderToolset = (key: string, toolset: ToolsetItemType) => {
+    return <Toolset key={key} type={toolset.type} link={toolset.link} />;
   };
 
   const handleBack = () => {
@@ -302,7 +303,7 @@ const WorkspaceInfo: React.FC = () => {
         </Paragraph>
         <div>
           {Object.entries(toolsets).map(([key, toolset]) =>
-            renderToolset(toolset)
+            renderToolset(key, toolset)
           )}
         </div>
       </div>
@@ -312,7 +313,6 @@ const WorkspaceInfo: React.FC = () => {
         <Result
           icon={<FrownOutlined />}
           title="Workspace Not Found"
-        
         />
       </>
     )}

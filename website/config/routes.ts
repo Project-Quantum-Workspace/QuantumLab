@@ -54,6 +54,11 @@ export default [
     component: './Workspace/WorkspaceInfo',
     hideInMenu: true,
   },
+  {
+    path: '/template/:templateId',
+    component: './TemplateInfo',
+    hideInMenu: true,
+  },
   
   
   {

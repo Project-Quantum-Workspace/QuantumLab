@@ -8,12 +8,13 @@ import JupyterLOGO from '../../../../assets/JupyterLOGO.svg';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 
 interface ToolsetProps {
+  key: string;
   type: ToolsetType;
   link?: string;
 }
 
 const Toolset = (props: ToolsetProps) => {
-  const { type, link } = props;
+  const { key, type, link } = props;
   const handleOpenLink = () => {
     window.open(
       // 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
@@ -73,6 +74,7 @@ const Toolset = (props: ToolsetProps) => {
 
   return (
     <div 
+    key={key}
     className={toolsetClass}
     onClick={handleOpenLink}>
         <Row>

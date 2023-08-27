@@ -22,4 +22,13 @@ export async function getAccessibleTemplates(){
       }
     })
   }
+
+
+  //get template by id
+export async function getTemplate(id: string) {
+  return request('/api/templates/' + id, {
+    method: 'GET'
+    
+  });
+}
   
