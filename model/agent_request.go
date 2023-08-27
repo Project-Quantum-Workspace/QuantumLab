@@ -8,10 +8,6 @@ type AgentRequest struct {
 	Msg             string `json:"msg"`
 }
 
-type AgentRequestRepository interface {
-	ValidateAgentRequest(agentRequest *AgentRequest) error
-}
-
 type AgentRequestUsecase interface {
-	ValidateAgentRequest(agentRequest *AgentRequest) error
+	GetQuantumlabTokenByUUID(uuid string) (string, error)
 }

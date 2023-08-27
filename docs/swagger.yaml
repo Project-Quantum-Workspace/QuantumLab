@@ -1,5 +1,18 @@
 basePath: /api
 definitions:
+  model.AgentRequest:
+    properties:
+      msg:
+        type: string
+      quantumlabToken:
+        type: string
+      workspaceID:
+        type: string
+      workspaceOwner:
+        type: string
+      workspaceStatus:
+        type: string
+    type: object
   model.CreateWorkspaceRequest:
     properties:
       userId:
@@ -102,6 +115,33 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
+  /agent:
+    post:
+      consumes:
+      - application/json
+      description: Update the workspace status according to the heartbeat message
+        sent by a QuantumLab Agent.
+      parameters:
+      - description: agent request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AgentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Process the heartbeat message sent by a QuantumLab Agent
+      tags:
+      - agent
   /auth/currUser:
     get:
       consumes:

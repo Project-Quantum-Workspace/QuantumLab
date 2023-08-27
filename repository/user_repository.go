@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"gorm.io/gorm"
@@ -31,6 +32,18 @@ func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 		return user, result.Error
 	}
 	return user, nil
+}
+
+func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) {
+	var users []model.User
+	result := ur.database.Select("quantumlab_token").Where("uuid = ?", uuid).Find(&users)
+	if result.Error != nil {
+		return "", result.Error
+	}
+	if len(users) == 0 {
+		return "", errors.New("invalid workspace owner")
+	}
+	return users[0].QuantumlabToken, nil
 }
 
 func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {

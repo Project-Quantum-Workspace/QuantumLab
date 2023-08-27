@@ -19,6 +19,46 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/agent": {
+            "post": {
+                "description": "Update the workspace status according to the heartbeat message sent by a QuantumLab Agent.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "Process the heartbeat message sent by a QuantumLab Agent",
+                "parameters": [
+                    {
+                        "description": "agent request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AgentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/currUser": {
             "get": {
                 "description": "Authenticates a token and retrieves associated user information",
@@ -487,6 +527,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AgentRequest": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "string"
+                },
+                "quantumlabToken": {
+                    "type": "string"
+                },
+                "workspaceID": {
+                    "type": "string"
+                },
+                "workspaceOwner": {
+                    "type": "string"
+                },
+                "workspaceStatus": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {

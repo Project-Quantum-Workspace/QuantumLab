@@ -9,9 +9,10 @@ import (
 )
 
 func NewAgentRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup, workspaceMonitor map[string]string) {
-	repo := repository.NewAgentRequestRepository(db, workspaceMonitor)
+	repo := repository.NewUserRepository(db)
 	agentRequestController := &controller.AgentRequestController{
 		AgentRequestUsecase: usecase.NewAgentRequestUseCase(repo),
+		WorkspaceMonitor:    workspaceMonitor,
 	}
 
 	apiRouterGroup.POST("/agent", agentRequestController.UpdateWorkspaceStatus)

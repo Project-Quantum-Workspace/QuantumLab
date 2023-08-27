@@ -24,7 +24,7 @@ import (
 func main() {
 	app := bootstrap.App()
 	engine := gin.Default()
-	workspaceMonitor := make(map[string]string)
+	workspaceMonitor := make(map[string]string) // A map mapping workspace statuses to relevant UUIDs
 
 	// Load website assets and router.
 	website.InitWebsite(engine)

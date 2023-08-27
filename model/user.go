@@ -12,5 +12,6 @@ type User struct {
 type UserRepository interface {
 	Create(user *User) error
 	GetByEmail(email string) (User, error)
+	GetQuantumlabTokenByUUID(uuid string) (string, error)
 	GetRoleID(uid uint) ([]int, error)
 }

@@ -51,6 +51,22 @@ func main() {
 	}
 }
 
+// Parse the config yaml file.
+func readAgentConf(filename string) (*model.Conf, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	agentConf := &model.Conf{}
+	err = yaml.Unmarshal(data, agentConf)
+	if err != nil {
+		return nil, err
+	}
+
+	return agentConf, nil
+}
+
 // issuePostRequest issues a POST request to the QuantumLab server.
 func issuePostRequest(status, msg string) {
 	workspaceID := conf.Workspace.ID
@@ -76,19 +92,4 @@ func issuePostRequest(status, msg string) {
 	}
 	bodyString := string(bodyBytes)
 	fmt.Println(bodyString)
-}
-
-func readAgentConf(filename string) (*model.Conf, error) {
-	data, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	agentConf := &model.Conf{}
-	err = yaml.Unmarshal(data, agentConf)
-	if err != nil {
-		return nil, err
-	}
-
-	return agentConf, nil
 }

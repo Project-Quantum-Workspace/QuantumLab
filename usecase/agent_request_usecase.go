@@ -3,15 +3,15 @@ package usecase
 import "github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 type agentRequestUsecase struct {
-	agentRequestRepository model.AgentRequestRepository
+	userRepository model.UserRepository
 }
 
-func NewAgentRequestUseCase(agentRequestRepository model.AgentRequestRepository) model.AgentRequestUsecase {
+func NewAgentRequestUseCase(userRepository model.UserRepository) model.AgentRequestUsecase {
 	return &agentRequestUsecase{
-		agentRequestRepository: agentRequestRepository,
+		userRepository: userRepository,
 	}
 }
 
-func (usecase *agentRequestUsecase) ValidateAgentRequest(agentRequest *model.AgentRequest) error {
-	return usecase.agentRequestRepository.ValidateAgentRequest(agentRequest)
+func (usecase *agentRequestUsecase) GetQuantumlabTokenByUUID(uuid string) (string, error) {
+	return usecase.userRepository.GetQuantumlabTokenByUUID(uuid)
 }
