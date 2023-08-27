@@ -29,12 +29,11 @@ export default [
     component: './Login',
   },
 
- 
   {
-    name:'home',
-    path:'/home',
+    name: 'home',
+    path: '/home',
     icon: 'home',
-    component:'./Home'
+    component: './Home',
   },
   {
     name: 'workspace',
@@ -42,20 +41,24 @@ export default [
     path: '/workspace',
     component: './Workspace',
   },
-  
+
   {
     path: '/workspace/new',
     component: './NewWorkspace',
     hideInMenu: true,
   },
-  
+
   {
     path: '/workspace/:workspaceId',
     component: './Workspace/WorkspaceInfo',
     hideInMenu: true,
   },
-  
-  
+
+  {
+    path: '/user',
+    component: './AdminUserList',
+  },
+
   {
     path: '/admin',
     name: 'admin',
