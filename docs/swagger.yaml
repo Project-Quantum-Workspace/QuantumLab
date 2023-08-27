@@ -31,6 +31,13 @@ definitions:
       status:
         type: string
     type: object
+  model.Role:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   model.SuccessResponse:
     properties:
       message:
@@ -54,18 +61,53 @@ definitions:
     properties:
       accessLevel:
         type: integer
+      accountStatus:
+        type: boolean
+      avatar:
+        type: string
       email:
+        type: string
+      firstName:
         type: string
       id:
         type: integer
+      lastName:
+        type: string
       password:
         type: string
       quantumlabToken:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+      uuid:
         type: string
       workspaces:
         items:
           $ref: '#/definitions/model.Workspace'
         type: array
+    type: object
+  model.UserListItem:
+    properties:
+      accessLevel:
+        type: integer
+      accountStatus:
+        type: boolean
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+      uuid:
+        type: string
     type: object
   model.Workspace:
     properties:
@@ -93,6 +135,8 @@ definitions:
         type: string
       updatedAt:
         type: string
+      uuid:
+        type: string
     type: object
 info:
   contact:
@@ -102,6 +146,114 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
+  /admin/users:
+    get:
+      description: Get all users to list in the table.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.UserListItem'
+            type: array
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get user list
+      tags:
+      - user admin
+  /admin/users/{id}:
+    get:
+      description: Get detailed information of a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get user detail
+      tags:
+      - user admin
+    put:
+      consumes:
+      - application/json
+      description: Update a user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update user
+      tags:
+      - user admin
+  /admin/users/invite:
+    post:
+      consumes:
+      - application/json
+      description: Invite and create new users.
+      parameters:
+      - description: List of user emails to send invitation
+        in: body
+        name: emailList
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Request Accepted
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Invite and create users
+      tags:
+      - user admin
   /auth/currUser:
     get:
       consumes:
@@ -143,11 +295,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "401":
-          description: Incorrect Password
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-        "404":
-          description: Email Not Found
+          description: Incorrect Email or Password
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
@@ -170,7 +318,7 @@ paths:
               $ref: '#/definitions/model.Template'
             type: array
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get all templates
@@ -199,7 +347,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Create new template
@@ -226,7 +374,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Delete template
@@ -256,11 +404,11 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: Request Parse Error
+          description: Invalid ID / Request Parse Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update template
@@ -281,8 +429,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
@@ -290,7 +438,7 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Uexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Create workspace
@@ -313,11 +461,11 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: Illegal Workspace ID
+          description: Invalid ID
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Delete workspace
@@ -339,11 +487,11 @@ paths:
           schema:
             $ref: '#/definitions/model.Workspace'
         "400":
-          description: Illegal Workspace ID
+          description: Invalid ID
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Workspace Not Found
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get workspace by ID
@@ -373,11 +521,11 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: Request Parse Error
+          description: Invalid ID / Request Parse Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update workspace
@@ -403,11 +551,11 @@ paths:
               $ref: '#/definitions/model.Workspace'
             type: array
         "400":
-          description: Illegal User ID
+          description: Invalid ID
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
-          description: Database Query Error
+          description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Get all workspaces by user

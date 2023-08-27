@@ -3,8 +3,9 @@ package validationutil
 import (
 	"errors"
 	"fmt"
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"regexp"
+
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 )
 
 func ValidateTableCreationRequest(table *model.CreateTableRequest) error {
