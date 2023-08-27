@@ -49,6 +49,16 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
       return;
     }
 
+    // Check if the total number of emails (existing plus new) exceeds 100
+    if (existingEmails.length + uniqueEmailsFromInput.length > 100) {
+      notification.error({
+        message: 'Too Many Emails',
+        description:
+          'You can only add and send 100 emails at once. Please reduce the number of emails and try again.',
+      });
+      return;
+    }
+
     for (const email of uniqueEmailsFromInput) {
       if (existingEmails.includes(email)) {
         notification.error({

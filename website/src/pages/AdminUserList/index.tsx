@@ -18,13 +18,36 @@ const AdminUserList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      notification.error({
+        message: 'Request Timeout',
+        description:
+          'Fetching users took too long and is considered as failed. Please try again later.',
+      });
+    }, 10000); // 10 seconds timeout
+
     fetch('/api/admin/users')
       .then((response) => response.json())
       .then((data) => {
+        clearTimeout(timeoutId);
         setUsers(data);
         setLoading(false);
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+        clearTimeout(timeoutId);
+        setLoading(false);
+        notification.error({
+          message: 'Error Fetching Users',
+          description: 'An error occurred while fetching the users. Please try again later.',
+        });
       });
+
+    // Cleanup timeout if component is unmounted
+    return () => clearTimeout(timeoutId);
   }, []);
+
 
   const updateUserStatus = async (uuid: string, status: number) => {
     const userToUpdate = users.find((user) => user.uuid === uuid);
