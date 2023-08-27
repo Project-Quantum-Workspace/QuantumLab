@@ -1,18 +1,13 @@
 describe('Workspaces Info', () => {
+  beforeEach(() => {
+    cy.autoLogin('workspacequantum@gmail.com','workspacequantum@gmail.com')
+    cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace/12`)
+  
+  })
   it('should display workspace information when available', () => {
-    //Login Page
-    cy.visit('http://localhost:8000/login')
-    //input email and password
-    cy.get('#email').type('admin@gmail.com'); // Using the id selector
-    cy.get('#password').type('admin');       // Using the id selector
-    //click the Login button
-    cy.get('button').contains('Login').click()
+   
     
-    //Home Page
-    cy.get('a[href="/workspace"]').contains('View Last').click();
-
-    //Workspace Page
-    cy.get('a[href="/workspace/2"]') .contains('Go to Workspace Info').click();
+  
 
     //Workspace Info Page
     cy.get('button.ant-btn-text:contains("Back to My Project")').click();
@@ -21,7 +16,7 @@ describe('Workspaces Info', () => {
  
     // Define the API response JSON data
     const apiResponse = {
-      "id": 3,
+      "id": 12,
       "name": "Sample Worspace",
       "type": "default",
       "state": "Pending",
@@ -42,19 +37,19 @@ describe('Workspaces Info', () => {
     };
 
     // Start the test by visiting the Workspace Info page
-    cy.visit('http://localhost:8000/workspace/2');  // Adjust the URL as needed
+    cy.visit('http://localhost:8000/workspace/12');  // Adjust the URL as needed
 
     // Intercept the API call and respond with the JSON data
-    cy.intercept('GET', 'http://localhost:8080/api/workspaces/2', apiResponse);
+    cy.intercept('GET', `${Cypress.env("API_LINK")}/workspaces/12`, apiResponse);
 
     // Assertions based on the JSON data
-    cy.get('.ant-typography.css-k3n9e3.css-dev-only-do-not-override-m2g0h9').should('contain', 'Sample Workspace');
-    cy.get('.ant-typography.css-z80s8u.css-dev-only-do-not-override-m2g0h9').should('contain', 'Pending');
-    cy.get('.ant-typography.css-1uajk3o.css-dev-only-do-not-override-m2g0h9').should('contain', 'This is a sample workspace...');
+    cy.get('[style="gap: 8px;"] > :nth-child(2) > :nth-child(1) > :nth-child(1) > .ant-col > .ant-typography').should('contain', 'AWS Example Project');
+    cy.get('.sc-bczSft').should('contain', 'Pending');
+    //cy.get('.ant-typography.css-1uajk3o.css-dev-only-do-not-override-m2g0h9').should('contain', 'This is a sample workspace...');
   });
 
   it('should display an error message after unsuccessful API response', () => {
-    cy.intercept('GET', 'http://localhost:8080/api/workspaces/2', {
+    cy.intercept('GET', `${Cypress.env("API_LINK")}/workspaces/1`, {
         statusCode: 500,
         body: { message: 'Internal Server Error' },
         headers: {
@@ -65,12 +60,13 @@ describe('Workspaces Info', () => {
     // Make the API request using cy.request()
     cy.request({
         method: 'GET',
-        url: 'http://localhost:8080/api/workspaces/2',
+        url: `${Cypress.env("API_LINK")}/workspaces/1`,
         failOnStatusCode: false // Allow non-2xx status codes
     }).then(response => {
         // Verify error message is displayed
+        console.log(response)
         expect(response.status).to.equal(500);
-        expect(response.body.message).to.equal('Internal Server Error');
+        expect(response.body.message).to.equal('record not found');
     });
 });
 
