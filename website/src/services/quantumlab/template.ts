@@ -18,8 +18,16 @@ export async function getAccessibleTemplates(){
       method: 'GET',
       headers:{
         'Content-Type': 'application/json',
-        
       }
     })
   }
-  
+
+    //get template by id
+export async function getTemplate(id: string) {
+  return request('/api/templates/'+id, {
+    method: 'GET',
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+}
