@@ -8,10 +8,13 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CreateAccessToken(user *model.User, secret string, expiry int) (accessToken string, err error) {
+func CreateAccessToken(user *model.User, roles []int, secret string, expiry int) (accessToken string, err error) {
 	exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := &model.JwtCustomClaims{
-		Email: user.Email,
+		Email:       user.Email,
+		UID:         user.ID,
+		AccessLevel: user.AccessLevel,
+		RoleID:      roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
@@ -24,9 +27,12 @@ func CreateAccessToken(user *model.User, secret string, expiry int) (accessToken
 	return t, err
 }
 
-func CreateRefreshToken(user *model.User, secret string, expiry int) (refreshToken string, err error) {
+func CreateRefreshToken(user *model.User, roles []int, secret string, expiry int) (refreshToken string, err error) {
 	claimsRefresh := &model.JwtCustomRefreshClaims{
-		Email: user.Email,
+		Email:       user.Email,
+		UID:         user.ID,
+		AccessLevel: user.AccessLevel,
+		RoleID:      roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(expiry))),
 		},
@@ -52,23 +58,22 @@ func IsAuthorized(requestToken string, secret string) (bool, error) {
 	return true, nil
 }
 
-func ExtractIDFromToken(requestToken string, secret string) (string, error) {
+func ExtractClaimsFromToken(requestToken string, secret string) (claims jwt.MapClaims, err error) {
 	token, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(secret), nil
 	})
-
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 
 	if !ok && !token.Valid {
-		return "", fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
 
-	return claims["email"].(string), nil
+	return claims, nil
 }
