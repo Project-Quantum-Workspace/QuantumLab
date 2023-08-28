@@ -31,7 +31,7 @@ func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 
 func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
 	var RID []int
-	result := ur.qlDB.Raw(`SELECT role_id FROM user_role WHERE user_role.user_id = ?`, uid).Scan(&RID)
+	result := ur.qlDB.Raw(`SELECT role_id FROM user_roles WHERE user_roles.user_id = ?`, uid).Scan(&RID)
 	if result.Error != nil {
 		return RID, result.Error
 	}
