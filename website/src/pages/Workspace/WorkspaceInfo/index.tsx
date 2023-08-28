@@ -1,7 +1,7 @@
+
 import { 
   ToolsetItemType, 
   ToolsetType, 
-
   WorkspaceInfoMetaData,
   WorkspaceInfoClass
 } from "../utils/types/WorkspaceTypes";
@@ -10,10 +10,10 @@ import Toolset from "./components/ToolsetComponent";
 import {
   Button,
   Col,
-  Divider, 
+  Divider,
   Image,
   message,
-  Row, 
+  Row,
   Result,
 
   Space,
@@ -95,7 +95,7 @@ const WorkspaceInfo: React.FC = () => {
       type: ToolsetType.Terminal,
     },
   ];
-  
+
   const projectNameClass = useEmotionCss(() => {
     return {
       fontFamily: 'Ubuntu',
@@ -308,15 +308,14 @@ const WorkspaceInfo: React.FC = () => {
       </div>
 
     </>) : (
-      <> 
+      <>
         <Result
           icon={<FrownOutlined />}
           title="Workspace Not Found"
-        
+
         />
       </>
     )}
-      
 
     </>
   )

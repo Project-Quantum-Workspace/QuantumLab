@@ -54,7 +54,6 @@ const App: React.FC = () => {
           onChange={Onchange}
         />
         <Button type="primary"
-          
           style={{
             width: "150px",
             backgroundColor:'#0F56B3',
