@@ -21,6 +21,7 @@ func main() {
 	var err error
 	conf, err = readAgentConf("config.yaml")
 	if err != nil {
+		issuePostRequest("Failed", err.Error())
 		log.Fatal(err)
 	}
 
@@ -44,10 +45,9 @@ func main() {
 	log.Println("Initialisation Succeeded")
 	issuePostRequest("Running", "Initialisation Succeeded")
 
-	// TODO: Send heartbeat messages to the QuantumLab server.
 	for {
 		time.Sleep(3 * time.Second)
-		issuePostRequest("Running", "Workspace Alive")
+		go issuePostRequest("Running", "Workspace Alive")
 	}
 }
 
