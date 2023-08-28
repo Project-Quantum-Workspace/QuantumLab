@@ -1,3 +1,4 @@
+import { useModel } from '@umijs/max';
 import {
   Button,
   Divider,
@@ -45,6 +46,7 @@ const NewWorkspace = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
+  const { initialState } = useModel('@@initialState');
   const location = useLocation();
   const { templateId } = location.state;
 
@@ -130,10 +132,10 @@ const NewWorkspace = () => {
         {},
       );
       console.log('parameters:', parameters);
-
+      
       // Adjust data to fit the new format
       const adjustedValues = {
-        userId: 1,
+        userId: initialState?.currentUser?.id,
         workspace: {
           createdAt: new Date().toISOString(),
           description: values.description || 'string',
@@ -141,7 +143,7 @@ const NewWorkspace = () => {
           lastAccessed: new Date().toISOString(),
           name: values.name || 'string',
           parameters: JSON.stringify(parameters) || 'string',
-          state: 'string',
+          state: 'Running',
           tags:
             values.tags
               .split(',')
