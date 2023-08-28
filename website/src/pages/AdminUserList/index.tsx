@@ -1,15 +1,18 @@
-import { Button, Table, notification } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {Button, Table, notification} from 'antd';
+import React, {useEffect, useState} from 'react';
 import InviteUsersModal from './inviteUsersModal';
 
 type User = {
   email: string;
   uuid: string;
   id: number;
+  firstName: string;
+  lastName: string;
   accountStatus: number;
   accessLevel: number;
   role: string;
 };
+
 
 const AdminUserList: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
@@ -72,7 +75,7 @@ const AdminUserList: React.FC = () => {
       // Since the backend only returns success, update the local state based on the changes made
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uuid === uuid ? { ...user, accountStatus: status, accessLevel } : user,
+          user.uuid === uuid ? {...user, accountStatus: status, accessLevel} : user,
         ),
       );
 
@@ -100,8 +103,9 @@ const AdminUserList: React.FC = () => {
 
   const columns = [
     {
-      title: 'Email',
-      dataIndex: 'email',
+      title: 'Name',
+      dataIndex: 'name',
+      render: (_: any, record: User) => `${record.firstName} ${record.lastName}`,
     },
     {
       title: 'User ID',
@@ -117,6 +121,7 @@ const AdminUserList: React.FC = () => {
       render: (status: number) => (status === 1 ? 'Active' : 'Inactive'),
     },
   ];
+
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -203,7 +208,7 @@ const AdminUserList: React.FC = () => {
         loading={loading}
       />
 
-      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel} />
+      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel}/>
     </div>
   );
 };
