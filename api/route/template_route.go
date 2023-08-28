@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func TemplateRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
+func NewTemplateRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	repo := repository.NewTemplateRepository(db)
 
 	templateController := controller.TemplateController{

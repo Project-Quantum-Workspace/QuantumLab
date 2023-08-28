@@ -8,14 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func Setup(env *bootstrap.Env, db *gorm.DB, engine *gin.Engine, workspaceMonitor map[string]string) {
+func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, workspaceMonitor map[string]string) {
 	publicApiRouterGroup := engine.Group("/api")
 	NewLoginRouter(env, db, publicApiRouterGroup)
-	NewSignupRouter(db, publicApiRouterGroup)
 	NewAgentRouter(db, publicApiRouterGroup, workspaceMonitor)
 
 	privateApiRouterGroup := engine.Group("/api")
 	privateApiRouterGroup.Use(middleware.JwtAuthenticator(env.AccessJWTSecret))
-	TemplateRouter(env, db, privateApiRouterGroup)
+	NewUserAdminRouter(env, db, privateApiRouterGroup)
+	NewTemplateRouter(env, db, privateApiRouterGroup)
 	NewWorkspaceRouter(db, privateApiRouterGroup)
+	NewResultRouter(rdb, privateApiRouterGroup)
 }

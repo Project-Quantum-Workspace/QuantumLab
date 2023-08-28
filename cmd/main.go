@@ -30,7 +30,7 @@ func main() {
 	website.InitWebsite(engine)
 
 	// Load API router.
-	route.Setup(app.Env, app.DB, engine, workspaceMonitor)
+	route.Setup(app.Env, app.DB, app.ResultDB, engine, workspaceMonitor)
 
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	engine.GET("/healthz", func(context *gin.Context) {

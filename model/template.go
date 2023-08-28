@@ -3,7 +3,7 @@ package model
 type Template struct {
 	ID          uint   `json:"id"`
 	Parameters  string `json:"parameters"`
-	AccessLevel string `json:"accessLevel"`
+	AccessLevel uint   `json:"accessLevel"`
 	Filename    string `json:"filename"`
 	Icon        string `json:"icon"` // A Base64-encoded string
 }

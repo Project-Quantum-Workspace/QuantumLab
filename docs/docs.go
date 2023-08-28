@@ -19,6 +19,170 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/users": {
+            "get": {
+                "description": "Get all users to list in the table.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Get user list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.UserListItem"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/invite": {
+            "post": {
+                "description": "Invite and create new users.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Invite and create users",
+                "parameters": [
+                    {
+                        "description": "List of user emails to send invitation",
+                        "name": "emailList",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Request Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/{id}": {
+            "get": {
+                "description": "Get detailed information of a user.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Get user detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated user information",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/agent": {
             "post": {
                 "description": "Update the workspace status according to the heartbeat message sent by a QuantumLab Agent.",
@@ -123,13 +287,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Incorrect Password",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Email Not Found",
+                        "description": "Incorrect Email or Password",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -145,7 +303,7 @@ const docTemplate = `{
         },
         "/templates": {
             "get": {
-                "description": "Get all workspace templates.",
+                "description": "Get all authorised templates.",
                 "produces": [
                     "application/json"
                 ],
@@ -163,7 +321,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -206,7 +364,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -252,13 +410,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Request Parse Error",
+                        "description": "Invalid ID / Request Parse Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -296,7 +454,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -329,8 +487,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessResponse"
                         }
@@ -342,7 +500,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Uexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -380,13 +538,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal User ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -421,13 +579,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal Workspace ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Workspace Not Found",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -460,13 +618,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Illegal Workspace ID",
+                        "description": "Invalid ID",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -511,13 +669,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Request Parse Error",
+                        "description": "Invalid ID / Request Parse Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Database Query Error",
+                        "description": "Unexpected System Error",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -595,6 +753,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Role": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.SuccessResponse": {
             "type": "object",
             "properties": {
@@ -607,7 +776,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "accessLevel": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "filename": {
                     "type": "string"
@@ -630,11 +799,23 @@ const docTemplate = `{
                 "accessLevel": {
                     "type": "integer"
                 },
+                "accountStatus": {
+                    "type": "boolean"
+                },
+                "avatar": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "firstName": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
                 },
                 "password": {
                     "type": "string"
@@ -642,11 +823,52 @@ const docTemplate = `{
                 "quantumlabToken": {
                     "type": "string"
                 },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Role"
+                    }
+                },
+                "uuid": {
+                    "type": "string"
+                },
                 "workspaces": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.Workspace"
                     }
+                }
+            }
+        },
+        "model.UserListItem": {
+            "type": "object",
+            "properties": {
+                "accessLevel": {
+                    "type": "integer"
+                },
+                "accountStatus": {
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Role"
+                    }
+                },
+                "uuid": {
+                    "type": "string"
                 }
             }
         },
@@ -687,6 +909,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                },
+                "uuid": {
                     "type": "string"
                 }
             }

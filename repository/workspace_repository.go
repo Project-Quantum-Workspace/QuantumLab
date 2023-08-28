@@ -16,11 +16,11 @@ func NewWorkspaceRepository(qlDB *gorm.DB) model.WorkspaceRepository {
 	}
 }
 
-func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
-	err := repo.qlDB.Transaction(func(tx *gorm.DB) error {
+func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) error {
+	err := wr.qlDB.Transaction(func(tx *gorm.DB) error {
 		// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
 		// Omit `Template` to forbid auto create of Templates
-		result := tx.Omit("ID", "Template").Create(workspace)
+		result := tx.Omit("ID", "UUID", "Template").Create(workspace)
 		if result.Error != nil {
 			return result.Error
 		}
@@ -28,20 +28,15 @@ func (repo *workspaceRepository) Create(workspace *model.Workspace, userID uint)
 			UserID:      userID,
 			WorkspaceID: workspace.ID,
 		})
-		if result.Error != nil {
-			return result.Error
-		}
-		return nil
+		return result.Error
 	})
 	return err
 }
 
-func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
+func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
 	var workspaces []model.Workspace
-	user := model.User{ID: userID}
-	association := repo.qlDB.Joins("Template").
-		Model(&user).Association("Workspaces")
-
+	association := wr.qlDB.Joins("Template").
+		Model(&model.User{ID: userID}).Association("Workspaces")
 	if association.Error != nil {
 		return workspaces, association.Error
 	}
@@ -49,21 +44,19 @@ func (repo *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, e
 	return workspaces, err
 }
 
-func (repo *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
+func (wr *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
 	var workspace model.Workspace
-	result := repo.qlDB.Joins("Template").First(&workspace, id)
+	result := wr.qlDB.Joins("Template").First(&workspace, id)
 	return workspace, result.Error
 }
 
-func (repo *workspaceRepository) Update(workspace *model.Workspace) error {
-	// Omit `Users.*` allows insertions of new user_workspaces associations
-	// for possible shared workspace extension
-	result := repo.qlDB.Model(workspace).
-		Omit("ID", "Template").Updates(*workspace)
+func (wr *workspaceRepository) Update(workspace *model.Workspace) error {
+	result := wr.qlDB.Model(&workspace).
+		Omit("ID", "UUID", "Template").Updates(*workspace)
 	return result.Error
 }
 
-func (repo *workspaceRepository) Delete(id uint) error {
-	result := repo.qlDB.Delete(&model.Workspace{}, id)
+func (wr *workspaceRepository) Delete(id uint) error {
+	result := wr.qlDB.Delete(&model.Workspace{}, id)
 	return result.Error
 }

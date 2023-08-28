@@ -1,21 +1,20 @@
+
 import { 
   ToolsetItemType, 
   ToolsetType, 
-
   WorkspaceInfoMetaData,
   WorkspaceInfoClass
 } from "../utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
-
+import { PageLoading } from '@ant-design/pro-components';
 import {
   Button,
   Col,
-  Divider, 
+  Divider,
   Image,
   message,
-  Row, 
+  Row,
   Result,
-
   Space,
   Typography,
 } from 'antd';
@@ -33,32 +32,30 @@ import { FrownOutlined } from '@ant-design/icons';
 const WorkspaceInfo: React.FC = () => {
   const { Title, Text, Paragraph } = Typography;
   const { workspaceId } = useParams()
-
+  const [loading, setLoading] = useState(true);
   const [workspace, setWorkspace] = useState<WorkspaceInfoClass|undefined>(undefined)
   const intl = useIntl();
   useEffect(() => {
     getWorkspace(workspaceId as string)
        .then((res) => {
-          if (res){
+          if (!res.message){
             const templateDto: TemplateMetaData = {
               id: res.template.id,
               filename: res.template.filename,
               parameters: res.template.parameters,
               accessLevel: res.template.accessLevel,
-              icon: res.template.icon
+              icon: res.template.icon,
+              readme: res.template.readme
             }
             const dto: WorkspaceInfoMetaData = {
-
               id: res.id,
               name: res.name,
               createdAt: res.createdAt,
               lastAccessed: res.lastAccessed,
               updatedAt: res.updatedAt,
               description: res.description,
-
               templateId: res.templateId,
               template: templateDto,
-
               state: res.state,
               type: res.type,
               parameters: res.parameters,
@@ -75,6 +72,7 @@ const WorkspaceInfo: React.FC = () => {
             });
             message.error(Errormessage);
           }
+          setLoading(false)
        })
        .catch((error) => {
           //console.log(error)
@@ -95,7 +93,7 @@ const WorkspaceInfo: React.FC = () => {
       type: ToolsetType.Terminal,
     },
   ];
-  
+
   const projectNameClass = useEmotionCss(() => {
     return {
       fontFamily: 'Ubuntu',
@@ -207,15 +205,17 @@ const WorkspaceInfo: React.FC = () => {
     );
   };
 
-  const renderToolset = (toolset: ToolsetItemType) => {
-    return <Toolset type={toolset.type} link={toolset.link} />;
+  const renderToolset = (key: string, toolset: ToolsetItemType) => {
+    return <Toolset key={key} type={toolset.type} link={toolset.link} />;
   };
 
   const handleBack = () => {
     history.push('/workspace');
   };
 
-
+  if(loading){
+    return <PageLoading/>
+  }
   return (
     <>
     {workspace ? (
@@ -302,21 +302,20 @@ const WorkspaceInfo: React.FC = () => {
         </Paragraph>
         <div>
           {Object.entries(toolsets).map(([key, toolset]) =>
-            renderToolset(toolset)
+            renderToolset(key, toolset)
           )}
         </div>
       </div>
 
     </>) : (
-      <> 
+      <>
         <Result
           icon={<FrownOutlined />}
           title="Workspace Not Found"
-        
+
         />
       </>
     )}
-      
 
     </>
   )

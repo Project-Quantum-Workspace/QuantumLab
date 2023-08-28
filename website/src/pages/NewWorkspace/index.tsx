@@ -1,3 +1,4 @@
+import { useModel } from '@umijs/max';
 import {
   Button,
   Divider,
@@ -11,6 +12,8 @@ import {
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'umi';
+import { useLocation } from 'umi';
+
 const { Title } = Typography;
 const { Option } = Select;
 
@@ -43,6 +46,9 @@ const NewWorkspace = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
+  const { initialState } = useModel('@@initialState');
+  const location = useLocation();
+  const { templateId } = location.state;
 
   useEffect(() => {
     // function to fetch templates
@@ -75,6 +81,15 @@ const NewWorkspace = () => {
     // call the function to fetch templates
     fetchTemplates();
   }, []);
+
+  useEffect(()=> {
+    const template = templates.find((template) => template.id === templateId);
+    if (template && typeof template.parameters === 'string') {
+      // Parse the Parameters from string to object
+      const paramsObject = JSON.parse(template.parameters);
+      setSelectedTemplate({ ...template, parameters: paramsObject });
+    }
+  },[templates])
 
   if (loadingTemplates) {
     return <div>Loading templates...</div>;
@@ -117,10 +132,10 @@ const NewWorkspace = () => {
         {},
       );
       console.log('parameters:', parameters);
-
+      
       // Adjust data to fit the new format
       const adjustedValues = {
-        userId: 1,
+        userId: initialState?.currentUser?.id,
         workspace: {
           createdAt: new Date().toISOString(),
           description: values.description || 'string',
@@ -128,7 +143,7 @@ const NewWorkspace = () => {
           lastAccessed: new Date().toISOString(),
           name: values.name || 'string',
           parameters: JSON.stringify(parameters) || 'string',
-          state: 'string',
+          state: 'Running',
           tags:
             values.tags
               .split(',')
@@ -235,6 +250,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
+            defaultValue={templateId}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available

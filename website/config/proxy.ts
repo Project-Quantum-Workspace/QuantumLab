@@ -15,7 +15,7 @@ export default {
     // 'http://localhost:8080'** -> https://preview.pro.ant.design/api/**
     '/api/': {
       // The address to be proxied
-      //target:'http://localhost:8080',
+      // target:'http://localhost:8080',
       //target: 'https://preview.pro.ant.design',
       target: 'https://feature-homepage.dev.quantumlab.cloud',
       // Configuring this allows proxying from http to https
