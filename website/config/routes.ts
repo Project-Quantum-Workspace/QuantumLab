@@ -55,9 +55,18 @@ export default [
   },
 
   {
+
+    path: '/template/:templateId',
+    component: './TemplateInfo',
+    hideInMenu: true,
+  },
+  
+  
+  {
     path: '/user',
     component: './AdminUserList',
   },
+
 
   {
     path: '/admin',

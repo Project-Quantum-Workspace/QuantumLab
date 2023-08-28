@@ -12,6 +12,8 @@ import {
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'umi';
+import { useLocation } from 'umi';
+
 const { Title } = Typography;
 const { Option } = Select;
 
@@ -45,6 +47,9 @@ const NewWorkspace = () => {
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
+  const location = useLocation();
+  const { templateId } = location.state;
+
   useEffect(() => {
     // function to fetch templates
     const fetchTemplates = async () => {
@@ -76,6 +81,15 @@ const NewWorkspace = () => {
     // call the function to fetch templates
     fetchTemplates();
   }, []);
+
+  useEffect(()=> {
+    const template = templates.find((template) => template.id === templateId);
+    if (template && typeof template.parameters === 'string') {
+      // Parse the Parameters from string to object
+      const paramsObject = JSON.parse(template.parameters);
+      setSelectedTemplate({ ...template, parameters: paramsObject });
+    }
+  },[templates])
 
   if (loadingTemplates) {
     return <div>Loading templates...</div>;
@@ -236,6 +250,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
+            defaultValue={templateId}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available

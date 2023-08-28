@@ -1,14 +1,27 @@
 import { Button, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProjectsTable from './components/ProjectsTable';
 import TemplateTable from './components/TemplateTable';
 import { history, useModel} from '@umijs/max';
+import { useLocation } from 'umi';
 
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
   const [viewT, setViewT] = useState(false);
   const { initialState } = useModel('@@initialState');
- 
+  const location = useLocation();
+  const { tag } = location.state || 'workspace';
+
+  useEffect(()=> {
+    if(tag === 'template') {
+      setViewP(false);
+      setViewT(true);
+    } else {
+      setViewP(true);
+      setViewT(false);
+    }
+  },[])
+
   const Onchange = (key: string) => {
     if (key === '1') {
       setViewP(true);
@@ -36,7 +49,7 @@ const App: React.FC = () => {
         </>}
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end" }}>
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey={tag==='template' ? "2" : "1"}
           items={[
             {
               label: 'My Projects',

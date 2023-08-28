@@ -59,7 +59,7 @@ const columns: ColumnsType<TemplateData> = [
     dataIndex: 'id',
     render: (id) => (
       <Space size="middle">
-        <Link to={'/workspace/' + `${id}`}>
+        <Link to={'/template/' + `${id}`}>
           <DoubleRightOutlined />
         </Link>
       </Space>
