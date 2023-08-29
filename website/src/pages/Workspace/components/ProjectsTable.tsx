@@ -10,7 +10,7 @@ import { WorkspaceInfoMetaData } from '../utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
 import moment from 'moment';
 import { PageLoading } from '@ant-design/pro-components';
-
+import {Image} from 'antd'
 
 interface Props {
   data: number | undefined
@@ -19,13 +19,10 @@ const columns: ColumnsType<WorkspaceInfoMetaData> = [
   {
     title: '',
     key: 'templateId',
-    dataIndex: 'templateId',
-    render: (id) => {
+    dataIndex: 'template',
+    render: (icon) => {
       return (<>
-        {id === 1 ?
-          <img src={AwsIcon}></img>
-          : <img src={LabIcon}></img>
-        }
+        <Image src={icon}/>
       </>)
     }
   },
