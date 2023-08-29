@@ -48,7 +48,7 @@ const NewWorkspace = () => {
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
   const location = useLocation();
-  const { templateId } = location.state;
+  const [templateId, setTemplateId] = useState(0)
 
   useEffect(() => {
     // function to fetch templates
@@ -83,6 +83,11 @@ const NewWorkspace = () => {
   }, []);
 
   useEffect(()=> {
+    console.log(location)
+    if(location.state){
+      setTemplateId(location.state.templateId);
+    }
+    
     const template = templates.find((template) => template.id === templateId);
     if (template && typeof template.parameters === 'string') {
       // Parse the Parameters from string to object
@@ -250,7 +255,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
-            defaultValue={templateId}
+            defaultValue={templateId===0 ? undefined :templateId}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available

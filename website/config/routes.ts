@@ -34,26 +34,33 @@ export default [
     path: '/home',
     icon: 'home',
     component: './Home',
+    
   },
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
-    component: './Workspace',
+    
+    routes:[
+      {
+        path: '/workspace',
+        component: './Workspace',
+      },
+      {
+        path: '/workspace/new',
+        component: './NewWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: '/workspace/:workspaceId',
+        component: './Workspace/WorkspaceInfo',
+        hideInMenu: true,
+      },
+    
+    ]
   },
 
-  {
-    path: '/workspace/new',
-    component: './NewWorkspace',
-    hideInMenu: true,
-  },
-
-  {
-    path: '/workspace/:workspaceId',
-    component: './Workspace/WorkspaceInfo',
-    hideInMenu: true,
-  },
-
+  
   {
 
     path: '/template/:templateId',

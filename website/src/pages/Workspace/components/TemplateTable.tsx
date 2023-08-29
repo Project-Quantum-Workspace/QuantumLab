@@ -3,35 +3,26 @@ import React, { Component, useEffect, useState } from 'react'
 import AwsIcon from '@/assets/aws.svg'
 import moment from 'moment'
 import LabIcon from '@/assets/Lab_logo.svg'
-import { Space, Table } from 'antd'
+import { Space, Table,Image } from 'antd'
 import { Link } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
 import { getAccessibleTemplates } from '@/services/quantumlab/template'
 import { PageLoading } from '@ant-design/pro-components'
+import { TemplateMetaData } from '../utils/types/TemplateTypes'
 
-type TemplateData = {
-  id: number,
-  filename: string,
-  createdAt: string,
-  accessLevel: number,
-
-}
 interface Props {
   data: number | undefined
 }
 
-const columns: ColumnsType<TemplateData> = [
+const columns: ColumnsType<TemplateMetaData> = [
   {
     title: '',
     key: 'templateId',
-    dataIndex: 'id',
-    render: (id) => {
+    dataIndex: 'icon',
+    render: (icon) => {
       
       return (<>
-        {id === 1 ?
-          <img src={AwsIcon}></img>
-          : <img src={LabIcon}></img>
-        }
+        <Image src={icon}/>
       </>)
     }
   },
