@@ -75,11 +75,6 @@ export default [
     hideInMenu: true,
   },
   
-  
-  {
-    path: '/user',
-    component: './AdminUserList',
-  },
 
 
   {
@@ -95,17 +90,16 @@ export default [
       {
         path: '/admin/sub-page',
         name: 'sub-page',
-        redirect:'/user',
         component: './Admin',
       },
+      {
+        name:'users',
+        path:'/admin/users',
+        component: './AdminUserList',
+      }
     ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
+  
   {
     path: '/',
     redirect: '/home',

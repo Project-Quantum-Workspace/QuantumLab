@@ -77,7 +77,7 @@ const NewWorkspace = () => {
       setSelectedTemplate({ ...template, parameters: paramsObject });
     }
   },[templates])
-
+  
   if (loadingTemplates) {
     return <div>Loading templates...</div>;
   }

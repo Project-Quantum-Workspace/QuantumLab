@@ -6,6 +6,7 @@ export default {
   'menu.jobmonitor':'Job Monitor',
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
+  'menu.admin.users':'Users',
   'menu.login': 'Login',
   'menu.dashboard': 'Dashboard',
   'menu.exception.403': '403',

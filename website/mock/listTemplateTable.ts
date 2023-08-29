@@ -19,14 +19,14 @@ export const defaultTemplate =(i:number)=>{
 }
 const genTemplateList = (current:number, pageSize:number)=>{
   const tableData: TemplateMetaData[]=[]
-  for(let i = 0; i <pageSize;i+=1){
+  for(let i = 1; i <pageSize;i+=1){
       tableData.push(defaultTemplate(i))
   }
   tableData.reverse()
   console.log(tableData)
   return tableData;
 }
-let wl = genTemplateList(1,2) 
+let wl = genTemplateList(1,3) 
 export default{
   'GET /api/templates': wl,
 }
