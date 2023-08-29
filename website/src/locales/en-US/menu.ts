@@ -2,6 +2,8 @@ export default {
   'menu.workspace': 'Workspace',
   'menu.welcome': 'Welcome',
   'menu.home': 'Home',
+  'menu.composer':'Composer',
+  'menu.jobmonitor':'Job Monitor',
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.login': 'Login',

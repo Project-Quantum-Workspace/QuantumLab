@@ -59,10 +59,17 @@ export default [
     
     ]
   },
-
-  
   {
-
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer'
+  },
+  {
+    name:'jobmonitor',
+    icon:'areaChartOutlined',
+    path:'/jobmonitor'
+  }, 
+  {
     path: '/template/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,

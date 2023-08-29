@@ -3,8 +3,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
-import AwsIcon from '../../../assets/aws.svg'
-import LabIcon from '../../../assets/Lab_logo.svg'
 import { getAllWorkspace } from '@/services/quantumlab/workspace';
 import { WorkspaceInfoMetaData } from '../utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
@@ -20,9 +18,9 @@ const columns: ColumnsType<WorkspaceInfoMetaData> = [
     title: '',
     key: 'templateId',
     dataIndex: 'template',
-    render: (icon) => {
+    render: (template) => {
       return (<>
-        <Image src={icon}/>
+        <Image src={template.icon}/>
       </>)
     }
   },

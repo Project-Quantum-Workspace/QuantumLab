@@ -1,3 +1,4 @@
+import { getAccessibleTemplates } from '@/services/quantumlab/template';
 import { useModel } from '@umijs/max';
 import {
   Button,
@@ -52,40 +53,22 @@ const NewWorkspace = () => {
 
   useEffect(() => {
     // function to fetch templates
-    const fetchTemplates = async () => {
-      try {
-        setLoadingTemplates(true);
-        const response = await fetch('/api/templates', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          console.log('data:', data);
-          setTemplates(data);
-          console.log('templates:', templates);
-        } else {
-          throw new Error(data.message || 'Error fetching templates.');
-        }
-        setLoadingTemplates(false);
-      } catch (error) {
-        console.error('Error:', error);
-        setTemplatesFetchFailed(true);
-        setLoadingTemplates(false);
-      }
-    };
-
-    // call the function to fetch templates
-    fetchTemplates();
+    getAccessibleTemplates()
+    .then((res)=>{
+      setLoadingTemplates(false)
+      setTemplates(res)
+    })
+    .catch((error)=>{
+      setTemplatesFetchFailed(true)
+      throw new Error(error.message || 'Error fetching templates.');
+    })
+   
   }, []);
 
   useEffect(()=> {
-    console.log(location)
+    
     if(location.state){
-      setTemplateId(location.state.templateId);
+      setTemplateId( location.state.templateId);
     }
     
     const template = templates.find((template) => template.id === templateId);

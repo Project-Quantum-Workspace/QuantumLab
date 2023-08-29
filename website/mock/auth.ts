@@ -40,7 +40,7 @@ export default {
       res.send({
         success: true,
         
-          name: 'LoisW-Admin',
+          firstName: 'LoisW-Admin',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,
@@ -54,7 +54,7 @@ export default {
       res.send({
         success: true,
         
-          name: 'LoisW-User',
+          firstName: 'LoisW-User',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,

@@ -1,4 +1,3 @@
-
 import { 
   ToolsetItemType, 
   ToolsetType, 
@@ -40,12 +39,7 @@ const WorkspaceInfo: React.FC = () => {
        .then((res) => {
           if (!res.message){
             const templateDto: TemplateMetaData = {
-              id: res.template.id,
-              filename: res.template.filename,
-              parameters: res.template.parameters,
-              accessLevel: res.template.accessLevel,
-              icon: res.template.icon,
-              readme: res.template.readme
+              ...res.template
             }
             const dto: WorkspaceInfoMetaData = {
               id: res.id,

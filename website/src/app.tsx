@@ -31,7 +31,8 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser(token,{
         skipErrorHandler: true,
       });
-      return {...msg,name:'LoisW',avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
+      console.log(msg)
+      return {...msg,avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
     } catch (error) {
       history.push(loginPath);
     }
@@ -66,7 +67,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       },
     },
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.firstName,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
