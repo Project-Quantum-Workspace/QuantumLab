@@ -54,7 +54,6 @@ describe('Workspaces Info', () => {
         body: { message: 'Internal Server Error' },
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`, 
             // Set the correct content type
         }
     }).as('getWorkspace');
