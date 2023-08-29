@@ -155,7 +155,7 @@ const NewWorkspace = () => {
 
       const data = await response.json();
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         notification.success({
           message: 'Success',
           description: data.message,
@@ -177,6 +177,7 @@ const NewWorkspace = () => {
           duration: 5,
         });
       } else {
+        console.log(response)
         notification.error({
           message: 'Error',
           description: 'An unknown error occurred.',
