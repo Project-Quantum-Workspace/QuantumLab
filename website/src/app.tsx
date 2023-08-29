@@ -31,7 +31,6 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser(token,{
         skipErrorHandler: true,
       });
-      console.log(msg)
       return {...msg,avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
     } catch (error) {
       history.push(loginPath);
