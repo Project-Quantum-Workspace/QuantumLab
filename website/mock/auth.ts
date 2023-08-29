@@ -80,6 +80,17 @@ export default {
       access = 'admin';
       return;
     }
+    if (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com') {
+      res.send({
+        status: 'Logged In Successfully',
+        type,
+        currentAuthority: 'admin',
+        accessToken: 'admin-token',
+        refreshToken: 'admin-token',
+      });
+      access = 'admin';
+      return;
+    }
     if (password === 'user' && email === 'user') {
       res.send({
         status: 'Logged In Successfully',

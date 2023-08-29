@@ -12,8 +12,7 @@ import {
   notification,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link } from 'umi';
-import { useLocation } from 'umi';
+import { Link, useLocation } from 'umi';
 
 const { Title } = Typography;
 const { Option } = Select;

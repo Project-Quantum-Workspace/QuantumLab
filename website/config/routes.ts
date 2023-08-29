@@ -95,6 +95,7 @@ export default [
       {
         path: '/admin/sub-page',
         name: 'sub-page',
+        redirect:'/user',
         component: './Admin',
       },
     ],
