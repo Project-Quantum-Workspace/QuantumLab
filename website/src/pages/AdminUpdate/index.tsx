@@ -37,11 +37,9 @@ export default function index() {
       content: 'Upload success',
     });
   };
-  //////////////////
 
   /////////////// API
   const url = 'https://my.api.mockaroo.com/data.json?key=e7cb8c20';
-  /* const url = 'https://my.api.mockaroo.com/data2.json?key=e7cb8c20'; */
   const posturl = 'https://my.api.mockaroo.com/data2.json?key=e7cb8c20&__method=PUT';
   const test = '/test.json';
 
@@ -65,73 +63,18 @@ export default function index() {
   };
 
   const handleFormSubmit = () => {
-    console.log('click');
     axios
-      .patch(posturl, formData) // Replace with your API endpoint
+      .put(posturl, formData) // Replace with your API endpoint
 
       .then((response) => {
-        console.log('hi');
-        console.log(response.data);
-
         setStatusMessage('Form data updated successfully.');
       })
 
       .catch((error) => {
-        console.log('fail');
         setStatusMessage('An error occurred while updating the form data.');
       });
   };
 
-  /* 
-  const handlePatchData = () => {
-    const dataToPatch = {
-      keyToPatch: inputValue
-      // Include any other properties you want to patch
-    };
-
-    axios.patch(posturl, dataToPatch)
-      .then(response => {
-        console.log('Data patched successfully', response.data);
-        setPatchedData(response.data); // Update state if needed
-      })
-      .catch(error => {
-        console.error('Error patching data', error);
-        // Handle error as needed
-      });
-  }; */
-  ////////////////////////
-
-  /*   const handleIput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({...user, [event.target.name]:event.target.value})
-  }
-
-  
-  const handleSubmit = (event: React.ChangeEvent<HTMLInputElement>)=> {
-    event.preventDefault()
-    axios.put('https://my.api.mockaroo.com/data2.json?key=e7cb8c20&__method=PUT',{user})
-    .then(response => console.log(response.data))
-    .catch(err=>console.log(err));
-  }
- */
-  /*   const onSubmitCapture= */
-  ////////////////////////
-
-  /* const [data, setData] = useState([]);
-
-  useEffect(() => {
-    // Fetch data from the API when the component mounts
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://my.api.mockaroo.com/data.json?key=e7cb8c20'); // Replace with your API endpoint
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }; */
   //////////////////
 
   const [form] = Form.useForm();
@@ -172,23 +115,12 @@ export default function index() {
 
   return (
     <div>
-      <div>
-        {/*  <h1>Fetched Data from API:</h1>
-        <p>{user[0].first_name}</p> */}
-        {/*         <p>{data.id}</p>
-      <ul>
-        {data.map((item) => (
-          <li key={item.id}>
-            {item.user_name}-{item.first_name}-{item.email}
-          </li>
-        ))}
-      </ul> */}
-      </div>
+      <div></div>
 
       <div className="container">
         <Row gutter={[80, 0]}>
           <Col span={6}>
-            <div className="avator">
+            <div className="avatar">
               <Upload
                 name="avatar"
                 listType="picture-circle"

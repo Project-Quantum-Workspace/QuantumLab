@@ -18,24 +18,11 @@ export default function index() {
   //notice, if not set useEffect, will run the network forever
   useEffect(() => {
     axios
-      .get(
-        url,
-        /* {
-      params: {
-        ID: 12345
-      }
-    } */
-      )
+      .get(url)
       .then((response) => {
         setUser(response.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    /*     axios.post(url).then((response) => {
-      setUser(response.data);
-    }); */
+      .catch((error) => {});
   }, [url]);
   ///////////////
 
@@ -46,7 +33,7 @@ export default function index() {
         <div className="container">
           <Row gutter={[80, 0]}>
             <Col span={6}>
-              <div className="avator">
+              <div className="avatar">
                 <img src="https://i.ibb.co/RDnTcKL/download.jpg" alt="Avatar"></img>
               </div>
             </Col>
