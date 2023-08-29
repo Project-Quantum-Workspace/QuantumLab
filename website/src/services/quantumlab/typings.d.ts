@@ -7,7 +7,7 @@ declare namespace API {
     name?: string;
     avatar?: string;
     email?: string;
-    accessLevel?: string;
+    accessLevel?: number;
   };
 
   type LoginResult = {

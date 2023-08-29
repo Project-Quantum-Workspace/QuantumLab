@@ -39,27 +39,29 @@ export default {
     if (req.headers.authorization === 'Bearer admin-token') {
       res.send({
         success: true,
-        data: {
+        
           name: 'LoisW-Admin',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,
           unreadCount: 11,
           access: getAccess(),
-        },
+          accessLevel:10
+        
       });
     }
     if (req.headers.authorization === 'Bearer user-token') {
       res.send({
         success: true,
-        data: {
+        
           name: 'LoisW-User',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,
           unreadCount: 11,
           access: getAccess(),
-        },
+          accessLevel:0
+        
       });
     }
   },
