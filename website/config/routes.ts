@@ -86,6 +86,18 @@ export default [
     ],
   },
   {
+    path: '/adminView',
+    name: 'User Information',
+    icon: 'UserOutlined',
+    component: './AdminView',
+  },
+  {
+    path: '/adminUpdate',
+/*     name: 'Admin',
+    icon: 'SettingOutlined', */
+    component: './AdminUpdate',
+  },
+  {
     name: 'list.table-list',
     icon: 'table',
     path: '/list',
