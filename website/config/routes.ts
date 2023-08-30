@@ -96,10 +96,28 @@ export default [
         name:'users',
         path:'/admin/users',
         component: './AdminUserList',
-      }
+      },
+      {
+        name: 'user-information',
+        path: '/admin/adminView',
+        icon: 'userOutlined',
+        component: './AdminView',
+      },
+      {
+        name: 'admin-update',
+        path: '/admin/adminUpdate',
+        icon: 'settingOutlined',
+        component: './AdminUpdate',
+      },
     ],
   },
-  
+ 
+  {
+    name: 'list.table-list',
+    icon: 'table',
+    path: '/list',
+    component: './TableList',
+  },
   {
     path: '/',
     redirect: '/home',

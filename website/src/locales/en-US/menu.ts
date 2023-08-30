@@ -7,6 +7,8 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.users':'Users',
+  'menu.admin.user-information':'User Information',
+  'menu.admin.admin-update':'Admin Update',
   'menu.login': 'Login',
   'menu.dashboard': 'Dashboard',
   'menu.exception.403': '403',
