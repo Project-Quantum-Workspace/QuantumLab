@@ -43,6 +43,7 @@ type UserAdminUsecase interface {
 type UserRepository interface {
 	CreateBatch(users []User) error
 	GetByEmail(email string) (User, error)
+	GetQuantumlabTokenByUUID(uuid string) (string, error)
 	GetRoleID(uid uint) ([]int, error)
 	GetRegisteredEmails(emailList []string) ([]string, error)
 	GetByID(id uint) (User, error)

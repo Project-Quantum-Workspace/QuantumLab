@@ -1,5 +1,18 @@
 basePath: /api
 definitions:
+  model.AgentRequest:
+    properties:
+      msg:
+        type: string
+      quantumlabToken:
+        type: string
+      workspaceID:
+        type: string
+      workspaceOwner:
+        type: string
+      workspaceStatus:
+        type: string
+    type: object
   model.CreateWorkspaceRequest:
     properties:
       userId:
@@ -46,11 +59,11 @@ definitions:
   model.Template:
     properties:
       accessLevel:
-        type: string
+        type: integer
       filename:
         type: string
       icon:
-        description: base64 string
+        description: A Base64-encoded string
         type: string
       id:
         type: integer
@@ -254,6 +267,33 @@ paths:
       summary: Invite and create users
       tags:
       - user admin
+  /agent:
+    post:
+      consumes:
+      - application/json
+      description: Update the workspace status according to the heartbeat message
+        sent by a QuantumLab Agent.
+      parameters:
+      - description: agent request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AgentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Process the heartbeat message sent by a QuantumLab Agent
+      tags:
+      - agent
   /auth/currUser:
     get:
       consumes:
@@ -307,7 +347,7 @@ paths:
       - auth
   /templates:
     get:
-      description: Get all workspace templates.
+      description: Get all authorised templates.
       produces:
       - application/json
       responses:
@@ -321,13 +361,12 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Get all templates
       tags:
       - templates
     post:
       consumes:
       - application/json
-      description: Create a new workspace template.
+      description: Create a new template.
       parameters:
       - description: Data needed for creating a workspace template
         in: body
@@ -350,7 +389,6 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Create new template
       tags:
       - templates
   /templates/{id}:
@@ -377,7 +415,6 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Delete template
       tags:
       - templates
     put:
@@ -411,7 +448,6 @@ paths:
           description: Unexpected System Error
           schema:
             $ref: '#/definitions/model.ErrorResponse'
-      summary: Update template
       tags:
       - templates
   /workspaces:
