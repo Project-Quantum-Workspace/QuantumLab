@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/api/controller"
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/repository"
 	"github.com/Project-Quantum-Workspace/QuantumLab/usecase"
 
@@ -9,14 +10,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewTemplateRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
-	//route for templates
+func NewTemplateRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	repo := repository.NewTemplateRepository(db)
-	tController := controller.TemplateController{
+
+	templateController := controller.TemplateController{
 		TemplateUsecase: usecase.NewTemplateUsecase(repo),
+		Env:             env,
 	}
-	apiRouterGroup.GET("/templates", tController.GetAllTemplates)
-	apiRouterGroup.POST("/templates", tController.PostOneTemplate)
-	apiRouterGroup.PUT("/templates/:id", tController.UpdateOneTemplate)
-	apiRouterGroup.DELETE("/templates/:id", tController.DeleteTemplate)
+
+	apiRouterGroup.GET("/templates", templateController.GetAllTemplates)
+	apiRouterGroup.POST("/templates", templateController.PostOneTemplate)
+	apiRouterGroup.PUT("/templates/:id", templateController.UpdateOneTemplate)
+	apiRouterGroup.DELETE("/templates/:id", templateController.DeleteTemplate)
 }

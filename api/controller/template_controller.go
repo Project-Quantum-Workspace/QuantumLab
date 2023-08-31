@@ -1,7 +1,11 @@
 package controller
 
 import (
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
@@ -11,10 +15,11 @@ import (
 
 type TemplateController struct {
 	TemplateUsecase model.TemplateUsecase
+	Env             *bootstrap.Env
 }
 
-// @Summary Create new template
-// @Description Create a new workspace template.
+// PostOneTemplate @Summary Create new template
+// @Description Create a new template.
 // @Tags templates
 // @Accept json
 // @Produce json
@@ -46,17 +51,26 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	})
 }
 
-// @Summary Get all templates
-// @Description Get all workspace templates.
+// GetAllTemplates @Summary Get all authorised templates
+// @Description Get all authorised templates.
 // @Tags templates
 // @Produce json
 // @Success 200 {object} []model.Template
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
+	authHeader := c.Request.Header.Get("Authorization")
+	tokens := strings.Split(authHeader, " ")
+	authToken := tokens[1]
+	accessLevel, err := tokenutil.ExtractAccessLevelFromToken(authToken, tc.Env.AccessJWTSecret)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	var templates []model.Template
 
-	templates, err := tc.TemplateUsecase.GetAll()
+	templates, err = tc.TemplateUsecase.GetAll(accessLevel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -66,7 +80,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	c.JSON(http.StatusOK, templates)
 }
 
-// @Summary Update template
+// UpdateOneTemplate @Summary Update template
 // @Description Update an existing workspace template.
 // @Tags templates
 // @Accept json
@@ -110,7 +124,7 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 
 }
 
-// @Summary Delete template
+// DeleteTemplate @Summary Delete template
 // @Description Delete a workspace template.
 // @Tags templates
 // @Produce json

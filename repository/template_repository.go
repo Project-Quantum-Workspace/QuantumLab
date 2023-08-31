@@ -1,62 +1,65 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"gorm.io/gorm"
 )
 
 type templateRepository struct {
-	database *gorm.DB
+	db *gorm.DB
 }
 
 func NewTemplateRepository(db *gorm.DB) model.TemplateRepository {
 	return &templateRepository{
-		database: db,
+		db: db,
 	}
 }
 
-// create new
+// Create creates a new template.
 func (repo *templateRepository) Create(template *model.Template) error {
-	result := repo.database.Omit("ID").Create(&template)
+	result := repo.db.Omit("ID").Create(&template)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-// get all
-func (repo *templateRepository) GetAll() ([]model.Template, error) {
+// GetAll gets all authorised templates.
+func (repo *templateRepository) GetAll(accessLevel string) ([]model.Template, error) {
 	var templates []model.Template
-	result := repo.database.Find(&templates)
+	fmt.Println(accessLevel)
+	result := repo.db.Where("access_level <= ?", accessLevel).Find(&templates)
+	fmt.Println(templates)
 	return templates, result.Error
 }
 
-// get one template by id
+// GetByID gets a particular template.
 func (repo *templateRepository) GetByID(id uint) (model.Template, error) {
 	var template model.Template
-	result := repo.database.First(&template, id)
+	result := repo.db.First(&template, id)
 	return template, result.Error
 }
 
-// update template by id
+// Update updates a particular template.
 func (repo *templateRepository) Update(template *model.Template, id uint) error {
 	var findT model.Template
-	result := repo.database.First(&findT, id)
+	result := repo.db.First(&findT, id)
 	if result.Error != nil {
 		return result.Error
 	}
-	res := repo.database.Model(findT).Omit("ID").Updates(*template)
+	res := repo.db.Model(findT).Omit("ID").Updates(*template)
 	return res.Error
 }
 
-// delete template by id
+// Delete deletes a particular template.
 func (repo *templateRepository) Delete(id uint) error {
 	var findT model.Template
-	result := repo.database.First(&findT, id)
+	result := repo.db.First(&findT, id)
 	if result.Error != nil {
 		return result.Error
 	}
-	res := repo.database.Delete(&model.Template{}, id)
+	res := repo.db.Delete(&model.Template{}, id)
 	return res.Error
 }
