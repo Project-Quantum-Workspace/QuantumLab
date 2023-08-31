@@ -1,11 +1,11 @@
 import { request } from '@umijs/max';
-const token = localStorage.getItem('token')
+
 
 export async function getWorkspace(id: string) {
   return request('/api/workspaces/' + id, {
     method: 'GET',
     headers: {
-       Authorization: `Bearer ${token}`,
+       
      },
     
   });
@@ -18,7 +18,7 @@ export async function getAllWorkspace(id:string){
   return request('/api/workspaces/users/'+id,{
     method: 'GET',
     headers:{
-      Authorization: `Bearer ${token}`,
+      
       
     }
   })
