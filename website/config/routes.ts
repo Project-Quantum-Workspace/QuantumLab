@@ -60,8 +60,8 @@ export default [
     component: './TemplateInfo',
     hideInMenu: true,
   },
-  
-  
+
+
   {
     path: '/user',
     component: './AdminUserList',
@@ -91,13 +91,21 @@ export default [
     path: '/list',
     component: './TableList',
   },
+
   {
     path: '/',
     redirect: '/home',
   },
+
   {
     path: '*',
     layout: false,
     component: './404',
+  },
+
+  {
+    path: '/AdminInitialization',
+    component: './AdminInitialization',
+    hideInMenu: true,
   },
 ];
