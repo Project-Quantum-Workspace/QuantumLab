@@ -12,7 +12,7 @@ Cypress.Commands.add('autoLogin', (uemail, upassword) => {
     })
     .its('body')
     .then((body)=>{
-        console.log(body)
         window.localStorage.setItem('token',body.accessToken)
+        console.log(body)
     })
 })

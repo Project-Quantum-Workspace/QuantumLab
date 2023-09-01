@@ -7,7 +7,7 @@ module.exports = defineConfig({
     },
   },
   "env":{
-    "API_LINK":"https://feature-homepage.dev.quantumlab.cloud/api",
+    "API_LINK":"https://dev.quantumlab.cloud/api",
     "QUANTUMLAB_WEB":"http://localhost:8000"
   }
 });
