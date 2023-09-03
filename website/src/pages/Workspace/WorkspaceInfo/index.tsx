@@ -2,7 +2,6 @@
 import { 
   ToolsetItemType, 
   ToolsetType, 
-  WorkspaceInfoMetaData,
   WorkspaceInfoClass
 } from "../../../utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
@@ -50,7 +49,6 @@ const WorkspaceInfo: React.FC = () => {
         setLoading(false)
       })
   }, []);
-
 
     const toolsets: ToolsetItemType[] = [
     {
