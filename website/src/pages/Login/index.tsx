@@ -7,7 +7,7 @@ import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from
 import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-import logo from '../../../public/icons/logo.svg';
+import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 
 const OAuthLogin = () => {
@@ -161,7 +161,7 @@ const Login: React.FC = () => {
           }}
 
 
-          logo={<img alt="logo" src={"/public/icons/logo.svg"} style={{ width: '80%', height: 'auto'}}/>}
+          logo={<img alt="logo" src={Logo} style={{ width: '80%', height: 'auto'}}/>}
         
 
 

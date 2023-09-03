@@ -8,6 +8,7 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from '@/services/quantumlab/auth';
 import React from 'react';
+import Logo from '../public/icons/logo.svg';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
@@ -130,6 +131,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
+    logo: <img src={Logo} />
   };
 };
 
