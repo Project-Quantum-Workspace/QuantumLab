@@ -34,38 +34,47 @@ export default [
     path: '/home',
     icon: 'home',
     component: './Home',
+    
   },
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
-    component: './Workspace',
+    
+    routes:[
+      {
+        path: '/workspace',
+        component: './Workspace',
+      },
+      {
+        path: '/workspace/new',
+        component: './NewWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: '/workspace/:workspaceId',
+        component: './Workspace/WorkspaceInfo',
+        hideInMenu: true,
+      },
+    
+    ]
   },
-
   {
-    path: '/workspace/new',
-    component: './NewWorkspace',
-    hideInMenu: true,
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer'
   },
-
   {
-    path: '/workspace/:workspaceId',
-    component: './Workspace/WorkspaceInfo',
-    hideInMenu: true,
-  },
-
+    name:'jobmonitor',
+    icon:'areaChartOutlined',
+    path:'/jobmonitor'
+  }, 
   {
-
     path: '/template/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,
   },
   
-  
-  {
-    path: '/user',
-    component: './AdminUserList',
-  },
 
 
   {
@@ -83,20 +92,28 @@ export default [
         name: 'sub-page',
         component: './Admin',
       },
+      {
+        name:'users',
+        path:'/admin/users',
+        component: './AdminUserList',
+      },
+      {
+        name: 'user-information',
+        path: '/admin/adminView',
+        icon: 'userOutlined',
+        component: './AdminView',
+        hideInMenu: true,
+      },
+      {
+        name: 'admin-update',
+        path: '/admin/adminUpdate',
+        icon: 'settingOutlined',
+        component: './AdminUpdate',
+        hideInMenu: true,
+      },
     ],
   },
-  {
-    path: '/adminView',
-    name: 'User Information',
-    icon: 'UserOutlined',
-    component: './AdminView',
-  },
-  {
-    path: '/adminUpdate',
-/*     name: 'Admin',
-    icon: 'SettingOutlined', */
-    component: './AdminUpdate',
-  },
+ 
   {
     name: 'list.table-list',
     icon: 'table',

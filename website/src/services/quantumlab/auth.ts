@@ -6,6 +6,7 @@ import { request } from '@umijs/max';
 export async function currentUser(token:string, options?: { [key: string]: any }) {
  
   return request<{
+    [x: string]: any;
     data: API.CurrentUser;
   }>('/api/auth/currUser', {
     method: 'GET',
