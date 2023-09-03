@@ -12,7 +12,7 @@ import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { history, useIntl, useParams } from '@umijs/max';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useEffect, useState } from 'react';
-import { TemplateClass, TemplateMetaData } from "../Workspace/utils/types/TemplateTypes";
+import { TemplateClass, TemplateMetaData } from "../../utils/types/TemplateTypes";
 import { FrownOutlined } from '@ant-design/icons';
 import { getTemplate } from "@/services/quantumlab/template";
 import ReactMarkdown from 'react-markdown';

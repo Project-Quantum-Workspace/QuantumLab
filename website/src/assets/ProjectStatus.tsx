@@ -7,7 +7,7 @@ import FailedIcon from '~/assets/failed.svg';
 import ConnectingIcon from '~/assets/connecting.svg';
 import './ProjectStatus.css';
 import { CaretRightOutlined, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
-import { StatusType } from '../pages/Workspace/utils/types/projectItemTypes';
+import { StatusType } from '../utils/types/projectItemTypes';
 
 interface StatusProps {
   status: StatusType;

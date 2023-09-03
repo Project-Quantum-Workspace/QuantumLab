@@ -1,4 +1,4 @@
-import { TemplateMetaData } from '@/pages/Workspace/utils/types/TemplateTypes';
+import { TemplateMetaData } from '@/utils/types/TemplateTypes';
 import { Request, Response} from 'express';
 
 import moment  from 'moment';

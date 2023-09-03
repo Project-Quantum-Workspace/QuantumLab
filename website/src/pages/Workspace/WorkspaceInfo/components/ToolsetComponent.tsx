@@ -1,7 +1,7 @@
 import {
   Col, Row, Typography
 } from 'antd';
-import { ToolsetType } from '../../utils/types/WorkspaceTypes';
+import { ToolsetType } from '../../../../utils/types/WorkspaceTypes';
 import TerminalLOGO from '../../../../assets/TerminalLOGO.svg';
 import VSCodeLOGO from '../../../../assets/VSCodeLOGO.svg';
 import JupyterLOGO from '../../../../assets/JupyterLOGO.svg';

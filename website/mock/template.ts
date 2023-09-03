@@ -1,6 +1,6 @@
 import { Response} from 'express';
-import { TemplateMetaData } from '../src/pages/Workspace/utils/types/TemplateTypes'
-import { WorkspaceInfoMetaData } from '@/pages/Workspace/utils/types/WorkspaceTypes';
+import { TemplateMetaData } from '../src/utils/types/TemplateTypes'
+import { WorkspaceInfoMetaData } from '@/utils/types/WorkspaceTypes';
 import moment from 'moment';
 
 const template: TemplateMetaData = {
