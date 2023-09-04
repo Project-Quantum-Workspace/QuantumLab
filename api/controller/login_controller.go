@@ -64,6 +64,9 @@ func (lc *LoginController) Login(c *gin.Context) {
 	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", true, true)
 	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", true, true)
 
+	c.SetCookie("Authorization", accessToken, 7200, "/", "quantumlab", true, true)
+	c.SetCookie("Refresh", refreshToken, 7200, "/", "quantumlab", true, true)
+
 	loginResponse := model.LoginResponse{
 		Status: "Logged In Successfully",
 	}
