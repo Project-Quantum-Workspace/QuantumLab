@@ -6,9 +6,9 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser } from '@/services/quantumlab/auth';
 import React from 'react';
 import Logo from '../public/icons/logo.svg';
+import AuthApi from "@/services/quantumlab/auth";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
@@ -23,22 +23,15 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('Token is missing');
-      return undefined;
-    }
     try {
-      const msg = await queryCurrentUser(token,{
-        skipErrorHandler: true,
-      });
+      const msg = await AuthApi.currentUser();
       return {...msg,avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+  // if not logged in
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -54,7 +47,6 @@ export async function getInitialState(): Promise<{
   };
 }
 
-// ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   
   return {
@@ -72,7 +64,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
@@ -106,11 +97,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         ]
       : [],
     menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
+    
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}
@@ -131,15 +119,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
-    logo: <img src={Logo} />
+    logo: <img src={Logo} />,
   };
 };
 
-/**
- * @name request 配置，可以配置错误处理
- * 它基于 axios 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。
- * @doc https://umijs.org/docs/max/request#配置
- */
 export const request = {
   ...errorConfig,
 };
