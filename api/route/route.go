@@ -19,4 +19,5 @@ func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, wo
 	NewTemplateRouter(env, db, privateApiRouterGroup)
 	NewWorkspaceRouter(db, privateApiRouterGroup)
 	NewResultRouter(rdb, privateApiRouterGroup)
+	NewFileRouter(env, db, privateApiRouterGroup)
 }

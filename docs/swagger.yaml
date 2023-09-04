@@ -25,6 +25,23 @@ definitions:
       message:
         type: string
     type: object
+  model.File:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      data:
+        items:
+          type: integer
+        type: array
+      hash:
+        type: string
+      id:
+        type: integer
+      mimetype:
+        type: string
+    type: object
   model.LoginRequest:
     properties:
       email:
@@ -68,6 +85,8 @@ definitions:
       id:
         type: integer
       parameters:
+        type: string
+      uuid:
         type: string
     type: object
   model.User:
@@ -345,6 +364,65 @@ paths:
       summary: Log a user in
       tags:
       - auth
+  /files:
+    post:
+      consumes:
+      - application/json
+      description: Upload a new file.
+      parameters:
+      - description: Data needed for uploading a file
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/model.File'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Request Parse Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Upload a file
+      tags:
+      - files
+  /files/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a file.
+      parameters:
+      - description: File ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.File'
+        "400":
+          description: Invalid File ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get a file
+      tags:
+      - files
   /templates:
     get:
       description: Get all authorised templates.

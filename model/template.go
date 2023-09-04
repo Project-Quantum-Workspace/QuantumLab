@@ -6,6 +6,7 @@ type Template struct {
 	AccessLevel uint   `json:"accessLevel"`
 	Filename    string `json:"filename"`
 	Icon        string `json:"icon"` // A Base64-encoded string
+	UUID        string `json:"uuid"`
 }
 
 type TemplateRepository interface {
