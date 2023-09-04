@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -18,6 +19,10 @@ type userAdminUsecase struct {
 	roleRepository model.RoleRepository
 }
 
+type userInitUsecase struct {
+	userRepository model.UserRepository
+}
+
 func NewUserAdminUsecase(
 	userRepository model.UserRepository,
 	roleRepository model.RoleRepository,
@@ -26,6 +31,47 @@ func NewUserAdminUsecase(
 		userRepository: userRepository,
 		roleRepository: roleRepository,
 	}
+}
+
+func NewUserInitUsecase(
+	userRepository model.UserRepository,
+) model.NewUserInitUsecase {
+	return &userInitUsecase{
+		userRepository: userRepository,
+	}
+}
+
+func (uiu *userInitUsecase) CreateFirstUser() (model.User, error) {
+	count, countError := uiu.userRepository.GetCount()
+	if countError != nil {
+		logrus.Errorf("error counting number of users: %v", countError.Error())
+		return model.User{}, countError
+	}
+	if count != 0 {
+		logrus.Infof("error counting number of users")
+		return model.User{}, errors.New("has users")
+	}
+	logrus.Infof("error counting number of users: %d", count)
+	role := model.Role{
+		ID:   0,
+		Name: "Root Administrator",
+	}
+	user := model.User{
+		Email:           "admin",
+		Password:        generatorutil.GenerateRandomPassword(16, 2, 2, 2),
+		FirstName:       "Root",
+		LastName:        "Administrator",
+		AccountStatus:   true,
+		AccessLevel:     0,
+		QuantumlabToken: generatorutil.GenerateQuantumLabToken(),
+		Roles:           []model.Role{role},
+	}
+	err := uiu.userRepository.CreateFirstUser(user)
+	if err != nil {
+		logrus.Errorf("error creating the first user: %v", err.Error())
+		return model.User{}, err
+	}
+	return user, nil
 }
 
 func (uau *userAdminUsecase) InviteUsers(

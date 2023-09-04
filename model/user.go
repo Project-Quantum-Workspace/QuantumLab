@@ -49,4 +49,10 @@ type UserRepository interface {
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)
 	Update(user User) error
+	CreateFirstUser(user User) error
+	GetCount() (int64, error)
+}
+
+type NewUserInitUsecase interface {
+	CreateFirstUser() (User, error)
 }

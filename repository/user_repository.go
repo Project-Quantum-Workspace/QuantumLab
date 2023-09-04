@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"github.com/sirupsen/logrus"
 
 	"gorm.io/gorm"
 )
@@ -15,6 +16,13 @@ func NewUserRepository(db *gorm.DB) model.UserRepository {
 	return &userRepository{
 		qlDB: db,
 	}
+}
+
+func (ur *userRepository) CreateFirstUser(users model.User) error {
+	result := ur.qlDB.
+		Omit("ID", "UUID", "Workspaces", "Roles.*", "FirstName", "LastName", "AccountStatus", "Avatar").
+		Create(&users)
+	return result.Error
 }
 
 func (ur *userRepository) CreateBatch(users []model.User) error {
@@ -68,6 +76,17 @@ func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
 	var users []model.UserListItem
 	result := ur.qlDB.Model(&model.User{}).Preload("Roles").Find(&users)
 	return users, result.Error
+}
+
+func (ur *userRepository) GetCount() (int64, error) {
+	var count int64
+	query := "SELECT COUNT(*) FROM public.users"
+	err := ur.qlDB.Raw(query).Scan(&count)
+	if err.Error != nil {
+		logrus.Errorf("error counting users: %v", err.Error)
+		return -1, err.Error
+	}
+	return count, err.Error
 }
 
 func (ur *userRepository) Update(user model.User) error {
