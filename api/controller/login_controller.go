@@ -64,8 +64,8 @@ func (lc *LoginController) Login(c *gin.Context) {
 	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", true, true)
 	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", true, true)
 
-	c.SetCookie("Authorization", accessToken, 7200, "/", "quantumlab", true, true)
-	c.SetCookie("Refresh", refreshToken, 7200, "/", "quantumlab", true, true)
+	c.SetCookie("Authorization", accessToken, 7200, "/", "quantumlab.cloud", false, true)
+	c.SetCookie("Refresh", refreshToken, 7200, "/", "quantumlab.cloud", false, true)
 
 	loginResponse := model.LoginResponse{
 		Status: "Logged In Successfully",
@@ -125,6 +125,9 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 func (lc *LoginController) Logout(c *gin.Context) {
 	c.SetCookie("Authorization", "", -1, "/", "localhost", true, true)
 	c.SetCookie("Refresh", "", -1, "/", "localhost", true, true)
+
+	c.SetCookie("Authorization", "", 7200, "/", "quantumlab.cloud", false, true)
+	c.SetCookie("Refresh", "", 7200, "/", "quantumlab.cloud", false, true)
 	logoutMessage := model.LoginResponse{Status: "Logged out successfully"}
 	c.JSON(http.StatusOK, logoutMessage)
 }
