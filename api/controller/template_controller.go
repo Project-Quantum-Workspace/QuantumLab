@@ -58,6 +58,12 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	authToken, err := tokenutil.GetAuthToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "Could not find authorization token",
+		})
+		return
+	}
 	accessLevel, err := tokenutil.ExtractAccessLevelFromToken(authToken, tc.Env.AccessJWTSecret)
 	if err != nil {
 		log.Println(err)

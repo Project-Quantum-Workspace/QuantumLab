@@ -31,6 +31,5 @@ func JwtAuthenticator(secret string) gin.HandlerFunc {
 
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
 		c.Abort()
-		return
 	}
 }

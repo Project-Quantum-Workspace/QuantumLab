@@ -112,6 +112,13 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 	}
 }
 
+// Logout
+// @Summary Removes the JWT token from cookies
+// @Description Removes both access and refresh JWT Tokens from cookies
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.LoginResponse
+// @Router /auth/logout [post]
 func (lc *LoginController) Logout(c *gin.Context) {
 	c.SetCookie("Authorization", "", -1, "/", "localhost", true, true)
 	c.SetCookie("Refresh", "", -1, "/", "localhost", true, true)
