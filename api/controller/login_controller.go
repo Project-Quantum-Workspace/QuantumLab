@@ -84,31 +84,37 @@ func (lc *LoginController) Login(c *gin.Context) {
 // @Router /auth/currUser [get]
 func (lc *LoginController) CheckUser(c *gin.Context) {
 	authToken, err := tokenutil.GetAuthToken(c)
-	if err == nil {
-		auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
-			return
-		}
-		if auth {
-			claims, err := tokenutil.ExtractClaimsFromToken(authToken, lc.Env.AccessJWTSecret)
-			if err != nil {
-				c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, there is no ID!"})
-				print(err)
-				return
-			}
-			userEmail := claims["email"].(string)
-			user, err := lc.LoginUsecase.FindUser(userEmail)
-			if err != nil {
-				c.JSON(http.StatusUnauthorized,
-					model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})
-				return
-			}
-			c.JSON(http.StatusOK, user)
-			return
-		}
-	} else {
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, There is no token!"})
 		return
 	}
+	auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
+		return
+	}
+	if auth {
+		claims, err := tokenutil.ExtractClaimsFromToken(authToken, lc.Env.AccessJWTSecret)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, there is no ID!"})
+			print(err)
+			return
+		}
+		userEmail := claims["email"].(string)
+		user, err := lc.LoginUsecase.FindUser(userEmail)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized,
+				model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})
+			return
+		}
+		c.JSON(http.StatusOK, user)
+		return
+	}
+}
+
+func (lc *LoginController) Logout(c *gin.Context) {
+	c.SetCookie("Authorization", "", -1, "/", "localhost", true, true)
+	c.SetCookie("Refresh", "", -1, "/", "localhost", true, true)
+	logoutMessage := model.LoginResponse{Status: "Logged out successfully"}
+	c.JSON(http.StatusOK, logoutMessage)
 }
