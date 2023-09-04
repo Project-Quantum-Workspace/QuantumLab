@@ -5,16 +5,13 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 )
 
 func JwtAuthenticator(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeaders := c.Request.Header.Get("Authorization")
-		authTokens := strings.Split(authHeaders, " ")
-		if len(authTokens) == 2 {
-			token := authTokens[1]
-			authorization, err := tokenutil.IsAuthorized(token, secret)
+		authToken, err := tokenutil.GetAuthToken(c)
+		if err == nil {
+			authorization, err := tokenutil.IsAuthorized(authToken, secret)
 			if authorization {
 				c.Next()
 				return

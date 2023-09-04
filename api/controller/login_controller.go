@@ -5,10 +5,8 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
-	"net/http"
-	"strings"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type LoginController struct {
@@ -63,10 +61,11 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", true, true)
+	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", true, true)
+
 	loginResponse := model.LoginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-		Status:       "Logged In Successfully",
+		Status: "Logged In Successfully",
 	}
 
 	c.JSON(http.StatusOK, loginResponse)
@@ -84,10 +83,8 @@ func (lc *LoginController) Login(c *gin.Context) {
 // @Failure 401 {object} model.ErrorResponse "You are not authorized, There is no token!"
 // @Router /auth/currUser [get]
 func (lc *LoginController) CheckUser(c *gin.Context) {
-	authHeader := c.Request.Header.Get("Authorization")
-	tokens := strings.Split(authHeader, " ")
-	if len(tokens) == 2 {
-		authToken := tokens[1]
+	authToken, err := tokenutil.GetAuthToken(c)
+	if err == nil {
 		auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
