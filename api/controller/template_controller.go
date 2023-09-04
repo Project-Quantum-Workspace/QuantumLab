@@ -5,6 +5,8 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
@@ -154,4 +156,44 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	c.JSON(http.StatusOK, model.SuccessResponse{
 		Message: "success",
 	})
+}
+
+// GetPresetIconList @Summary Delete template
+// @Description Delete a workspace template.
+// @Tags templates
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /templates/{id} [delete]
+func (tc *TemplateController) GetPresetIconList(c *gin.Context) {
+	fileList, err := listFilesInDirectory("./website/dist/icons/")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve file list"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"files": fileList})
+}
+
+func listFilesInDirectory(directoryPath string) ([]string, error) {
+	var fileList []string
+
+	err := filepath.Walk(directoryPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			fileList = append(fileList, info.Name())
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fileList, nil
 }
