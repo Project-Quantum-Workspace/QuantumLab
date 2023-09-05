@@ -1,9 +1,8 @@
 import { 
   ToolsetItemType, 
   ToolsetType, 
-  WorkspaceInfoMetaData,
   WorkspaceInfoClass
-} from "../utils/types/WorkspaceTypes";
+} from "@/utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
 import { PageLoading } from '@ant-design/pro-components';
 import {
@@ -20,11 +19,10 @@ import {
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { history, useIntl, useParams } from '@umijs/max';
 import ProjectStatus from "../components/ProjectStatus";
-import { getWorkspace } from "@/services/quantumlab/workspace";
+import WorkspaceApi from "@/services/quantumlab/workspace";
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useEffect, useState } from 'react';
 
-import { TemplateMetaData } from "../utils/types/TemplateTypes";
 import { FrownOutlined } from '@ant-design/icons';
 
 
@@ -35,42 +33,22 @@ const WorkspaceInfo: React.FC = () => {
   const [workspace, setWorkspace] = useState<WorkspaceInfoClass|undefined>(undefined)
   const intl = useIntl();
   useEffect(() => {
-    getWorkspace(workspaceId as string)
-       .then((res) => {
-          if (!res.message){
-            const templateDto: TemplateMetaData = {
-              ...res.template
-            }
-            const dto: WorkspaceInfoMetaData = {
-              id: res.id,
-              name: res.name,
-              createdAt: res.createdAt,
-              lastAccessed: res.lastAccessed,
-              updatedAt: res.updatedAt,
-              description: res.description,
-              templateId: res.templateId,
-              template: templateDto,
-              state: res.state,
-              type: res.type,
-              parameters: res.parameters,
-              tags: res.tags
-            }
-            const w = WorkspaceInfoClass.fromDTO(dto)
-            setWorkspace(workspace => ({
-              ...workspace,
-              ...w}))
-          } else {
-            const Errormessage = intl.formatMessage({
-              id: 'pages.workspaceInfo.failure',
-              defaultMessage: res.message,
-            });
-            message.error(Errormessage);
-          }
-          setLoading(false)
-       })
-       .catch((error) => {
-          //console.log(error)
-       });
+    WorkspaceApi.getWorkspace(workspaceId as string)
+      .then((res) => {
+        if (!res.message)
+          setWorkspace(res)
+        else {
+          const Errormessage = intl.formatMessage({
+            id: 'pages.workspaceInfo.failure',
+            defaultMessage: res.message,
+          });
+          message.error(Errormessage);
+        }
+        setLoading(false)
+      })
+      .catch((error) => {
+          console.log(error)
+      });
     }, []);
 
 

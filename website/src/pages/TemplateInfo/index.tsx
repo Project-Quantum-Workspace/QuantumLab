@@ -12,9 +12,9 @@ import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { history, useIntl, useParams } from '@umijs/max';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useEffect, useState } from 'react';
-import { TemplateClass, TemplateMetaData } from "../Workspace/utils/types/TemplateTypes";
+import { TemplateClass } from "@/utils/types/TemplateTypes";
 import { FrownOutlined } from '@ant-design/icons';
-import { getTemplate } from "@/services/quantumlab/template";
+import TemplateApi from "@/services/quantumlab/template";
 import ReactMarkdown from 'react-markdown';
 import { PageLoading } from '@ant-design/pro-components';
 
@@ -26,22 +26,10 @@ const TemplateInfo: React.FC = () => {
   const intl = useIntl();
 
   useEffect(() => {
-    getTemplate(templateId as string)
+    TemplateApi.getTemplate(templateId as string)
       .then((res) => {
         if (!res.message){
-          const templateDto: TemplateMetaData = {
-            id: res.id,
-            filename: res.filename,
-            parameters: res.parameters,
-            accessLevel: res.accessLevel,
-            icon: res.icon,
-            readme: res.readme
-          }
-        
-          const t = TemplateClass.fromDTO(templateDto)
-          setTemplate(template => ({
-            ...template,
-            ...t}))
+          setTemplate(res)
         } else {
           const Errormessage = intl.formatMessage({
             id: 'pages.templateInfo.failure',
