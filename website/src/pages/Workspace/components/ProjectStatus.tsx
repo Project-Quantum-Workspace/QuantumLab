@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusType } from '@/utils/types/projectItemTypes';
+import { StatusType } from '../utils/types/projectItemTypes';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { CaretRightFilled, CloudFilled, LoadingOutlined, PauseCircleFilled, WarningFilled } from '@ant-design/icons';
 

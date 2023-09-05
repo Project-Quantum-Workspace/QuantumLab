@@ -4,7 +4,7 @@ import { Space, Table, Tag } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
 import { getAllWorkspace } from '@/services/quantumlab/workspace';
-import { WorkspaceInfoMetaData } from '@/utils/types/WorkspaceTypes';
+import { WorkspaceInfoMetaData } from '../utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
 import moment from 'moment';
 import { PageLoading } from '@ant-design/pro-components';

@@ -1,24 +1,38 @@
 // @ts-ignore
 /* eslint-disable */
-import { BaseApi } from '@/utils/BaseApi';
-
+import { request } from '@umijs/max';
 
 /** Get current user GET /api/auth/currentUser */
-class AuthApi extends BaseApi {
-  currentUser() {
-    return this.loadByGet('/api/auth/currUser')
-      .then((res) => {
-        return res.message ? res.message : res
-     })
-  }
-
-  login(data: object) {
-    return this.loadByPost('/api/auth/login', data, 'json', false)
-  }
-
-  logout() {
-    return this.loadByPost('/api/auth/logout')
-  }
+export async function currentUser(token:string, options?: { [key: string]: any }) {
+ 
+  return request<{
+    [x: string]: any;
+    data: API.CurrentUser;
+  }>('/api/auth/currUser', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    ...(options || {}),
+  });
 }
 
-export default new AuthApi()
+/** Login POST /api/auth/login */
+export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
+  return request<API.LoginResult>('/api/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** Logout POST /api/auth/logout */
+export async function logout(options?: { [key: string]: any }) {
+  return request<Record<string, any>>('/api/auth/logout', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}

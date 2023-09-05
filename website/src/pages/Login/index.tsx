@@ -1,4 +1,5 @@
 import { Footer } from '@/components';
+import { login } from '@/services/quantumlab/auth';
 import { GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -6,10 +7,8 @@ import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from
 import { Alert, Tabs, message } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-import Logo from '../../../public/icons/logo.svg';
+import logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
-import AuthApi from "@/services/quantumlab/auth";
-
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -108,13 +107,17 @@ const Login: React.FC = () => {
         email: values.email,
         password: values.password
       }
-      const msg = await AuthApi.login({ ...obj });
+      const msg = await login({ ...obj });
       
       if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: 'Login successful!',
         });
+        if (msg.accessToken) {
+          localStorage.setItem('token', msg.accessToken);
+
+        }
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         //const urlParams = new URL(window.location.href).searchParams;
@@ -158,7 +161,7 @@ const Login: React.FC = () => {
           }}
 
 
-          logo={<img alt="logo" src={Logo} style={{ width: '80%', height: 'auto'}}/>}
+          logo={<img alt="logo" src={"/public/icons/logo.svg"} style={{ width: '80%', height: 'auto'}}/>}
         
 
 

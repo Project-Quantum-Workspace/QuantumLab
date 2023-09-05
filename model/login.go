@@ -13,5 +13,7 @@ type LoginUsecase interface {
 }
 
 type LoginResponse struct {
-	Status string `json:"status"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	Status       string `json:"status"`
 }

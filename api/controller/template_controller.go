@@ -3,10 +3,12 @@ package controller
 import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
-	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
-	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"log"
 	"net/http"
+	"strings"
+
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,13 +59,9 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
-	authToken, err := tokenutil.GetAuthToken(c)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "Could not find authorization token",
-		})
-		return
-	}
+	authHeader := c.Request.Header.Get("Authorization")
+	tokens := strings.Split(authHeader, " ")
+	authToken := tokens[1]
 	accessLevel, err := tokenutil.ExtractAccessLevelFromToken(authToken, tc.Env.AccessJWTSecret)
 	if err != nil {
 		log.Println(err)

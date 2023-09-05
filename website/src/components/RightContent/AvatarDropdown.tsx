@@ -1,4 +1,4 @@
-import AuthApi from '@/services/quantumlab/auth';
+import { logout } from '@/services/quantumlab/auth';
 import { LogoutOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
@@ -20,12 +20,12 @@ export const AvatarName = () => {
   return <span className="anticon">{currentUser?.firstName}</span>;
 };
 
-export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ children }) => {
+export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
   /**
    * Exit the login status and save the current url
    */
   const logOut = async () => {
-    await AuthApi.logout();
+    await logout();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     localStorage.removeItem('token');

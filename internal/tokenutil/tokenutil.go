@@ -2,7 +2,6 @@ package tokenutil
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"time"
 
@@ -87,12 +86,4 @@ func ExtractAccessLevelFromToken(requestToken string, secret string) (accessLeve
 		return "", err
 	}
 	return fmt.Sprintf("%v", claims["accessLevel"].(float64)), nil
-}
-
-func GetAuthToken(c *gin.Context) (token string, err error) {
-	auth, err := c.Cookie("Authorization")
-	if err != nil {
-		return "token not found", err
-	}
-	return auth, err
 }
