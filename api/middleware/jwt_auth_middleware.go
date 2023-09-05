@@ -5,25 +5,31 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 )
 
 func JwtAuthenticator(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeaders := c.Request.Header.Get("Authorization")
-		authTokens := strings.Split(authHeaders, " ")
-		if len(authTokens) == 2 {
-			token := authTokens[1]
-			authorization, err := tokenutil.IsAuthorized(token, secret)
-			if authorization {
-				c.Next()
-				return
-			}
-			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
+
+		authToken, err := tokenutil.GetAuthToken(c)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized!"})
 			c.Abort()
 			return
 		}
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized!"})
+
+		authorization, err := tokenutil.IsAuthorized(authToken, secret)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "There was an error authorizing your token!"})
+			c.Abort()
+			return
+		}
+
+		if authorization {
+			c.Next()
+			return
+		}
+
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: err.Error()})
 		c.Abort()
 	}
 }
