@@ -1,0 +1,22 @@
+[
+  {
+    "email": "jane.doe@example.com",
+    "uuid": "uuid1",
+    "id": 1,
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "accountStatus": 1,
+    "accessLevel": 1,
+    "role": "Admin"
+  },
+  {
+    "email": "john.doe@example.com",
+    "uuid": "uuid2",
+    "id": 2,
+    "firstName": "John",
+    "lastName": "Doe",
+    "accountStatus": 0,
+    "accessLevel": 0,
+    "role": "User"
+  }
+]
