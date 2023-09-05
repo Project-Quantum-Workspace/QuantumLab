@@ -158,19 +158,17 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	})
 }
 
-// GetPresetIconList @Summary Delete template
-// @Description Delete a workspace template.
+// GetPresetIconList @Summary Get template
+// @Description Get the preset template icons.
 // @Tags templates
 // @Produce json
-// @Param id path uint true "Template ID"
-// @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Request Parse Error"
-// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
-// @Router /templates/{id} [delete]
+// @Success 200 {object} {"files": fileList}
+// @Failure 500 {object} model.ErrorResponse "Failed to retrieve file list"
+// @Router /templates/icons [get]
 func (tc *TemplateController) GetPresetIconList(c *gin.Context) {
 	fileList, err := listFilesInDirectory("./website/dist/icons/")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve file list"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Failed to retrieve file list"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"files": fileList})
