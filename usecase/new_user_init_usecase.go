@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/generatorutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/sirupsen/logrus"
 )
@@ -28,6 +29,14 @@ func (uiu *userInitUsecase) CreateFirstUser(user model.User) error {
 		logrus.Infof("error counting number of users")
 		return errors.New("already has users")
 	}
+	role := model.Role{
+		ID:   0,
+		Name: `Root Administrator`,
+	}
+	user.AccessLevel = 10
+	user.AccountStatus = true
+	user.QuantumlabToken = generatorutil.GenerateQuantumLabToken()
+	user.Roles = []model.Role{role}
 	err := uiu.userRepository.CreateFirstUser(user)
 	if err != nil {
 		logrus.Errorf("error creating the first user: %v", err.Error())
