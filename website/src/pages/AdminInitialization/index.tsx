@@ -28,10 +28,9 @@ const AdminInitialization = () => {
       if (response.ok) {
         setSubmitted(true);
         message.success('Admin account setup successful! Redirecting to login page...', 2); // Show success message for 2 seconds
+        setSubmitted(true); // 先设置 submitted 为 true
         setTimeout(() => {
-          if (submitted) { // 添加条件检查
-            navigate('/login');
-          }
+          navigate('/login');
         }, 2000);
       } else {
         // Handle error
