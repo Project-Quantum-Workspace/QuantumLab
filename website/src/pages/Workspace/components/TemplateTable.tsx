@@ -1,7 +1,6 @@
 import { ColumnsType } from 'antd/es/table'
-import React, {useEffect, useState } from 'react'
-import moment from 'moment'
-import { Space, Table,Image } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Space, Table, Image } from 'antd'
 import { Link } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
 import { getAccessibleTemplates } from '@/services/quantumlab/template'
@@ -18,9 +17,9 @@ const columns: ColumnsType<TemplateMetaData> = [
     key: 'templateId',
     dataIndex: 'icon',
     render: (icon) => {
-      
+
       return (<>
-        <Image src={icon}/>
+        <Image src={icon} />
       </>)
     }
   },
@@ -34,7 +33,9 @@ const columns: ColumnsType<TemplateMetaData> = [
     title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    render: (t) => <a style={{ fontSize: '15px', color: 'black' }}>{moment(t).format("MMM Do YYYY")}</a>
+    render: (t) => {
+      return <a style={{ fontSize: '15px', color: 'black' }}>{t ? new Date(t).toLocaleString().substring(0, 9) : new Date().toLocaleString().substring(0, 9)}</a>
+    }
   },
   {
     title: 'Access Level',
@@ -60,21 +61,21 @@ const TemplateTable = (props: Props) => {
   const [templates, setTemplates] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  useEffect(()=>{
+  useEffect(() => {
     getAccessibleTemplates()
-    .then((res)=>{
-      setTemplates(res);
-      setLoading(false);
-    })
-    .catch((error)=>{
-      console.log(error);
-      setError(error.message);
-    })
-  },[])
-  if(error)return <><h1>{error
+      .then((res) => {
+        setTemplates(res);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError(error.message);
+      })
+  }, [])
+  if (error) return <><h1>{error
   }</h1></>
-  if(loading){
-    return <PageLoading/>
+  if (loading) {
+    return <PageLoading />
   }
   return <Table columns={columns} dataSource={templates}
     rowKey={t => String(t.id)} />
