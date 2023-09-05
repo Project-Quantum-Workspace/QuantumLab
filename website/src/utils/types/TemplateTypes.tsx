@@ -2,8 +2,9 @@ export type TemplateMetaData = {
   id: number;
   filename: string;
   parameters: string;
-  accessLevel: string;
+  accessLevel: number;
   icon: string;
+  createdAt:string;
   readme: string;
 };
 
@@ -19,7 +20,7 @@ export class TemplateClass {
     readonly id: number,
     readonly parameters: TemplateField[],
     readonly filename: string,
-    readonly accessLevel: string,
+    readonly accessLevel: number,
     readonly icon: string,
     readonly readme: string
   ){ }

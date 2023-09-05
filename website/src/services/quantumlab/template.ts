@@ -1,5 +1,18 @@
 import { request } from '@umijs/max';
+import { BaseApi } from '@/utils/BaseApi';
+import { TemplateClass } from '@/utils/types/TemplateTypes';
 
+class TemplateApi extends BaseApi {
+  getTemplate(id: string) {
+    return this.loadByGet('/api/templates/'+id)
+      .then((res) => {
+        return res.message ? res.message : TemplateClass.fromDTO(res)
+    })
+  }
+
+
+}
+export default new TemplateApi()
 //get all templates
 export async function getAllTemplates(){
     //console.log(id)
@@ -21,13 +34,3 @@ export async function getAccessibleTemplates(){
       }
     })
   }
-
-    //get template by id
-export async function getTemplate(id: string) {
-  return request('/api/templates/'+id, {
-    method: 'GET',
-    headers:{
-      'Content-Type': 'application/json'
-    }
-  })
-}

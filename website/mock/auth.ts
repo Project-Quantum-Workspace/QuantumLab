@@ -39,27 +39,29 @@ export default {
     if (req.headers.authorization === 'Bearer admin-token') {
       res.send({
         success: true,
-        data: {
-          name: 'LoisW-Admin',
+        
+          firstName: 'LoisW-Admin',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,
           unreadCount: 11,
           access: getAccess(),
-        },
+          accessLevel:10
+        
       });
     }
     if (req.headers.authorization === 'Bearer user-token') {
       res.send({
         success: true,
-        data: {
-          name: 'LoisW-User',
+        
+          firstName: 'LoisW-User',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
           email: 'loisw@test.com',
           notifyCount: 12,
           unreadCount: 11,
           access: getAccess(),
-        },
+          accessLevel:0
+        
       });
     }
   },
@@ -68,6 +70,17 @@ export default {
 
     await waitTime(200);
     if (password === 'admin' && email === 'admin') {
+      res.send({
+        status: 'Logged In Successfully',
+        type,
+        currentAuthority: 'admin',
+        accessToken: 'admin-token',
+        refreshToken: 'admin-token',
+      });
+      access = 'admin';
+      return;
+    }
+    if (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com') {
       res.send({
         status: 'Logged In Successfully',
         type,

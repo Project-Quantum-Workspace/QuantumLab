@@ -24,12 +24,13 @@ import (
 func main() {
 	app := bootstrap.App()
 	engine := gin.Default()
+	workspaceMonitor := make(map[string]string) // A map mapping workspace statuses to relevant UUIDs
 
 	// Load website assets and router.
 	website.InitWebsite(engine)
 
 	// Load API router.
-	route.Setup(app.Env, app.DB, app.ResultDB, engine)
+	route.Setup(app.Env, app.DB, app.ResultDB, engine, workspaceMonitor)
 
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	engine.GET("/healthz", func(context *gin.Context) {

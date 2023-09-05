@@ -42,6 +42,7 @@ export default [
     path: '/home',
     icon: 'home',
     component: './Home',
+    
   },
   {
     name: 'workspace',
@@ -62,29 +63,23 @@ export default [
         component: './Workspace/WorkspaceInfo',
         hideInMenu: true,
       },
-
     ]
   },
-
   {
-    path: '/workspace/new',
-    component: './NewWorkspace',
-    hideInMenu: true,
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer'
   },
   {
     name:'jobmonitor',
     icon:'areaChartOutlined',
     path:'/jobmonitor'
-  },
-
+  }, 
   {
-
     path: '/template/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,
   },
-
-
 
   {
     path: '/admin',
@@ -101,9 +96,27 @@ export default [
         name: 'sub-page',
         component: './Admin',
       },
+      {
+        name:'users',
+        path:'/admin/users',
+        component: './AdminUserList',
+      },
+      {
+        name: 'user-information',
+        path: '/admin/adminView',
+        icon: 'userOutlined',
+        component: './AdminView',
+        hideInMenu: true,
+      },
+      {
+        name: 'admin-update',
+        path: '/admin/adminUpdate',
+        icon: 'settingOutlined',
+        component: './AdminUpdate',
+        hideInMenu: true,
+      },
     ],
   },
-
   {
     name: 'list.table-list',
     icon: 'table',

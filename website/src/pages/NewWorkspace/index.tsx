@@ -1,3 +1,4 @@
+import { getAccessibleTemplates } from '@/services/quantumlab/template';
 import { useModel } from '@umijs/max';
 import {
   Button,
@@ -11,8 +12,7 @@ import {
   notification,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link } from 'umi';
-import { useLocation } from 'umi';
+import { Link, useLocation } from 'umi';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -48,41 +48,28 @@ const NewWorkspace = () => {
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
   const location = useLocation();
-  const { templateId } = location.state;
+  const [templateId, setTemplateId] = useState(0)
 
   useEffect(() => {
     // function to fetch templates
-    const fetchTemplates = async () => {
-      try {
-        setLoadingTemplates(true);
-        const response = await fetch('/api/templates', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          console.log('data:', data);
-          setTemplates(data);
-          console.log('templates:', templates);
-        } else {
-          throw new Error(data.message || 'Error fetching templates.');
-        }
-        setLoadingTemplates(false);
-      } catch (error) {
-        console.error('Error:', error);
-        setTemplatesFetchFailed(true);
-        setLoadingTemplates(false);
-      }
-    };
-
-    // call the function to fetch templates
-    fetchTemplates();
+    getAccessibleTemplates()
+    .then((res)=>{
+      setLoadingTemplates(false)
+      setTemplates(res)
+    })
+    .catch((error)=>{
+      setTemplatesFetchFailed(true)
+      throw new Error(error.message || 'Error fetching templates.');
+    })
+   
   }, []);
 
   useEffect(()=> {
+    
+    if(location.state){
+      setTemplateId( location.state.templateId);
+    }
+    
     const template = templates.find((template) => template.id === templateId);
     if (template && typeof template.parameters === 'string') {
       // Parse the Parameters from string to object
@@ -90,7 +77,7 @@ const NewWorkspace = () => {
       setSelectedTemplate({ ...template, parameters: paramsObject });
     }
   },[templates])
-
+  
   if (loadingTemplates) {
     return <div>Loading templates...</div>;
   }
@@ -161,13 +148,14 @@ const NewWorkspace = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          
         },
         body: JSON.stringify(adjustedValues),
       });
 
       const data = await response.json();
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         notification.success({
           message: 'Success',
           description: data.message,
@@ -189,6 +177,7 @@ const NewWorkspace = () => {
           duration: 5,
         });
       } else {
+        console.log(response)
         notification.error({
           message: 'Error',
           description: 'An unknown error occurred.',
@@ -250,7 +239,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
-            defaultValue={templateId}
+            defaultValue={templateId===0 ? undefined :templateId}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available
