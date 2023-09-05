@@ -6,7 +6,6 @@ export default {
   'menu.jobMonitor':'Job Monitor',
   'menu.backendStatus':'Backend Status',
   'menu.analyseTool':'Analyse Tool',
-  'menu.documents':'Documents',
   'menu.setting':'Setting',
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',

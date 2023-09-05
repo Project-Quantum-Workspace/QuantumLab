@@ -83,12 +83,7 @@ export default [
     //component: './AnalyseTool',
   },
 
-  {
-    name: 'documents',
-    icon: 'readOutlined',
-    path: '/document',
-    //component: './Document',
-  },
+ 
   {
     name: 'setting',
     icon: 'settingOutlined',
