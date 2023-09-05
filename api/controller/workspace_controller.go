@@ -223,5 +223,4 @@ func (wc *WorkspaceController) GetWorkspaceToolset(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, toolsets)
-	return
 }
