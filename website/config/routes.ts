@@ -30,6 +30,13 @@ export default [
   },
 
   {
+    name: 'firstadmin',
+    path : '/firstadmin',
+    component : './AdminInitialization',
+    hideInMenu: true
+  },
+
+  {
     name: 'home',
     path: '/home',
     icon: 'home',
@@ -39,7 +46,23 @@ export default [
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
-    component: './Workspace',
+    routes:[
+      {
+        path: '/workspace',
+        component: './Workspace',
+      },
+      {
+        path: '/workspace/new',
+        component: './NewWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: '/workspace/:workspaceId',
+        component: './Workspace/WorkspaceInfo',
+        hideInMenu: true,
+      },
+
+    ]
   },
 
   {
@@ -47,11 +70,10 @@ export default [
     component: './NewWorkspace',
     hideInMenu: true,
   },
-
   {
-    path: '/workspace/:workspaceId',
-    component: './Workspace/WorkspaceInfo',
-    hideInMenu: true,
+    name:'jobmonitor',
+    icon:'areaChartOutlined',
+    path:'/jobmonitor'
   },
 
   {
@@ -61,11 +83,6 @@ export default [
     hideInMenu: true,
   },
 
-
-  {
-    path: '/user',
-    component: './AdminUserList',
-  },
 
 
   {
@@ -85,6 +102,7 @@ export default [
       },
     ],
   },
+
   {
     name: 'list.table-list',
     icon: 'table',
@@ -102,10 +120,5 @@ export default [
     layout: false,
     component: './404',
   },
-
-  {
-    path: '/AdminInitialization',
-    component: './AdminInitialization',
-    hideInMenu: true,
-  },
+  
 ];
