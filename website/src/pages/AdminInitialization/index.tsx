@@ -29,7 +29,9 @@ const AdminInitialization = () => {
         setSubmitted(true);
         message.success('Admin account setup successful! Redirecting to login page...', 2); // Show success message for 2 seconds
         setTimeout(() => {
-          navigate('/login'); // 使用 navigate 函数来重定向到 '/login' 路由
+          if (submitted) { // 添加条件检查
+            navigate('/login');
+          }
         }, 2000);
       } else {
         // Handle error

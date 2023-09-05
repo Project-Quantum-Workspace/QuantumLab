@@ -34,7 +34,6 @@ export default [
     path : '/admininitialization',
     component : './AdminInitialization',
     hideInMenu: true,
-    redirect: '/login'
   },
 
   {
@@ -42,7 +41,7 @@ export default [
     path: '/home',
     icon: 'home',
     component: './Home',
-    
+
   },
   {
     name: 'workspace',
@@ -74,7 +73,7 @@ export default [
     name:'jobmonitor',
     icon:'areaChartOutlined',
     path:'/jobmonitor'
-  }, 
+  },
   {
     path: '/template/:templateId',
     component: './TemplateInfo',
