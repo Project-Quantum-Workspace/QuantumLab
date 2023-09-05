@@ -31,3 +31,7 @@ func (wu *workspaceUsecase) UpdateWorkspace(workspace *model.Workspace) error {
 func (wu *workspaceUsecase) DeleteWorkspace(id uint) error {
 	return wu.workspaceRepository.Delete(id)
 }
+
+func (wu *workspaceUsecase) GetWorkspaceToolset(id uint) ([]model.Toolset, error) {
+	return wu.workspaceRepository.GetWorkspaceToolset(id)
+}

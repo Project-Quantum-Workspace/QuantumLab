@@ -19,4 +19,5 @@ func NewWorkspaceRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
 	apiRouterGroup.GET("/workspaces/:id", wc.GetWorkspace)
 	apiRouterGroup.PATCH("/workspaces/:id", wc.UpdateWorkspace)
 	apiRouterGroup.DELETE("/workspaces/:id", wc.DeleteWorkspace)
+	apiRouterGroup.GET("/workspaces/:id/toolset", wc.GetWorkspaceToolset)
 }

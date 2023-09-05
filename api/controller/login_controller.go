@@ -77,6 +77,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 // CheckUser
 // @Summary Gets user details based on the current token
 // @Description Authenticates a token and retrieves associated user information
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.User
@@ -118,6 +119,7 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 // Logout
 // @Summary Removes the JWT token from cookies
 // @Description Removes both access and refresh JWT Tokens from cookies
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.LoginResponse

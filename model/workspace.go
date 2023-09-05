@@ -30,12 +30,21 @@ type CreateWorkspaceRequest struct {
 	UserID    uint      `json:"userId"`
 }
 
+type Toolset struct {
+	Name       string `json:"name"`
+	Icon       string `json:"icon"`
+	Type       string `json:"type"`
+	AccessType string `json:"accessType"`
+	AccessID   string `json:"accessID"`
+}
+
 type WorkspaceRepository interface {
 	Create(workspace *Workspace, userID uint) error
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (Workspace, error)
 	Update(workspace *Workspace) error
 	Delete(id uint) error
+	GetWorkspaceToolset(id uint) ([]Toolset, error)
 }
 
 type WorkspaceUsecase interface {
@@ -44,4 +53,5 @@ type WorkspaceUsecase interface {
 	GetWorkspace(id uint) (Workspace, error)
 	UpdateWorkspace(workspace *Workspace) error
 	DeleteWorkspace(id uint) error
+	GetWorkspaceToolset(id uint) ([]Toolset, error)
 }

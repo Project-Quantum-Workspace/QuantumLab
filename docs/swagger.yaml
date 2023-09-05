@@ -37,10 +37,6 @@ definitions:
     type: object
   model.LoginResponse:
     properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
       status:
         type: string
     type: object
@@ -68,6 +64,19 @@ definitions:
       id:
         type: integer
       parameters:
+        type: string
+    type: object
+  model.Toolset:
+    properties:
+      accessID:
+        type: string
+      accessType:
+        type: string
+      icon:
+        type: string
+      name:
+        type: string
+      type:
         type: string
     type: object
   model.User:
@@ -311,6 +320,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Gets user details based on the current token
+      tags:
+      - auth
   /auth/login:
     post:
       consumes:
@@ -343,6 +354,21 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Log a user in
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Removes both access and refresh JWT Tokens from cookies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+      summary: Removes the JWT token from cookies
       tags:
       - auth
   /templates:
@@ -565,6 +591,35 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update workspace
+      tags:
+      - workspaces
+  /workspaces/{id}/toolset:
+    get:
+      description: Retrieve workspace toolsets by workspace id
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Toolset'
+            type: array
+        "400":
+          description: Invalid workspace ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all toolsets associated with a workspace
       tags:
       - workspaces
   /workspaces/users/{id}:

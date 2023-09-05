@@ -232,6 +232,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "auth"
+                ],
                 "summary": "Gets user details based on the current token",
                 "responses": {
                     "200": {
@@ -296,6 +299,29 @@ const docTemplate = `{
                         "description": "Error Creating Access/Refresh Token",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "Removes both access and refresh JWT Tokens from cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Removes the JWT token from cookies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
                         }
                     }
                 }
@@ -682,6 +708,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/workspaces/{id}/toolset": {
+            "get": {
+                "description": "Retrieve workspace toolsets by workspace id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaces"
+                ],
+                "summary": "Get all toolsets associated with a workspace",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Toolset"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid workspace ID",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -742,12 +812,6 @@ const docTemplate = `{
         "model.LoginResponse": {
             "type": "object",
             "properties": {
-                "accessToken": {
-                    "type": "string"
-                },
-                "refreshToken": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "string"
                 }
@@ -789,6 +853,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "parameters": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Toolset": {
+            "type": "object",
+            "properties": {
+                "accessID": {
+                    "type": "string"
+                },
+                "accessType": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
