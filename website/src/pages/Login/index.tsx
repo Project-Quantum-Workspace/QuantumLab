@@ -9,9 +9,6 @@ import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
 
 
 const OAuthLogin = () => {
@@ -37,7 +34,6 @@ const OAuthLogin = () => {
 };
 
 const Lang = () => {
-
   const langClass = useEmotionCss(({ token }) => {
     return {
       width: 42,
@@ -75,46 +71,9 @@ const LoginMessage: React.FC<{
 };
 
 const Login: React.FC = () => {
-
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-
-  const [userExists, setUserExists] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // 发送 GET 请求来检查用户是否已存在
-    const checkUserExists = async () => {
-      try {
-        const response = await fetch('/api/init', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const userExists = await response.json();
-          setUserExists(userExists);
-
-          if (userExists) {
-            // 如果用户已存在，执行重定向到 AdminInitialization 页面
-            navigate('/admin-initialization');
-          }
-        } else {
-          // 处理错误
-          console.error('Error checking user existence');
-          message.error('Failed to check user existence. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    checkUserExists();
-  }, [navigate]);
-
 
   const containerClassName = useEmotionCss(() => {
     return {
