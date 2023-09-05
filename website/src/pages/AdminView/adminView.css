@@ -1,0 +1,27 @@
+.userInfor{
+    font-size: large;
+}
+.css-dev-only-do-not-override-hebe5m{
+    font-size: 17px;
+}
+
+h1{
+    font-size: 1vw;
+}
+h2{
+    font-size: 2vw;   
+    text-align: left; 
+}
+.container{
+    margin-top: 6vh;
+    margin-left: 10vh;
+/* top:500px;
+position: relative; */
+}
+.avatar{
+    text-align: center;
+    margin-top: 20%;
+}
+img {
+    border-radius: 50%;
+  }

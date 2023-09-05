@@ -2,6 +2,7 @@ import { TemplateMetaData } from '@/pages/Workspace/utils/types/TemplateTypes';
 import { Request, Response} from 'express';
 
 import moment  from 'moment';
+import { defaultTemplate } from './listTemplateTable';
 
 
 type WorkspaceInfoMetaData={
@@ -35,6 +36,7 @@ const genWorkspaceList = (current:number, pageSize:number)=>{
             state: stutusValue[i],
             parameters: '{"Disk Size": "50G", "Available Zone": "qh2-uom"}',
             tags: 'CPU, Qiskit',
+            template:defaultTemplate(1)
   
         })
     }

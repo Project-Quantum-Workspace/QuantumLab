@@ -67,6 +67,7 @@ const AdminUserList: React.FC = () => {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        
       },
       body: JSON.stringify(payload),
     });
@@ -138,6 +139,7 @@ const AdminUserList: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          
         },
         body: JSON.stringify(payload),
       });
