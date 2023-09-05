@@ -7,9 +7,8 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"log"
 	"net/http"
-  "os"
+	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
