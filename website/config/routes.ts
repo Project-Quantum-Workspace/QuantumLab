@@ -30,8 +30,8 @@ export default [
   },
 
   {
-    name: 'firstadmin',
-    path : '/firstadmin',
+    name: 'admininitialization',
+    path : '/admininitialization',
     component : './AdminInitialization',
     hideInMenu: true,
     redirect: '/login'
