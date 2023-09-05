@@ -16,7 +16,7 @@ func NewUserInitRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.Rout
 	}
 
 	authRouterGroup := apiRouterGroup.Group("/init")
-	//authRouterGroup.POST("/login", lc.Login)
-	authRouterGroup.GET("", nuic.NewUserInitializer)
+	authRouterGroup.GET("", nuic.CheckHasUser)
+	authRouterGroup.POST("", nuic.NewUserInitializer)
 
 }

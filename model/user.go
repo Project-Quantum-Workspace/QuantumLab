@@ -54,5 +54,6 @@ type UserRepository interface {
 }
 
 type NewUserInitUsecase interface {
-	CreateFirstUser() (User, error)
+	CreateFirstUser(user User) error
+	GetUserCount() (int64, error)
 }

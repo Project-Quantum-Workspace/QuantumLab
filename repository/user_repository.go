@@ -20,7 +20,7 @@ func NewUserRepository(db *gorm.DB) model.UserRepository {
 
 func (ur *userRepository) CreateFirstUser(users model.User) error {
 	result := ur.qlDB.
-		Omit("ID", "UUID", "Workspaces", "Roles.*", "FirstName", "LastName", "AccountStatus", "Avatar").
+		Omit("ID", "UUID", "Workspaces", "Roles.*").
 		Create(&users)
 	return result.Error
 }
