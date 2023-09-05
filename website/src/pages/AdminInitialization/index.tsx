@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import {
   Form,
   Input,
@@ -8,14 +7,13 @@ import {
   Result,
   message
 } from 'antd';
-
-
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
 const AdminInitialization = () => {
   const [submitted, setSubmitted] = useState(false);
-  const [redirectToLogin, setRedirectToLogin] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     try {
@@ -31,8 +29,8 @@ const AdminInitialization = () => {
         setSubmitted(true);
         message.success('Admin account setup successful! Redirecting to login page...', 2); // Show success message for 2 seconds
         setTimeout(() => {
-          setRedirectToLogin(true);
-        }, 2000); // Redirect to login after 2 seconds
+          navigate('/login'); // 使用 navigate 函数来重定向到 '/login' 路由
+        }, 2000);
       } else {
         // Handle error
         console.error('Error saving admin details');
@@ -42,10 +40,6 @@ const AdminInitialization = () => {
       console.error('Error:', error);
     }
   };
-
-  if (redirectToLogin) {
-    return <Redirect to="/login" />;
-  }
 
   return (
     <div className="admin-initialization">
