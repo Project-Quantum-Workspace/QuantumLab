@@ -5,7 +5,7 @@ import { Link } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
 import { getAccessibleTemplates } from '@/services/quantumlab/template'
 import { PageLoading } from '@ant-design/pro-components'
-import { TemplateMetaData } from '../utils/types/TemplateTypes'
+import { TemplateMetaData } from '../utils/types/TemplateTypes.tsx'
 
 interface Props {
   data: number | undefined
