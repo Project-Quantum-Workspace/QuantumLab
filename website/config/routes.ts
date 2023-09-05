@@ -33,7 +33,8 @@ export default [
     name: 'firstadmin',
     path : '/firstadmin',
     component : './AdminInitialization',
-    hideInMenu: true
+    hideInMenu: true,
+    redirect: '/login'
   },
 
   {
@@ -120,5 +121,5 @@ export default [
     layout: false,
     component: './404',
   },
-  
+
 ];

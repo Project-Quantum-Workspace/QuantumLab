@@ -8,7 +8,6 @@ import {
   Result,
   message
 } from 'antd';
-import 'antd/dist/antd.css';
 
 
 const { Title, Paragraph } = Typography;
