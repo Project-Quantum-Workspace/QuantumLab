@@ -3,10 +3,12 @@ package controller
 import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LoginController struct {
@@ -36,8 +38,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 	}
 
 	user, err := lc.LoginUsecase.FindUser(request.Email)
-	// TODO: Hash Passwords
-	if err != nil || user.Password != request.Password {
+	if err != nil || !validationutil.CheckHash(request.Password, user.Password) {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Incorrect Email or Password"})
 		return
 	}
@@ -61,8 +62,8 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", true, true)
-	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", true, true)
+	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", false, true)
+	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", false, true)
 
 	c.SetCookie("Authorization", accessToken, 7200, "/", "quantumlab.cloud", true, true)
 	c.SetCookie("Refresh", refreshToken, 7200, "/", "quantumlab.cloud", true, true)
@@ -123,8 +124,8 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 // @Success 200 {object} model.LoginResponse
 // @Router /auth/logout [post]
 func (lc *LoginController) Logout(c *gin.Context) {
-	c.SetCookie("Authorization", "", -1, "/", "localhost", true, true)
-	c.SetCookie("Refresh", "", -1, "/", "localhost", true, true)
+	c.SetCookie("Authorization", "", -1, "/", "localhost", false, true)
+	c.SetCookie("Refresh", "", -1, "/", "localhost", false, true)
 
 	c.SetCookie("Authorization", "", -1, "/", "quantumlab.cloud", true, true)
 	c.SetCookie("Refresh", "", -1, "/", "quantumlab.cloud", true, true)

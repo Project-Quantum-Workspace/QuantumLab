@@ -14,7 +14,10 @@ require (
 	gorm.io/gorm v1.25.1
 )
 
-require gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+require (
+	github.com/alexedwards/argon2id v0.0.0-20230305115115-4b3c3280a736 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

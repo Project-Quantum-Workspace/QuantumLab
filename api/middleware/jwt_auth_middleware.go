@@ -1,10 +1,11 @@
 package middleware
 
 import (
+	"net/http"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func JwtAuthenticator(secret string) gin.HandlerFunc {
@@ -19,7 +20,7 @@ func JwtAuthenticator(secret string) gin.HandlerFunc {
 
 		authorization, err := tokenutil.IsAuthorized(authToken, secret)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "There was an error authorizing your token!"})
+			c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "You are not authorized!"})
 			c.Abort()
 			return
 		}

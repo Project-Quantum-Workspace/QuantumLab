@@ -101,6 +101,11 @@ func sendUserInvitations(emailList []string,
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
+		hashedPassword, err := validationutil.GenerateHash(password)
+		if err != nil {
+			logrus.Errorf("error hashing password: %v", err.Error())
+			continue
+		}
 		qlToken := generatorutil.GenerateQuantumLabToken()
 		wg.Add(1)
 
@@ -108,7 +113,7 @@ func sendUserInvitations(emailList []string,
 			defer wg.Done()
 			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
 			if err == nil {
-				userArray[index] = defaultUser(email, password, qlToken, role)
+				userArray[index] = defaultUser(email, hashedPassword, qlToken, role)
 			}
 		}(i, email)
 	}
