@@ -69,7 +69,15 @@ func (uau *userAdminUsecase) GetUserDetail(id uint) (model.User, error) {
 }
 
 func (uau *userAdminUsecase) UpdateUser(user model.User) error {
-	// TODO: hash the password
+	if user.Password != "" {
+		// hash password
+		hashedPassword, err := validationutil.GenerateHash(user.Password)
+		if err != nil {
+			logrus.Errorf("error hashing password: %v", err.Error())
+			return err
+		}
+		user.Password = hashedPassword
+	}
 	return uau.userRepository.Update(user)
 }
 
@@ -103,6 +111,7 @@ func sendUserInvitations(emailList []string,
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
+		// hash password
 		hashedPassword, err := validationutil.GenerateHash(password)
 		if err != nil {
 			logrus.Errorf("error hashing password: %v", err.Error())

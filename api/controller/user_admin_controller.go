@@ -4,14 +4,30 @@ import (
 	"net/http"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/exp/slices"
 )
 
 type UserAdminController struct {
 	Env              *bootstrap.Env
 	UserAdminUsecase model.UserAdminUsecase
+}
+
+func (uac *UserAdminController) isAuthorized(c *gin.Context) bool {
+	// authorize role
+	// only Root and Administrator can access these APIs
+	roleIDs, err := tokenutil.ExtractRoleIDs(c, uac.Env.AccessJWTSecret)
+	if err != nil ||
+		(!slices.Contains(roleIDs, 0) && !slices.Contains(roleIDs, 1)) {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+			Message: "unauthorized",
+		})
+		return false
+	}
+	return true
 }
 
 // @Summary Invite and create users
@@ -24,8 +40,11 @@ type UserAdminController struct {
 // @Failure 400 {object} model.ErrorResponse "Bad Request"
 // @Router /admin/users/invite [post]
 func (uac *UserAdminController) InviteUsers(c *gin.Context) {
-	var emailList []string
+	if !uac.isAuthorized(c) {
+		return
+	}
 
+	var emailList []string
 	err := c.BindJSON(&emailList)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -69,6 +88,10 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /admin/users [get]
 func (uac *UserAdminController) GetUserList(c *gin.Context) {
+	if !uac.isAuthorized(c) {
+		return
+	}
+
 	users, err := uac.UserAdminUsecase.GetUserList()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
@@ -89,8 +112,11 @@ func (uac *UserAdminController) GetUserList(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /admin/users/{id} [get]
 func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
-	var user model.User
+	if !uac.isAuthorized(c) {
+		return
+	}
 
+	var user model.User
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -122,8 +148,11 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /admin/users/{id} [put]
 func (uac *UserAdminController) UpdateUser(c *gin.Context) {
-	var user model.User
+	if !uac.isAuthorized(c) {
+		return
+	}
 
+	var user model.User
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{

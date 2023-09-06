@@ -44,7 +44,7 @@ type UserRepository interface {
 	CreateBatch(users []User) error
 	GetByEmail(email string) (User, error)
 	GetQuantumlabTokenByUUID(uuid string) (string, error)
-	GetRoleID(uid uint) ([]int, error)
+	GetRoleIDs(uid uint) ([]uint, error)
 	GetRegisteredEmails(emailList []string) ([]string, error)
 	GetByID(id uint) (User, error)
 	GetAll() ([]UserListItem, error)

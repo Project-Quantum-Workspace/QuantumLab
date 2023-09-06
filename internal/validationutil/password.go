@@ -2,7 +2,6 @@ package validationutil
 
 import (
 	"github.com/alexedwards/argon2id"
-	"github.com/sirupsen/logrus"
 )
 
 var params = &argon2id.Params{
@@ -20,7 +19,6 @@ func GenerateHash(password string) (string, error) {
 func CheckHash(password string, hash string) bool {
 	match, err := argon2id.ComparePasswordAndHash(password, hash)
 	if err != nil {
-		logrus.Error(err)
 		return false
 	}
 	return match

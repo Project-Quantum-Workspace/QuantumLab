@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"gorm.io/gorm"
@@ -42,8 +43,8 @@ func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) 
 	return users[0].QuantumlabToken, nil
 }
 
-func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
-	var RID []int
+func (ur *userRepository) GetRoleIDs(uid uint) ([]uint, error) {
+	var RID []uint
 	result := ur.qlDB.Raw(`SELECT role_id FROM user_roles WHERE user_roles.user_id = ?`, uid).Scan(&RID)
 	if result.Error != nil {
 		return RID, result.Error

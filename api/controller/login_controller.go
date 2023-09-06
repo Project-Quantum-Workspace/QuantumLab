@@ -43,7 +43,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	roles, err := lc.LoginUsecase.GetRoleID(user.ID)
+	roles, err := lc.LoginUsecase.GetRoleIDs(user.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Could not find associated role"})
 		return
@@ -104,7 +104,7 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 			print(err)
 			return
 		}
-		userEmail := claims["email"].(string)
+		userEmail := claims.Email
 		user, err := lc.LoginUsecase.FindUser(userEmail)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized,
