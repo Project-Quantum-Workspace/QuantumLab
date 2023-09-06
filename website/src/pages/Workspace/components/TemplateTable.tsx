@@ -1,68 +1,72 @@
 import { ColumnsType } from 'antd/es/table'
 import React, { useEffect, useState } from 'react'
-import { Space, Table, Image } from 'antd'
-import { Link } from '@umijs/max'
+import { Button, Space, Table, Image } from 'antd'
+import { history } from '@umijs/max'
 import { DoubleRightOutlined } from '@ant-design/icons'
-import { getAccessibleTemplates } from '@/services/quantumlab/template'
+import TemplateApi from '@/services/quantumlab/template'
 import { PageLoading } from '@ant-design/pro-components'
-import { TemplateMetaData } from '../utils/types/TemplateTypes.tsx'
+import { TemplateClass } from '@/utils/types/TemplateTypes'
+import useTemplateStore from '@/stores/TemplateStore'
 
-interface Props {
-  data: number | undefined
-}
-
-const columns: ColumnsType<TemplateMetaData> = [
-  {
-    title: '',
-    key: 'templateId',
-    dataIndex: 'icon',
-    render: (icon) => {
-
-      return (<>
-        <Image src={icon} />
-      </>)
-    }
-  },
-  {
-    title: 'Name',
-    dataIndex: 'filename',
-    key: 'filename',
-    render: (text) => <a style={{ fontSize: '15px', fontWeight: 'bold', color: 'black' }}>{text}</a>
-  },
-  {
-    title: 'Date Created',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    render: (t) => {
-      return <a style={{ fontSize: '15px', color: 'black' }}>{t ? new Date(t).toLocaleString().substring(0, 9) : new Date().toLocaleString().substring(0, 9)}</a>
-    }
-  },
-  {
-    title: 'Access Level',
-    dataIndex: 'accessLevel',
-    key: 'accessLevel',
-
-  },
-  {
-    title: ' ',
-    key: 'action',
-    dataIndex: 'id',
-    render: (id) => (
-      <Space size="middle">
-        <Link to={'/template/' + `${id}`}>
-          <DoubleRightOutlined />
-        </Link>
-      </Space>
-    ),
-  },
-]
-
-const TemplateTable = (props: Props) => {
-  const [templates, setTemplates] = useState([])
+const TemplateTable = () => {
+  const [templates, setTemplates] = useState<TemplateClass[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const { setCurrentTemplate } = useTemplateStore()
+  const handleTemplateinfo = (id: number) => {
+    const template = templates.filter((t) => t.id===id)
+    setCurrentTemplate(template[0])
+    history.push('/template/' + id);
+  }
+  const columns: ColumnsType<TemplateClass> = [
+    {
+      title: '',
+      key: 'templateId',
+      dataIndex: 'icon',
+      render: (icon) => {
+  
+        return (<>
+          <Image src={icon} />
+        </>)
+      }
+    },
+    {
+      title: 'Name',
+      dataIndex: 'filename',
+      key: 'filename',
+      render: (text) => <a style={{ fontSize: '15px', fontWeight: 'bold', color: 'black' }}>{text}</a>
+    },
+    {
+      title: 'Date Created',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (t) => {
+        return <a style={{ fontSize: '15px', color: 'black' }}>{t ? new Date(t).toLocaleString().substring(0, 9) : new Date().toLocaleString().substring(0, 9)}</a>
+      }
+    },
+    {
+      title: 'Access Level',
+      dataIndex: 'accessLevel',
+      key: 'accessLevel',
+  
+    },
+    {
+      title: ' ',
+      key: 'action',
+      dataIndex: 'id',
+      render: (id) => (
+        <Space size="middle">
+          <Button 
+            type='link'
+            icon={<DoubleRightOutlined />} 
+            onClick={() => handleTemplateinfo(id)}
+          />
+        </Space>
+      ),
+    },
+  ]
   useEffect(() => {
-    getAccessibleTemplates()
+    TemplateApi.getAccessibleTemplates()
       .then((res) => {
         setTemplates(res);
         setLoading(false);

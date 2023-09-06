@@ -1,4 +1,4 @@
-import { getAccessibleTemplates } from '@/services/quantumlab/template';
+import TemplateApi from '@/services/quantumlab/template';
 import { useModel } from '@umijs/max';
 import {
   Button,
@@ -52,7 +52,7 @@ const NewWorkspace = () => {
 
   useEffect(() => {
     // function to fetch templates
-    getAccessibleTemplates()
+    TemplateApi.getAccessibleTemplates()
     .then((res)=>{
       setLoadingTemplates(false)
       setTemplates(res)
