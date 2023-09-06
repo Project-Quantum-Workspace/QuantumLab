@@ -92,7 +92,7 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, There is no token!"})
 		return
 	}
-	auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
+	auth, err := tokenutil.IsAuthenticated(authToken, lc.Env.AccessJWTSecret)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
 		return

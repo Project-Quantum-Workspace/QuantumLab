@@ -56,7 +56,7 @@ func GetAuthToken(c *gin.Context) (token string, err error) {
 	return auth, err
 }
 
-func IsAuthorized(requestToken string, secret string) (bool, error) {
+func IsAuthenticated(requestToken string, secret string) (bool, error) {
 	_, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

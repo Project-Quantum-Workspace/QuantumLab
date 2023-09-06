@@ -13,14 +13,14 @@ func JwtAuthenticator(secret string) gin.HandlerFunc {
 
 		authToken, err := tokenutil.GetAuthToken(c)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized!"})
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authenticated!"})
 			c.Abort()
 			return
 		}
 
-		authorization, err := tokenutil.IsAuthorized(authToken, secret)
+		authorization, err := tokenutil.IsAuthenticated(authToken, secret)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized!"})
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authenticated!"})
 			c.Abort()
 			return
 		}
