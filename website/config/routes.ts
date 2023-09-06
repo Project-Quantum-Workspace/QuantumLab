@@ -61,11 +61,35 @@ export default [
     icon:'slidersOutlined',
     path:'/composer'
   },
+  
   {
-    name:'jobmonitor',
-    icon:'areaChartOutlined',
-    path:'/jobmonitor'
+
+    name:'jobMonitor',
+    icon:'dashboardOutlined',
+    path:'/jobMonitor'
+  }, 
+  {
+    name: 'backendStatus',
+    icon: 'databaseOutlined',
+    path: '/backendStatus',
+    //component: './BackendStatus',
   },
+
+  {
+    name: 'analyseTool',
+    icon: 'areaChartOutlined',
+    path: '/analyseTool',
+    //component: './AnalyseTool',
+  },
+
+ 
+  {
+    name: 'setting',
+    icon: 'settingOutlined',
+    path: '/setting',
+    //component: './Setting',
+  },
+
   {
     path: '/template/:templateId',
     component: './TemplateInfo',
@@ -82,11 +106,7 @@ export default [
         path: '/admin',
         redirect: '/admin/sub-page',
       },
-      {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
-      },
+      
       {
         name:'users',
         path:'/admin/users',
@@ -95,34 +115,25 @@ export default [
       {
         name: 'user-information',
         path: '/admin/adminView',
-        icon: 'userOutlined',
         component: './AdminView',
         hideInMenu: true,
       },
       {
         name: 'admin-update',
         path: '/admin/adminUpdate',
-        icon: 'settingOutlined',
         component: './AdminUpdate',
         hideInMenu: true,
       },
 
       {
         name: 'admininitialization',
-        path : '/admin/admininitialization',
+        path : '/admin/adminInitialization',
         component : './AdminInitialization',
         hideInMenu: true,
       },
     ],
   },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
 
-  {
     path: '/',
     redirect: '/home',
   },
