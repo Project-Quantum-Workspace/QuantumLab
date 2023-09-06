@@ -28,14 +28,6 @@ export default [
     path: '/login',
     component: './Login',
   },
-
-  {
-    name: 'admininitialization',
-    path : '/admininitialization',
-    component : './AdminInitialization',
-    hideInMenu: true,
-  },
-
   {
     name: 'home',
     path: '/home',
@@ -112,6 +104,13 @@ export default [
         path: '/admin/adminUpdate',
         icon: 'settingOutlined',
         component: './AdminUpdate',
+        hideInMenu: true,
+      },
+
+      {
+        name: 'admininitialization',
+        path : '/admin/admininitialization',
+        component : './AdminInitialization',
         hideInMenu: true,
       },
     ],
