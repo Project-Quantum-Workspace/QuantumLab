@@ -44,12 +44,8 @@ func (wr *workspaceRepository) GetOwners(id uint) ([]model.User, error) {
 
 func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
 	var workspaces []model.Workspace
-	association := wr.qlDB.Joins("Template").
-		Model(&model.User{ID: userID}).Association("Workspaces")
-	if association.Error != nil {
-		return workspaces, association.Error
-	}
-	err := association.Find(&workspaces)
+	err := wr.qlDB.Joins("Template").
+		Model(&model.User{ID: userID}).Association("Workspaces").Find(&workspaces)
 	// return an empty array instead of nil if no rows are found
 	if workspaces == nil {
 		workspaces = []model.Workspace{}
