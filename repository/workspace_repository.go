@@ -41,17 +41,21 @@ func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, err
 		return workspaces, association.Error
 	}
 	err := association.Find(&workspaces)
+	// return an empty array instead of nil if no rows are found
+	if workspaces == nil {
+		workspaces = []model.Workspace{}
+	}
 	return workspaces, err
 }
 
-func (wr *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
+func (wr *workspaceRepository) GetByID(id uint) (*model.Workspace, error) {
 	var workspace model.Workspace
 	result := wr.qlDB.Joins("Template").First(&workspace, id)
-	return workspace, result.Error
+	return &workspace, result.Error
 }
 
 func (wr *workspaceRepository) Update(workspace *model.Workspace) error {
-	result := wr.qlDB.Model(&workspace).
+	result := wr.qlDB.Model(workspace).
 		Omit("ID", "UUID", "Template").Updates(*workspace)
 	return result.Error
 }

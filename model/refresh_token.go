@@ -10,7 +10,7 @@ type RefreshTokenResponse struct {
 }
 
 type RefreshTokenUsecase interface {
-	FindUser(id string) (User, error)
+	FindUser(id string) (*User, error)
 	CreateAccessToken(user *User, roles []uint, secret string, expiry int) (accessToken string, err error)
 	CreateRefreshToken(user *User, roles []uint, secret string, expiry int) (refreshToken string, err error)
 	ExtractClaimsFromToken(requestToken string, secret string) (*JwtCustomClaims, error)

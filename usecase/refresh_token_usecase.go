@@ -15,7 +15,7 @@ func NewRefreshTokenUsecase(userRepository model.UserRepository) model.RefreshTo
 	}
 }
 
-func (rtu *refreshTokenUsecase) FindUser(email string) (model.User, error) {
+func (rtu *refreshTokenUsecase) FindUser(email string) (*model.User, error) {
 	return rtu.userRepository.GetByEmail(email)
 }
 

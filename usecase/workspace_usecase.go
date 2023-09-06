@@ -20,7 +20,7 @@ func (wu *workspaceUsecase) GetWorkspacesByUser(userID uint) ([]model.Workspace,
 	return wu.workspaceRepository.GetAllByUser(userID)
 }
 
-func (wu *workspaceUsecase) GetWorkspace(id uint) (model.Workspace, error) {
+func (wu *workspaceUsecase) GetWorkspace(id uint) (*model.Workspace, error) {
 	return wu.workspaceRepository.GetByID(id)
 }
 

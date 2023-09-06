@@ -6,7 +6,7 @@ type LoginRequest struct {
 }
 
 type LoginUsecase interface {
-	FindUser(email string) (User, error)
+	FindUser(email string) (*User, error)
 	CreateAccessToken(user *User, roles []uint, secret string, expiry int) (accessToken string, err error)
 	CreateRefreshToken(user *User, roles []uint, secret string, expiry int) (refreshToken string, err error)
 	GetRoleIDs(uid uint) ([]uint, error)

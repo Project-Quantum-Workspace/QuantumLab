@@ -50,13 +50,13 @@ func (lc *LoginController) Login(c *gin.Context) {
 	}
 
 	accessToken, err :=
-		lc.LoginUsecase.CreateAccessToken(&user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
+		lc.LoginUsecase.CreateAccessToken(user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Access Token"})
 		return
 	}
 	refreshToken, err :=
-		lc.LoginUsecase.CreateRefreshToken(&user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
+		lc.LoginUsecase.CreateRefreshToken(user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Refresh Token"})
 		return

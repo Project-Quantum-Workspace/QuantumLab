@@ -64,11 +64,11 @@ func (uau *userAdminUsecase) GetUserList() ([]model.UserListItem, error) {
 	return uau.userRepository.GetAll()
 }
 
-func (uau *userAdminUsecase) GetUserDetail(id uint) (model.User, error) {
+func (uau *userAdminUsecase) GetUserDetail(id uint) (*model.User, error) {
 	return uau.userRepository.GetByID(id)
 }
 
-func (uau *userAdminUsecase) UpdateUser(user model.User) error {
+func (uau *userAdminUsecase) UpdateUser(user *model.User) error {
 	if user.Password != "" {
 		// hash password
 		hashedPassword, err := validationutil.GenerateHash(user.Password)

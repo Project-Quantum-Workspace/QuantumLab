@@ -36,17 +36,17 @@ type UserAdminUsecase interface {
 		secret string,
 	) error
 	GetUserList() ([]UserListItem, error)
-	GetUserDetail(id uint) (User, error)
-	UpdateUser(user User) error
+	GetUserDetail(id uint) (*User, error)
+	UpdateUser(user *User) error
 }
 
 type UserRepository interface {
 	CreateBatch(users []User) error
-	GetByEmail(email string) (User, error)
+	GetByEmail(email string) (*User, error)
 	GetQuantumlabTokenByUUID(uuid string) (string, error)
 	GetRoleIDs(uid uint) ([]uint, error)
 	GetRegisteredEmails(emailList []string) ([]string, error)
-	GetByID(id uint) (User, error)
+	GetByID(id uint) (*User, error)
 	GetAll() ([]UserListItem, error)
-	Update(user User) error
+	Update(user *User) error
 }

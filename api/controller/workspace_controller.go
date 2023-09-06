@@ -82,10 +82,6 @@ func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 		return
 	}
 
-	// write into reponse an empty array instead of null if no rows are returned
-	if workspaces == nil {
-		workspaces = []model.Workspace{}
-	}
 	c.JSON(http.StatusOK, workspaces)
 }
 
@@ -99,8 +95,6 @@ func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /workspaces/{id} [get]
 func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
-	var workspace model.Workspace
-
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -109,7 +103,7 @@ func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
 		return
 	}
 
-	workspace, err = wc.WorkspaceUsecase.GetWorkspace(id)
+	workspace, err := wc.WorkspaceUsecase.GetWorkspace(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",

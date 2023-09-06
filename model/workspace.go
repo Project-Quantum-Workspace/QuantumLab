@@ -33,7 +33,7 @@ type CreateWorkspaceRequest struct {
 type WorkspaceRepository interface {
 	Create(workspace *Workspace, userID uint) error
 	GetAllByUser(userID uint) ([]Workspace, error)
-	GetByID(id uint) (Workspace, error)
+	GetByID(id uint) (*Workspace, error)
 	Update(workspace *Workspace) error
 	Delete(id uint) error
 }
@@ -41,7 +41,7 @@ type WorkspaceRepository interface {
 type WorkspaceUsecase interface {
 	CreateWorkspace(workspace *Workspace, userID uint) error
 	GetWorkspacesByUser(userID uint) ([]Workspace, error)
-	GetWorkspace(id uint) (Workspace, error)
+	GetWorkspace(id uint) (*Workspace, error)
 	UpdateWorkspace(workspace *Workspace) error
 	DeleteWorkspace(id uint) error
 }

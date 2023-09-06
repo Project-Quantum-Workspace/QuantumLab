@@ -116,7 +116,6 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 		return
 	}
 
-	var user model.User
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -125,7 +124,7 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 		return
 	}
 
-	user, err = uac.UserAdminUsecase.GetUserDetail(id)
+	user, err := uac.UserAdminUsecase.GetUserDetail(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -152,7 +151,7 @@ func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var user model.User
+	var user *model.User
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{

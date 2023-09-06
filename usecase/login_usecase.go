@@ -15,7 +15,7 @@ func NewLoginUC(userRepository model.UserRepository) model.LoginUsecase {
 	}
 }
 
-func (lu *loginUsecase) FindUser(email string) (model.User, error) {
+func (lu *loginUsecase) FindUser(email string) (*model.User, error) {
 	return lu.userRepository.GetByEmail(email)
 }
 
