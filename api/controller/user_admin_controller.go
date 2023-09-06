@@ -8,12 +8,13 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/exp/slices"
 )
 
 type UserAdminController struct {
-	Env              *bootstrap.Env
 	UserAdminUsecase model.UserAdminUsecase
+	Env              *bootstrap.Env
 }
 
 func (uac *UserAdminController) isAuthorized(c *gin.Context) bool {
@@ -25,6 +26,9 @@ func (uac *UserAdminController) isAuthorized(c *gin.Context) bool {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
 			Message: "unauthorized",
 		})
+		if err != nil {
+			logrus.Errorf("error parsing token: %v", err)
+		}
 		return false
 	}
 	return true

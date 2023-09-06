@@ -16,6 +16,23 @@ func (wu *workspaceUsecase) CreateWorkspace(workspace *model.Workspace, userID u
 	return wu.workspaceRepository.Create(workspace, userID)
 }
 
+func (wu *workspaceUsecase) GetWorkspaceOwners(id uint) ([]model.User, error) {
+	return wu.workspaceRepository.GetOwners(id)
+}
+
+func (wu *workspaceUsecase) CheckWorkspaceAccess(workspaceID uint, userID uint) (bool, error) {
+	owners, err := wu.GetWorkspaceOwners(workspaceID)
+	if err != nil {
+		return false, err
+	}
+	for _, owner := range owners {
+		if owner.ID == userID {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 func (wu *workspaceUsecase) GetWorkspacesByUser(userID uint) ([]model.Workspace, error) {
 	return wu.workspaceRepository.GetAllByUser(userID)
 }

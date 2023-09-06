@@ -9,12 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewUserAdminRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
+func NewUserAdminRouter(
+	apiRouterGroup *gin.RouterGroup,
+	db *gorm.DB,
+	env *bootstrap.Env,
+) {
 	ur := repository.NewUserRepository(db)
 	rr := repository.NewRoleRepository(db)
 	uac := controller.UserAdminController{
-		Env:              env,
 		UserAdminUsecase: usecase.NewUserAdminUsecase(ur, rr),
+		Env:              env,
 	}
 
 	userAdminRouterGroup := apiRouterGroup.Group("/admin/users")

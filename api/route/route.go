@@ -15,8 +15,8 @@ func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, wo
 
 	privateApiRouterGroup := engine.Group("/api")
 	privateApiRouterGroup.Use(middleware.JwtAuthenticator(env.AccessJWTSecret))
-	NewUserAdminRouter(env, db, privateApiRouterGroup)
+	NewUserAdminRouter(privateApiRouterGroup, db, env)
 	NewTemplateRouter(env, db, privateApiRouterGroup)
-	NewWorkspaceRouter(db, privateApiRouterGroup)
+	NewWorkspaceRouter(privateApiRouterGroup, db, env)
 	NewResultRouter(rdb, privateApiRouterGroup)
 }

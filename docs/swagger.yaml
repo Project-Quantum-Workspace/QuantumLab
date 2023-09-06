@@ -13,13 +13,6 @@ definitions:
       workspaceStatus:
         type: string
     type: object
-  model.CreateWorkspaceRequest:
-    properties:
-      userId:
-        type: integer
-      workspace:
-        $ref: '#/definitions/model.Workspace'
-    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -37,10 +30,6 @@ definitions:
     type: object
   model.LoginResponse:
     properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
       status:
         type: string
     type: object
@@ -148,6 +137,10 @@ definitions:
         type: string
       updatedAt:
         type: string
+      users:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
       uuid:
         type: string
     type: object
@@ -345,6 +338,19 @@ paths:
       summary: Log a user in
       tags:
       - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Removes both access and refresh JWT Tokens from cookies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+      summary: Removes the JWT token from cookies
   /templates:
     get:
       description: Get all authorised templates.
@@ -456,12 +462,12 @@ paths:
       - application/json
       description: Create a workspace.
       parameters:
-      - description: New workspace with the ID of owner
+      - description: New workspace
         in: body
         name: workspace
         required: true
         schema:
-          $ref: '#/definitions/model.CreateWorkspaceRequest'
+          $ref: '#/definitions/model.Workspace'
       produces:
       - application/json
       responses:

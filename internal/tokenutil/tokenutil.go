@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/golang-jwt/jwt/v4"
@@ -84,15 +83,25 @@ func ExtractClaimsFromToken(requestToken string, secret string) (*model.JwtCusto
 	return &claims, nil
 }
 
-func ExtractRoleIDs(c *gin.Context, secret string) (roleIDs []uint, err error) {
+func ExtractUserID(c *gin.Context, secret string) (uint, error) {
 	token, err := GetAuthToken(c)
 	if err != nil {
-		logrus.Error(err)
+		return 0, err
+	}
+	claims, err := ExtractClaimsFromToken(token, secret)
+	if err != nil {
+		return 0, err
+	}
+	return claims.UserID, nil
+}
+
+func ExtractRoleIDs(c *gin.Context, secret string) ([]uint, error) {
+	token, err := GetAuthToken(c)
+	if err != nil {
 		return nil, err
 	}
 	claims, err := ExtractClaimsFromToken(token, secret)
 	if err != nil {
-		logrus.Error(err)
 		return nil, err
 	}
 	return claims.RoleIDs, nil

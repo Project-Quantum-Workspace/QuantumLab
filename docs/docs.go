@@ -301,6 +301,26 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/logout": {
+            "post": {
+                "description": "Removes both access and refresh JWT Tokens from cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Removes the JWT token from cookies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/templates": {
             "get": {
                 "description": "Get all authorised templates.",
@@ -477,12 +497,12 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "New workspace with the ID of owner",
+                        "description": "New workspace",
                         "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
+                            "$ref": "#/definitions/model.Workspace"
                         }
                     }
                 ],
@@ -705,17 +725,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateWorkspaceRequest": {
-            "type": "object",
-            "properties": {
-                "userId": {
-                    "type": "integer"
-                },
-                "workspace": {
-                    "$ref": "#/definitions/model.Workspace"
-                }
-            }
-        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -742,12 +751,6 @@ const docTemplate = `{
         "model.LoginResponse": {
             "type": "object",
             "properties": {
-                "accessToken": {
-                    "type": "string"
-                },
-                "refreshToken": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "string"
                 }
@@ -910,6 +913,12 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
                 },
                 "uuid": {
                     "type": "string"

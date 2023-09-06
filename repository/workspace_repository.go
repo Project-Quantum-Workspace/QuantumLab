@@ -20,7 +20,7 @@ func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) e
 	err := wr.qlDB.Transaction(func(tx *gorm.DB) error {
 		// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
 		// Omit `Template` to forbid auto create of Templates
-		result := tx.Omit("ID", "UUID", "Template").Create(workspace)
+		result := tx.Omit("ID", "UUID", "Template", "Users").Create(workspace)
 		if result.Error != nil {
 			return result.Error
 		}
@@ -31,6 +31,15 @@ func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) e
 		return result.Error
 	})
 	return err
+}
+
+func (wr *workspaceRepository) GetOwners(id uint) ([]model.User, error) {
+	var users []model.User
+	err := wr.qlDB.Model(&model.Workspace{ID: id}).Association("Users").Find(&users)
+	if users == nil {
+		users = []model.User{}
+	}
+	return users, err
 }
 
 func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
@@ -56,7 +65,7 @@ func (wr *workspaceRepository) GetByID(id uint) (*model.Workspace, error) {
 
 func (wr *workspaceRepository) Update(workspace *model.Workspace) error {
 	result := wr.qlDB.Model(workspace).
-		Omit("ID", "UUID", "Template").Updates(*workspace)
+		Omit("ID", "UUID", "Template", "Users").Updates(*workspace)
 	return result.Error
 }
 

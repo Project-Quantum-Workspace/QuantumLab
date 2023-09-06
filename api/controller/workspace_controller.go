@@ -4,14 +4,54 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
 
 type WorkspaceController struct {
 	WorkspaceUsecase model.WorkspaceUsecase
+	Env              *bootstrap.Env
+}
+
+func (wc *WorkspaceController) checkUser(c *gin.Context, id uint) bool {
+	userID, err := tokenutil.ExtractUserID(c, wc.Env.AccessJWTSecret)
+	if err != nil || id != userID {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+			Message: "unauthorized",
+		})
+		if err != nil {
+			logrus.Errorf("error parsing token: %v", err)
+		}
+		return false
+	}
+	return true
+}
+
+func (wc *WorkspaceController) checkWorkspaceAccess(c *gin.Context, workspaceID uint) bool {
+	userID, err := tokenutil.ExtractUserID(c, wc.Env.AccessJWTSecret)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+			Message: "unauthorized",
+		})
+		logrus.Errorf("error parsing token: %v", err)
+		return false
+	}
+	hasAccess, err := wc.WorkspaceUsecase.CheckWorkspaceAccess(workspaceID, userID)
+	if err != nil || !hasAccess {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+			Message: "unauthorized",
+		})
+		if err != nil {
+			logrus.Errorf("error getting workspace owners: %v", err)
+		}
+		return false
+	}
+	return true
 }
 
 // @Summary Create workspace
@@ -19,24 +59,29 @@ type WorkspaceController struct {
 // @Tags workspaces
 // @Accept json
 // @Produce json
-// @Param workspace body model.CreateWorkspaceRequest true "New workspace with the ID of owner"
+// @Param workspace body model.Workspace true "New workspace"
 // @Success 201 {object} model.SuccessResponse
 // @Failure 400 {object} model.ErrorResponse "Request Parse Error"
 // @Failure 500 {object} model.ErrorResponse "Uexpected System Error"
 // @Router /workspaces [post]
 func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
-	var workspaceRequest model.CreateWorkspaceRequest
+	userID, err := tokenutil.ExtractUserID(c, wc.Env.AccessJWTSecret)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+			Message: "unauthorized",
+		})
+		logrus.Errorf("error parsing token: %v", err)
+		return
+	}
 
-	err := c.BindJSON(&workspaceRequest)
+	var workspace model.Workspace
+	err = c.BindJSON(&workspace)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
 		})
 		return
 	}
-
-	workspace := workspaceRequest.Workspace
-	userID := workspaceRequest.UserID
 
 	// get last accessed timestamp
 	workspace.LastAccessed = time.Now()
@@ -66,7 +111,7 @@ func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
 func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 	var workspaces []model.Workspace
 
-	userID, err := validationutil.ValidateID(c.Param("id"))
+	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: "invalid user id",
@@ -74,7 +119,11 @@ func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 		return
 	}
 
-	workspaces, err = wc.WorkspaceUsecase.GetWorkspacesByUser(userID)
+	if !wc.checkUser(c, id) {
+		return
+	}
+
+	workspaces, err = wc.WorkspaceUsecase.GetWorkspacesByUser(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -100,6 +149,10 @@ func (wc *WorkspaceController) GetWorkspace(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: "invalid workspace id",
 		})
+		return
+	}
+
+	if !wc.checkWorkspaceAccess(c, id) {
 		return
 	}
 
@@ -133,6 +186,10 @@ func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: "invalid workspace id",
 		})
+		return
+	}
+
+	if !wc.checkWorkspaceAccess(c, id) {
 		return
 	}
 
@@ -174,6 +231,10 @@ func (wc *WorkspaceController) DeleteWorkspace(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: "invalid workspace id",
 		})
+		return
+	}
+
+	if !wc.checkWorkspaceAccess(c, id) {
 		return
 	}
 
