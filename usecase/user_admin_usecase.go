@@ -49,9 +49,11 @@ func (uau *userAdminUsecase) InviteUsers(
 		timeElapsed := time.Since(start)
 		logrus.Infof("sendUserInvitations took %s", timeElapsed)
 
-		err = uau.userRepository.CreateBatch(users)
-		if err != nil {
-			logrus.Errorf("error creating users: %v", err.Error())
+		if len(users) > 0 {
+			err = uau.userRepository.CreateBatch(users)
+			if err != nil {
+				logrus.Errorf("error creating users: %v", err.Error())
+			}
 		}
 	}()
 

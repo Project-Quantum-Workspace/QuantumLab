@@ -20,7 +20,7 @@ func JwtAuthenticator(secret string) gin.HandlerFunc {
 
 		authorization, err := tokenutil.IsAuthorized(authToken, secret)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "You are not authorized!"})
+			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized!"})
 			c.Abort()
 			return
 		}
