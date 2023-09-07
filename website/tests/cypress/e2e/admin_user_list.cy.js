@@ -1,32 +1,26 @@
 
 function loginThroughUI(email, password) {
-  // // Visit the login page
-  cy.visit('http://localhost:8000/login');  // Adjust this if your login URL is different
+  // // // Visit the login page
+  // cy.visit('http://localhost:8000/login');  // Adjust this if your login URL is different
+  //
+  // cy.get('#email').type(email);  // Adjusted for your provided email input
+  //
+  // // Assuming a similar structure for the password field, adjust if different
+  // cy.get('#password').type(password);
+  //
+  // // Click the login button
+  // cy.get('.ant-btn.ant-btn-primary.ant-btn-lg').click();
+  //
+  // // Wait and verify that the login was successful, for example by checking for a specific element that appears only after login
+  // // cy.get('.logged-in-indicator').should('be.visible');  // Adjust this selector
+  // cy.visit('http://localhost:8000/home');
 
-  cy.get('#email').type(email);  // Adjusted for your provided email input
-
-  // Assuming a similar structure for the password field, adjust if different
-  cy.get('#password').type(password);
-
-  // Click the login button
-  cy.get('.ant-btn.ant-btn-primary.ant-btn-lg').click();
-
-  // Wait and verify that the login was successful, for example by checking for a specific element that appears only after login
-  // cy.get('.logged-in-indicator').should('be.visible');  // Adjust this selector
-  cy.visit('http://localhost:8000/home');
 }
 
 describe('Admin User List', () => {
   beforeEach(() => {
-    // loginThroughUI('workspacequantum@gmail.com','workspacequantum@gmail.com')
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com')
-    // Set up stubs
-    cy.intercept('GET', `${Cypress.env('API_LINK')}/admin/users`, { fixture: 'users.json' }).as('fetchUsers');
-    cy.intercept('PATCH', `${Cypress.env('API_LINK')}/admin/users`, {}).as('setStatus');
-
+    cy.autoLogin('workspacequantum@gmail.com','workspacequantum@gmail.com')
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`)
-    // Wait for the users to load
-    cy.wait('@fetchUsers');
   })
 
   it('should load user data correctly', () => {
