@@ -25,5 +25,6 @@ func NewUserAdminRouter(
 	userAdminRouterGroup.POST("/invite", uac.InviteUsers)
 	userAdminRouterGroup.GET("", uac.GetUserList)
 	userAdminRouterGroup.GET("/:id", uac.GetUserDetail)
+	userAdminRouterGroup.GET("/roles", uac.GetAllRoles)
 	userAdminRouterGroup.PUT("/:id", uac.UpdateUser)
 }

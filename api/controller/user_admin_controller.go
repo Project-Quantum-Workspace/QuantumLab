@@ -139,6 +139,29 @@ func (uac *UserAdminController) GetUserDetail(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// @Summary Get all roles
+// @Description Get all roles
+// @Tags user admin
+// @Produce json
+// @Success 200 {object} model.Role
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /admin/users/roles [get]
+func (uac *UserAdminController) GetAllRoles(c *gin.Context) {
+	if !uac.isAuthorized(c) {
+		return
+	}
+
+	roles, err := uac.UserAdminUsecase.GetAllRoles()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, roles)
+}
+
 // @Summary Update user
 // @Description Update a user.
 // @Tags user admin

@@ -260,6 +260,23 @@ paths:
       summary: Invite and create users
       tags:
       - user admin
+  /admin/users/roles:
+    get:
+      description: Get all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Role'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all roles
+      tags:
+      - user admin
   /agent:
     post:
       consumes:

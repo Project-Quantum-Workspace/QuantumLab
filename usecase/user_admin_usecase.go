@@ -68,6 +68,10 @@ func (uau *userAdminUsecase) GetUserDetail(id uint) (*model.User, error) {
 	return uau.userRepository.GetByID(id)
 }
 
+func (uau *userAdminUsecase) GetAllRoles() ([]model.Role, error) {
+	return uau.roleRepository.GetAll()
+}
+
 func (uau *userAdminUsecase) UpdateUser(user *model.User) error {
 	if user.Password != "" {
 		// hash password
@@ -103,7 +107,7 @@ func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, 
 }
 
 func sendUserInvitations(emailList []string,
-	host string, port int, from string, secret string, role model.Role,
+	host string, port int, from string, secret string, role *model.Role,
 ) []model.User {
 	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
@@ -140,7 +144,7 @@ func sendUserInvitations(emailList []string,
 	return users
 }
 
-func defaultUser(email string, password string, qlToken string, role model.Role) model.User {
+func defaultUser(email string, password string, qlToken string, role *model.Role) model.User {
 	return model.User{
 		Email:           email,
 		Password:        password,
@@ -149,6 +153,6 @@ func defaultUser(email string, password string, qlToken string, role model.Role)
 		AccountStatus:   true,
 		AccessLevel:     1,
 		QuantumlabToken: qlToken,
-		Roles:           []model.Role{role},
+		Roles:           []model.Role{*role},
 	}
 }

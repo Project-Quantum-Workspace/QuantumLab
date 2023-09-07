@@ -37,6 +37,7 @@ type UserAdminUsecase interface {
 	) error
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (*User, error)
+	GetAllRoles() ([]Role, error)
 	UpdateUser(user *User) error
 }
 

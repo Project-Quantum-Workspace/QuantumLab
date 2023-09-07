@@ -83,6 +83,32 @@
                 }
             }
         },
+        "/admin/users/roles": {
+            "get": {
+                "description": "Get all roles",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Get all roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Role"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/{id}": {
             "get": {
                 "description": "Get detailed information of a user.",
