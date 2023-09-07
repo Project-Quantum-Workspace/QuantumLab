@@ -109,7 +109,7 @@ const Login: React.FC = () => {
         password: values.password
       }
       const msg = await AuthApi.login({ ...obj });
-      
+
       if (msg.status === 'Logged In Successfully') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -159,7 +159,7 @@ const Login: React.FC = () => {
 
 
           logo={<img alt="logo" src={Logo} style={{ width: '80%', height: 'auto'}}/>}
-        
+
 
 
           title="QuantumLab"

@@ -28,19 +28,17 @@ export default [
     path: '/login',
     component: './Login',
   },
-
   {
     name: 'home',
     path: '/home',
     icon: 'home',
     component: './Home',
-    
+
   },
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
-    
     routes:[
       {
         path: '/workspace',
@@ -56,7 +54,6 @@ export default [
         component: './Workspace/WorkspaceInfo',
         hideInMenu: true,
       },
-    
     ]
   },
   {
@@ -64,7 +61,9 @@ export default [
     icon:'slidersOutlined',
     path:'/composer'
   },
+  
   {
+
     name:'jobMonitor',
     icon:'dashboardOutlined',
     path:'/jobMonitor'
@@ -96,8 +95,6 @@ export default [
     component: './TemplateInfo',
     hideInMenu: true,
   },
-  
-
 
   {
     path: '/admin',
@@ -127,17 +124,24 @@ export default [
         component: './AdminUpdate',
         hideInMenu: true,
       },
+
+      {
+        name: 'admininitialization',
+        path : '/admin/adminInitialization',
+        component : './AdminInitialization',
+        hideInMenu: true,
+      },
     ],
   },
- 
-  
   {
     path: '/',
     redirect: '/home',
   },
+
   {
     path: '*',
     layout: false,
     component: './404',
   },
+
 ];
