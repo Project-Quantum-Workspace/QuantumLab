@@ -49,7 +49,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 	}
 
 	var emailList []string
-	err := c.BindJSON(&emailList)
+	err := c.ShouldBindJSON(&emailList)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
@@ -164,7 +164,7 @@ func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	err = c.BindJSON(&user)
+	err = c.ShouldBindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),

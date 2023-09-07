@@ -75,7 +75,7 @@ func (wc *WorkspaceController) CreateWorkspace(c *gin.Context) {
 	}
 
 	var workspace model.Workspace
-	err = c.BindJSON(&workspace)
+	err = c.ShouldBindJSON(&workspace)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
@@ -193,7 +193,7 @@ func (wc *WorkspaceController) UpdateWorkspace(c *gin.Context) {
 		return
 	}
 
-	err = c.BindJSON(&workspace)
+	err = c.ShouldBindJSON(&workspace)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),

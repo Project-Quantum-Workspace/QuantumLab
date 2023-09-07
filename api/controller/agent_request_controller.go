@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type AgentRequestController struct {
@@ -25,7 +26,7 @@ func (arc *AgentRequestController) UpdateWorkspaceStatus(c *gin.Context) {
 	var agentRequest model.AgentRequest
 	var err error
 
-	err = c.BindJSON(&agentRequest)
+	err = c.ShouldBindJSON(&agentRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),

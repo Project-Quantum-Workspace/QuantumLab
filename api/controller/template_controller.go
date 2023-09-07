@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
-	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,7 @@ type TemplateController struct {
 // @Router /templates [post]
 func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	var template model.Template
-	err := c.BindJSON(&template)
+	err := c.ShouldBindJSON(&template)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
@@ -96,7 +97,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 	//get id
 	var template model.Template
-	err := c.BindJSON(&template)
+	err := c.ShouldBindJSON(&template)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: err.Error()})
 		return
