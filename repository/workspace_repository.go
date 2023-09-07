@@ -33,13 +33,14 @@ func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) e
 	return err
 }
 
-func (wr *workspaceRepository) GetOwners(id uint) ([]model.User, error) {
-	var users []model.User
-	err := wr.qlDB.Model(&model.Workspace{ID: id}).Association("Users").Find(&users)
-	if users == nil {
-		users = []model.User{}
+func (wr *workspaceRepository) GetOwnerIDs(id uint) ([]uint, error) {
+	var userIDs []uint
+	err := wr.qlDB.Select("id").
+		Model(&model.Workspace{ID: id}).Association("Users").Find(&userIDs)
+	if userIDs == nil {
+		userIDs = []uint{}
 	}
-	return users, err
+	return userIDs, err
 }
 
 func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {

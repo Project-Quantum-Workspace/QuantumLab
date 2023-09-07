@@ -28,7 +28,7 @@ type UserWorkspace struct {
 
 type WorkspaceRepository interface {
 	Create(workspace *Workspace, userID uint) error
-	GetOwners(id uint) ([]User, error)
+	GetOwnerIDs(id uint) ([]uint, error)
 	GetAllByUser(userID uint) ([]Workspace, error)
 	GetByID(id uint) (*Workspace, error)
 	Update(workspace *Workspace) error
@@ -37,7 +37,6 @@ type WorkspaceRepository interface {
 
 type WorkspaceUsecase interface {
 	CreateWorkspace(workspace *Workspace, userID uint) error
-	GetWorkspaceOwners(id uint) ([]User, error)
 	CheckWorkspaceAccess(workspaceID uint, userID uint) (bool, error)
 	GetWorkspacesByUser(userID uint) ([]Workspace, error)
 	GetWorkspace(id uint) (*Workspace, error)
