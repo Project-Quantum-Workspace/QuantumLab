@@ -152,7 +152,7 @@ const AdminUserList: React.FC = () => {
   const handleSend = async (emailList: string[]) => {
 
     try {
-      const response = await fetch('/api/users/invite', {
+      const response = await fetch('/api/admin/users/invite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
