@@ -49,7 +49,7 @@ func CreateRefreshToken(user *model.User, roles []uint, secret string, expiry in
 }
 
 func GetAuthToken(c *gin.Context) (token string, err error) {
-	auth, err := c.Cookie("Authorization")
+	auth, err := c.Cookie("auth")
 	if err != nil {
 		return "token not found", err
 	}
