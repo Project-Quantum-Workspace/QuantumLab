@@ -6,5 +6,6 @@ type Role struct {
 }
 
 type RoleRepository interface {
-	GetByName(name string) (Role, error)
+	GetAll() ([]Role, error)
+	GetByName(name string) (*Role, error)
 }

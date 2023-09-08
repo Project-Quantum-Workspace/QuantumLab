@@ -36,24 +36,25 @@ type UserAdminUsecase interface {
 		secret string,
 	) error
 	GetUserList() ([]UserListItem, error)
-	GetUserDetail(id uint) (User, error)
-	UpdateUser(user User) error
+	GetUserDetail(id uint) (*User, error)
+	GetAllRoles() ([]Role, error)
+	UpdateUser(user *User) error
 }
 
 type UserRepository interface {
+	Create(user *User) error
 	CreateBatch(users []User) error
-	GetByEmail(email string) (User, error)
+	GetByEmail(email string) (*User, error)
 	GetQuantumlabTokenByUUID(uuid string) (string, error)
-	GetRoleID(uid uint) ([]int, error)
+	GetRoleIDs(uid uint) ([]uint, error)
 	GetRegisteredEmails(emailList []string) ([]string, error)
-	GetByID(id uint) (User, error)
+	GetByID(id uint) (*User, error)
 	GetAll() ([]UserListItem, error)
-	Update(user User) error
-	CreateFirstUser(user User) error
+	Update(user *User) error
 	GetCount() (int64, error)
 }
 
 type NewUserInitUsecase interface {
-	CreateFirstUser(user User) error
+	CreateRootAdmin(user *User) error
 	GetUserCount() (int64, error)
 }

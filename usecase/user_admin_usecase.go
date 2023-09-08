@@ -49,9 +49,11 @@ func (uau *userAdminUsecase) InviteUsers(
 		timeElapsed := time.Since(start)
 		logrus.Infof("sendUserInvitations took %s", timeElapsed)
 
-		err = uau.userRepository.CreateBatch(users)
-		if err != nil {
-			logrus.Errorf("error creating users: %v", err.Error())
+		if len(users) > 0 {
+			err = uau.userRepository.CreateBatch(users)
+			if err != nil {
+				logrus.Errorf("error creating users: %v", err.Error())
+			}
 		}
 	}()
 
@@ -62,12 +64,24 @@ func (uau *userAdminUsecase) GetUserList() ([]model.UserListItem, error) {
 	return uau.userRepository.GetAll()
 }
 
-func (uau *userAdminUsecase) GetUserDetail(id uint) (model.User, error) {
+func (uau *userAdminUsecase) GetUserDetail(id uint) (*model.User, error) {
 	return uau.userRepository.GetByID(id)
 }
 
-func (uau *userAdminUsecase) UpdateUser(user model.User) error {
-	// TODO: hash the password
+func (uau *userAdminUsecase) GetAllRoles() ([]model.Role, error) {
+	return uau.roleRepository.GetAll()
+}
+
+func (uau *userAdminUsecase) UpdateUser(user *model.User) error {
+	if user.Password != "" {
+		// hash password
+		hashedPassword, err := validationutil.GenerateHash(user.Password)
+		if err != nil {
+			logrus.Errorf("error hashing password: %v", err.Error())
+			return err
+		}
+		user.Password = hashedPassword
+	}
 	return uau.userRepository.Update(user)
 }
 
@@ -93,7 +107,7 @@ func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, 
 }
 
 func sendUserInvitations(emailList []string,
-	host string, port int, from string, secret string, role model.Role,
+	host string, port int, from string, secret string, role *model.Role,
 ) []model.User {
 	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
@@ -101,6 +115,12 @@ func sendUserInvitations(emailList []string,
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
+		// hash password
+		hashedPassword, err := validationutil.GenerateHash(password)
+		if err != nil {
+			logrus.Errorf("error hashing password: %v", err.Error())
+			continue
+		}
 		qlToken := generatorutil.GenerateQuantumLabToken()
 		wg.Add(1)
 
@@ -108,7 +128,7 @@ func sendUserInvitations(emailList []string,
 			defer wg.Done()
 			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
 			if err == nil {
-				userArray[index] = defaultUser(email, password, qlToken, role)
+				userArray[index] = defaultUser(email, hashedPassword, qlToken, role)
 			}
 		}(i, email)
 	}
@@ -124,7 +144,7 @@ func sendUserInvitations(emailList []string,
 	return users
 }
 
-func defaultUser(email string, password string, qlToken string, role model.Role) model.User {
+func defaultUser(email string, password string, qlToken string, role *model.Role) model.User {
 	return model.User{
 		Email:           email,
 		Password:        password,
@@ -133,6 +153,6 @@ func defaultUser(email string, password string, qlToken string, role model.Role)
 		AccountStatus:   true,
 		AccessLevel:     1,
 		QuantumlabToken: qlToken,
-		Roles:           []model.Role{role},
+		Roles:           []model.Role{*role},
 	}
 }

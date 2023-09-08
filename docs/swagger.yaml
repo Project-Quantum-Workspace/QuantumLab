@@ -13,13 +13,6 @@ definitions:
       workspaceStatus:
         type: string
     type: object
-  model.CreateWorkspaceRequest:
-    properties:
-      userId:
-        type: integer
-      workspace:
-        $ref: '#/definitions/model.Workspace'
-    type: object
   model.ErrorResponse:
     properties:
       message:
@@ -37,10 +30,6 @@ definitions:
     type: object
   model.LoginResponse:
     properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
       status:
         type: string
     type: object
@@ -148,6 +137,10 @@ definitions:
         type: string
       updatedAt:
         type: string
+      users:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
       uuid:
         type: string
     type: object
@@ -267,6 +260,23 @@ paths:
       summary: Invite and create users
       tags:
       - user admin
+  /admin/users/roles:
+    get:
+      description: Get all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Role'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all roles
+      tags:
+      - user admin
   /agent:
     post:
       consumes:
@@ -345,6 +355,49 @@ paths:
       summary: Log a user in
       tags:
       - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Removes both access and refresh JWT Tokens from cookies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+      summary: Removes the JWT token from cookies
+  /init:
+    get:
+      consumes:
+      - application/json
+      description: Check if QL has users already.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'hasUser": true'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get if has user
+      tags:
+      - init
+    post:
+      consumes:
+      - application/json
+      description: Create the first user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: Post the first user
+      tags:
+      - init
   /templates:
     get:
       description: Get all authorised templates.
@@ -450,18 +503,32 @@ paths:
             $ref: '#/definitions/model.ErrorResponse'
       tags:
       - templates
+  /templates/icons:
+    get:
+      description: Get the preset template icons.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Failed to retrieve file list
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      tags:
+      - templates
   /workspaces:
     post:
       consumes:
       - application/json
       description: Create a workspace.
       parameters:
-      - description: New workspace with the ID of owner
+      - description: New workspace
         in: body
         name: workspace
         required: true
         schema:
-          $ref: '#/definitions/model.CreateWorkspaceRequest'
+          $ref: '#/definitions/model.Workspace'
       produces:
       - application/json
       responses:

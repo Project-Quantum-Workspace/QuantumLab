@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewUserInitRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
+func NewUserInitRouter(apiRouterGroup *gin.RouterGroup, db *gorm.DB, env *bootstrap.Env) {
 	ur := repository.NewUserRepository(db)
 	nuic := &controller.NewUserInitializerController{
 		UserInitUsecase: usecase.NewUserInitUsecase(ur),
@@ -17,6 +17,6 @@ func NewUserInitRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.Rout
 
 	authRouterGroup := apiRouterGroup.Group("/init")
 	authRouterGroup.GET("", nuic.CheckHasUser)
-	authRouterGroup.POST("", nuic.NewUserInitializer)
+	authRouterGroup.POST("", nuic.InitRootAdmin)
 
 }
