@@ -66,19 +66,40 @@ const App: React.FC = () => {
 
           onChange={Onchange}
         />
-        {initialState?.currentUser?.accessLevel === 10 ? <Button type="primary"
+        {initialState?.currentUser?.accessLevel === 10 && viewT ? 
+        <div>
+          <Button
+          type="primary"
           style={{
-            width: "150px",
+            backgroundColor: '#0F56B3',
+            marginTop: "8px",marginRight:"2px"
+          }}
+          onClick={() => { history.push('/admin/createTemplate') }}
+          >
+          +
+        </Button>
+        <Button
+          type="primary"
+          style={{
             backgroundColor: '#0F56B3',
             marginTop: "8px"
           }}
-          onClick={() => { history.push('/workspace/new') }}
-        >
-          + New Project
-        </Button> 
-        : <Button>
+          onClick={() => { history.push('/admin/createTemplate') }}
+          >
           +
-        </Button>}
+        </Button>
+        </div>
+          : <Button type="primary"
+            style={{
+              width: "150px",
+              backgroundColor: '#0F56B3',
+              marginTop: "8px"
+            }}
+            onClick={() => { history.push('/workspace/new') }}
+          >
+            + New Project
+          </Button>
+        }
       </div>
       {viewP && <ProjectsTable data={initialState?.currentUser?.id} />}
       {viewT && <TemplateTable data={initialState?.currentUser?.id} />}

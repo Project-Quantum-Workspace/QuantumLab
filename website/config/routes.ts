@@ -98,8 +98,12 @@ export default [
     component: './TemplateInfo',
     hideInMenu: true,
   },
-  
-
+  {
+    path:'/templates/createTemplate',
+    component:'./CreateTemplate',
+    hideInMenu: true,
+    
+  },
 
   {
     path: '/admin',
@@ -111,12 +115,7 @@ export default [
         path: '/admin',
         redirect: '/admin/users',
       },
-      {
-        name:'create-template',
-        path:'/admin/createTemplate',
-        component:'./CreateTemplate',
-        hideInMenu: true,
-      },
+      
       
       {
         name:'users',
@@ -129,6 +128,7 @@ export default [
         component: './AdminView',
         hideInMenu: true,
       },
+      
       {
         name: 'admin-update',
         path: '/admin/adminUpdate',
