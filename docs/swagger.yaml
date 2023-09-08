@@ -368,6 +368,36 @@ paths:
           schema:
             $ref: '#/definitions/model.LoginResponse'
       summary: Removes the JWT token from cookies
+  /init:
+    get:
+      consumes:
+      - application/json
+      description: Check if QL has users already.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'hasUser": true'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get if has user
+      tags:
+      - init
+    post:
+      consumes:
+      - application/json
+      description: Create the first user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: Post the first user
+      tags:
+      - init
   /templates:
     get:
       description: Get all authorised templates.
@@ -469,6 +499,20 @@ paths:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      tags:
+      - templates
+  /templates/icons:
+    get:
+      description: Get the preset template icons.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Failed to retrieve file list
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       tags:

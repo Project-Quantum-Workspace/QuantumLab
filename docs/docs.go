@@ -347,6 +347,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/init": {
+            "get": {
+                "description": "Check if QL has users already.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Get if has user",
+                "responses": {
+                    "200": {
+                        "description": "hasUser\": true",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create the first user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Post the first user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                }
+            }
+        },
         "/templates": {
             "get": {
                 "description": "Get all authorised templates.",
@@ -411,6 +456,28 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/icons": {
+            "get": {
+                "description": "Get the preset template icons.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Failed to retrieve file list",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }

@@ -42,6 +42,7 @@ type UserAdminUsecase interface {
 }
 
 type UserRepository interface {
+	Create(user *User) error
 	CreateBatch(users []User) error
 	GetByEmail(email string) (*User, error)
 	GetQuantumlabTokenByUUID(uuid string) (string, error)
@@ -50,4 +51,10 @@ type UserRepository interface {
 	GetByID(id uint) (*User, error)
 	GetAll() ([]UserListItem, error)
 	Update(user *User) error
+	GetCount() (int64, error)
+}
+
+type NewUserInitUsecase interface {
+	CreateRootAdmin(user *User) error
+	GetUserCount() (int64, error)
 }

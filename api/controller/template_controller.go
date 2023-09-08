@@ -3,6 +3,8 @@ package controller
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
@@ -157,4 +159,42 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	c.JSON(http.StatusOK, model.SuccessResponse{
 		Message: "success",
 	})
+}
+
+// GetPresetIconList @Summary Get template
+// @Description Get the preset template icons.
+// @Tags templates
+// @Produce json
+// @Success 200
+// @Failure 500 {object} model.ErrorResponse "Failed to retrieve file list"
+// @Router /templates/icons [get]
+func (tc *TemplateController) GetPresetIconList(c *gin.Context) {
+	fileList, err := listFilesInDirectory("./website/dist/icons/")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Failed to retrieve file list"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"files": fileList})
+}
+
+func listFilesInDirectory(directoryPath string) ([]string, error) {
+	var fileList []string
+
+	err := filepath.Walk(directoryPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			fileList = append(fileList, info.Name())
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fileList, nil
 }
