@@ -183,6 +183,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/agent": {
+            "post": {
+                "description": "Update the workspace status according to the heartbeat message sent by a QuantumLab Agent.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "Process the heartbeat message sent by a QuantumLab Agent",
+                "parameters": [
+                    {
+                        "description": "agent request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AgentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/currUser": {
             "get": {
                 "description": "Authenticates a token and retrieves associated user information",
@@ -263,14 +303,13 @@ const docTemplate = `{
         },
         "/templates": {
             "get": {
-                "description": "Get all workspace templates.",
+                "description": "Get all authorised templates.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "templates"
                 ],
-                "summary": "Get all templates",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -290,7 +329,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new workspace template.",
+                "description": "Create a new template.",
                 "consumes": [
                     "application/json"
                 ],
@@ -300,7 +339,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Create new template",
                 "parameters": [
                     {
                         "description": "Data needed for creating a workspace template",
@@ -346,7 +384,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Update template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -394,7 +431,6 @@ const docTemplate = `{
                 "tags": [
                     "templates"
                 ],
-                "summary": "Delete template",
                 "parameters": [
                     {
                         "type": "integer",
@@ -649,6 +685,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AgentRequest": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "string"
+                },
+                "quantumlabToken": {
+                    "type": "string"
+                },
+                "workspaceID": {
+                    "type": "string"
+                },
+                "workspaceOwner": {
+                    "type": "string"
+                },
+                "workspaceStatus": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CreateWorkspaceRequest": {
             "type": "object",
             "properties": {
@@ -720,13 +776,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "accessLevel": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "filename": {
                     "type": "string"
                 },
                 "icon": {
-                    "description": "base64 string",
+                    "description": "A Base64-encoded string",
                     "type": "string"
                 },
                 "id": {

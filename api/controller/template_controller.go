@@ -1,20 +1,25 @@
 package controller
 
 import (
-	"net/http"
-
+	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TemplateController struct {
 	TemplateUsecase model.TemplateUsecase
+	Env             *bootstrap.Env
 }
 
-// @Summary Create new template
-// @Description Create a new workspace template.
+// PostOneTemplate @Summary Create new template
+// @Description Create a new template.
 // @Tags templates
 // @Accept json
 // @Produce json
@@ -46,17 +51,30 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 	})
 }
 
-// @Summary Get all templates
-// @Description Get all workspace templates.
+// GetAllTemplates @Summary Get all authorised templates
+// @Description Get all authorised templates.
 // @Tags templates
 // @Produce json
 // @Success 200 {object} []model.Template
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates [get]
 func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
+	authToken, err := tokenutil.GetAuthToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "Could not find authorization token",
+		})
+		return
+	}
+	accessLevel, err := tokenutil.ExtractAccessLevelFromToken(authToken, tc.Env.AccessJWTSecret)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	var templates []model.Template
 
-	templates, err := tc.TemplateUsecase.GetAll()
+	templates, err = tc.TemplateUsecase.GetAll(accessLevel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
@@ -66,7 +84,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	c.JSON(http.StatusOK, templates)
 }
 
-// @Summary Update template
+// UpdateOneTemplate @Summary Update template
 // @Description Update an existing workspace template.
 // @Tags templates
 // @Accept json
@@ -110,7 +128,7 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 
 }
 
-// @Summary Delete template
+// DeleteTemplate @Summary Delete template
 // @Description Delete a workspace template.
 // @Tags templates
 // @Produce json
@@ -140,4 +158,42 @@ func (tc *TemplateController) DeleteTemplate(c *gin.Context) {
 	c.JSON(http.StatusOK, model.SuccessResponse{
 		Message: "success",
 	})
+}
+
+// GetPresetIconList @Summary Get template
+// @Description Get the preset template icons.
+// @Tags templates
+// @Produce json
+// @Success 200 {object} {"files": fileList}
+// @Failure 500 {object} model.ErrorResponse "Failed to retrieve file list"
+// @Router /templates/icons [get]
+func (tc *TemplateController) GetPresetIconList(c *gin.Context) {
+	fileList, err := listFilesInDirectory("./website/dist/icons/")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Failed to retrieve file list"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"files": fileList})
+}
+
+func listFilesInDirectory(directoryPath string) ([]string, error) {
+	var fileList []string
+
+	err := filepath.Walk(directoryPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			fileList = append(fileList, info.Name())
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fileList, nil
 }

@@ -34,38 +34,69 @@ export default [
     path: '/home',
     icon: 'home',
     component: './Home',
+    
   },
   {
     name: 'workspace',
     icon: 'deploymentUnit',
     path: '/workspace',
-    component: './Workspace',
+    
+    routes:[
+      {
+        path: '/workspace',
+        component: './Workspace',
+      },
+      {
+        path: '/workspace/new',
+        component: './NewWorkspace',
+        hideInMenu: true,
+      },
+      {
+        path: '/workspace/:workspaceId',
+        component: './Workspace/WorkspaceInfo',
+        hideInMenu: true,
+      },
+    
+    ]
+  },
+  {
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer'
+  },
+  {
+    name:'jobMonitor',
+    icon:'dashboardOutlined',
+    path:'/jobMonitor'
+  }, 
+  {
+    name: 'backendStatus',
+    icon: 'databaseOutlined',
+    path: '/backendStatus',
+    //component: './BackendStatus',
   },
 
   {
-    path: '/workspace/new',
-    component: './NewWorkspace',
-    hideInMenu: true,
+    name: 'analyseTool',
+    icon: 'areaChartOutlined',
+    path: '/analyseTool',
+    //component: './AnalyseTool',
+  },
+
+ 
+  {
+    name: 'setting',
+    icon: 'settingOutlined',
+    path: '/setting',
+    //component: './Setting',
   },
 
   {
-    path: '/workspace/:workspaceId',
-    component: './Workspace/WorkspaceInfo',
-    hideInMenu: true,
-  },
-
-  {
-
     path: '/template/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,
   },
   
-  
-  {
-    path: '/user',
-    component: './AdminUserList',
-  },
 
 
   {
@@ -78,31 +109,28 @@ export default [
         path: '/admin',
         redirect: '/admin/sub-page',
       },
+      
       {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
+        name:'users',
+        path:'/admin/users',
+        component: './AdminUserList',
+      },
+      {
+        name: 'user-information',
+        path: '/admin/adminView',
+        component: './AdminView',
+        hideInMenu: true,
+      },
+      {
+        name: 'admin-update',
+        path: '/admin/adminUpdate',
+        component: './AdminUpdate',
+        hideInMenu: true,
       },
     ],
   },
-  {
-    path: '/adminView',
-    name: 'User Information',
-    icon: 'UserOutlined',
-    component: './AdminView',
-  },
-  {
-    path: '/adminUpdate',
-/*     name: 'Admin',
-    icon: 'SettingOutlined', */
-    component: './AdminUpdate',
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
-  },
+ 
+  
   {
     path: '/',
     redirect: '/home',

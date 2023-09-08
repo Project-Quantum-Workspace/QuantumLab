@@ -110,7 +110,7 @@ export default function index() {
   //////
   const navigate = useNavigate();
   const handleNavigation = () => {
-    navigate('/adminView');
+    navigate('/admin/adminView');
   };
 
   return (

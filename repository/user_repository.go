@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"errors"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"github.com/sirupsen/logrus"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +18,13 @@ func NewUserRepository(db *gorm.DB) model.UserRepository {
 	}
 }
 
+func (ur *userRepository) CreateFirstUser(users model.User) error {
+	result := ur.qlDB.
+		Omit("ID", "UUID", "Workspaces", "Roles.*").
+		Create(&users)
+	return result.Error
+}
+
 func (ur *userRepository) CreateBatch(users []model.User) error {
 	result := ur.qlDB.
 		Omit("ID", "UUID", "Workspaces", "Roles.*").
@@ -27,6 +36,18 @@ func (ur *userRepository) GetByEmail(email string) (model.User, error) {
 	var user model.User
 	result := ur.qlDB.Where("email = ?", email).First(&user)
 	return user, result.Error
+}
+
+func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) {
+	var users []model.User
+	result := ur.qlDB.Select("quantumlab_token").Where("uuid = ?", uuid).Find(&users)
+	if result.Error != nil {
+		return "", result.Error
+	}
+	if len(users) == 0 {
+		return "", errors.New("invalid workspace owner")
+	}
+	return users[0].QuantumlabToken, nil
 }
 
 func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
@@ -57,13 +78,24 @@ func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
 	return users, result.Error
 }
 
+func (ur *userRepository) GetCount() (int64, error) {
+	var count int64
+	query := "SELECT COUNT(*) FROM public.users"
+	err := ur.qlDB.Raw(query).Scan(&count)
+	if err.Error != nil {
+		logrus.Errorf("error counting users: %v", err.Error)
+		return -1, err.Error
+	}
+	return count, err.Error
+}
+
 func (ur *userRepository) Update(user model.User) error {
 	err := ur.qlDB.Transaction(func(tx *gorm.DB) error {
 		var result *gorm.DB
 		omit := []string{"ID", "UUID", "Workspaces", "Roles"}
 		if user.Password == "" {
 			omit = append(omit, "Password")
-			// add Select("*") to inlude non-zero field
+			// add Select("*") to include non-zero field
 			// gorm sucks!!
 			result = ur.qlDB.Model(&user).Select("*").
 				Omit(omit...).Updates(user)

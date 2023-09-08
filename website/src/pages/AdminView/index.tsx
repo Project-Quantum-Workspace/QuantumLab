@@ -8,7 +8,7 @@ export default function index() {
   //////////
   const navigate = useNavigate();
   const handleNavigation = () => {
-    navigate('/adminUpdate');
+    navigate('/admin/adminUpdate');
   };
   ////////////
 

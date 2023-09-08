@@ -18,3 +18,7 @@
 
 # The sensitive config file
 .env
+
+# QuantumLab Agent Files
+*.yaml
+*.sh
