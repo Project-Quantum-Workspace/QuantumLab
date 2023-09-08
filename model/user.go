@@ -53,8 +53,3 @@ type UserRepository interface {
 	Update(user *User) error
 	GetCount() (int64, error)
 }
-
-type NewUserInitUsecase interface {
-	CreateRootAdmin(user *User) error
-	GetUserCount() (int64, error)
-}

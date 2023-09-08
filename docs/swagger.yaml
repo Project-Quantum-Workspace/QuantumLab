@@ -377,9 +377,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: 'hasUser": true'
+          description: OK
           schema:
-            additionalProperties: true
+            properties:
+              hasUser:
+                type: boolean
             type: object
       summary: Get if has user
       tags:
@@ -387,15 +389,15 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create the first user.
+      description: Create the first user as a Root Administrator.
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/model.User'
-      summary: Post the first user
+            $ref: '#/definitions/model.SuccessResponse'
+      summary: Initialize root admin
       tags:
       - init
   /templates:
