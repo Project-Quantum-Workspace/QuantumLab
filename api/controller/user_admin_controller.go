@@ -226,7 +226,13 @@ func (uac *UserAdminController) SetUserStatus(c *gin.Context) {
 
 	var setRequest *model.SetAccountStatusRequest
 
-	c.ShouldBind(&setRequest)
+	err := c.ShouldBind(&setRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
 	user, err := uac.UserAdminUsecase.GetUserDetail(setRequest.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
