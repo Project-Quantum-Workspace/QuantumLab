@@ -362,16 +362,20 @@ const docTemplate = `{
                 "summary": "Get if has user",
                 "responses": {
                     "200": {
-                        "description": "hasUser\": true",
+                        "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "properties": {
+                                "hasUser": {
+                                    "type": "boolean"
+                                }
+                            }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Create the first user.",
+                "description": "Create the first user as a Root Administrator.",
                 "consumes": [
                     "application/json"
                 ],
@@ -381,12 +385,12 @@ const docTemplate = `{
                 "tags": [
                     "init"
                 ],
-                "summary": "Post the first user",
+                "summary": "Initialize root admin",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.SuccessResponse"
                         }
                     }
                 }
