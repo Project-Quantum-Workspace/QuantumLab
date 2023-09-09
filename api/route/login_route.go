@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewLoginRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
+func NewLoginRouter(apiRouterGroup *gin.RouterGroup, db *gorm.DB, env *bootstrap.Env) {
 	ur := repository.NewUserRepository(db)
 	lc := &controller.LoginController{
 		LoginUsecase: usecase.NewLoginUC(ur),
