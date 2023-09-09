@@ -179,12 +179,12 @@ const AdminUserList: React.FC = () => {
         });
       }
     } catch (error) {
-    console.error("Error during fetch:", error);
-    notification.error({
-      message: 'Network Error',
-      description: 'An unexpected error occurred. Please try again later.',
-    });
-  }
+      console.error("Error during fetch:", error);
+      notification.error({
+        message: 'Network Error',
+        description: 'An unexpected error occurred. Please try again later.',
+      });
+    }
 
     // Close the modal after sending the invitations
     setIsModalVisible(false);

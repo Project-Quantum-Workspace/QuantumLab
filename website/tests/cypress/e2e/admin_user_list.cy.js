@@ -1,12 +1,16 @@
 describe('Admin User List', () => {
   beforeEach(() => {
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com')
+    cy.login('workspacequantum@gmail.com', 'workspacequantum@gmail.com')
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`)
   })
 
   it('should load user data correctly', () => {
-    cy.get('table').should('contain', 'Jarvis Cao');
+    cy.get('td').should('contain', 'Root Administrator');
   });
+
+  // it('should display user role correctly', () => {
+  //   cy.get('table').should('contain', 'Administrator');
+  // });
 
   // it('shows error notification when fetching users fails', () => {
   //   cy.intercept('GET', '/api/admin/users', {
