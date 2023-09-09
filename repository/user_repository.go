@@ -116,3 +116,8 @@ func (ur *userRepository) GetCount() (int64, error) {
 	}
 	return count, err.Error
 }
+
+func (ur *userRepository) SetUserStatus(request *model.SetAccountStatusRequest) error {
+	result := ur.qlDB.Exec(`UPDATE users SET account_status = ? WHERE id = ?`, request.SetStatus, request.UserID)
+	return result.Error
+}

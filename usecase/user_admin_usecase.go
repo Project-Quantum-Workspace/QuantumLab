@@ -72,6 +72,10 @@ func (uau *userAdminUsecase) GetAllRoles() ([]model.Role, error) {
 	return uau.roleRepository.GetAll()
 }
 
+func (uau *userAdminUsecase) SetUserStatus(request *model.SetAccountStatusRequest) error {
+	return uau.userRepository.SetUserStatus(request)
+}
+
 func (uau *userAdminUsecase) UpdateUser(user *model.User) error {
 	if user.Password != "" {
 		// hash password

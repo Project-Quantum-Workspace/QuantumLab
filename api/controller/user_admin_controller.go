@@ -208,3 +208,60 @@ func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 		Message: "success",
 	})
 }
+
+// @Summary Update the account status of a user
+// @Description Administrator updates desired users account status
+// @Tags user admin
+// @Accept json
+// @Produce json
+// @Param request body model.SetAccountStatusRequest true "Status Request"
+// @Success 200 {object} model.SuccessResponse
+// @Failure 400 {object} model.ErrorResponse "Cannot adjust root admin account status"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /admin/userStatus [put]
+func (uac *UserAdminController) SetUserStatus(c *gin.Context) {
+	if !uac.isAuthorized(c) {
+		return
+	}
+
+	var setRequest *model.SetAccountStatusRequest
+
+	c.ShouldBind(&setRequest)
+	user, err := uac.UserAdminUsecase.GetUserDetail(setRequest.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+	if user.FirstName == "Root" && user.LastName == "Administrator" {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "Cannot adjust root admin account status",
+		})
+		return
+	}
+	currUserID, err := tokenutil.ExtractUserID(c, uac.Env.AccessJWTSecret)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+
+	if currUserID == setRequest.UserID {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "Cannot change own account status",
+		})
+		return
+	}
+
+	err = uac.UserAdminUsecase.SetUserStatus(setRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error whilst changing account status",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Successfully changed account status"})
+}
