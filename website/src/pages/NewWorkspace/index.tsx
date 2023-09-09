@@ -22,7 +22,7 @@ const { Option } = Select;
 
 const NewWorkspace = () => {
   const [form] = Form.useForm();
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | undefined>(undefined);
   const [templates, setTemplates] = useState<TemplateClass[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
@@ -32,14 +32,14 @@ const NewWorkspace = () => {
   useEffect(() => {
     // function to fetch templates
     TemplateApi.getAccessibleTemplates()
-    .then((res)=>{
-      setLoadingTemplates(false)
-      setTemplates(res)
-    })
-    .catch((error)=>{
-      setTemplatesFetchFailed(true)
-      throw new Error(error.message || 'Error fetching templates.');
-    })
+      .then((res)=>{
+        setLoadingTemplates(false)
+        setTemplates(res)
+      })
+      .catch((error)=>{
+        setTemplatesFetchFailed(true)
+        throw new Error(error.message || 'Error fetching templates.');
+      })
   }, []);
 
   useEffect(()=> {
@@ -68,11 +68,7 @@ const NewWorkspace = () => {
 
   const onTemplateChange = (selectedTemplateId: number) => {
     const template = templates.find((template) => template.id === selectedTemplateId);
-    if (template && typeof template.parameters === 'string') {
-      // Parse the Parameters from string to object
-      const paramsObject = JSON.parse(template.parameters);
-      setSelectedTemplate({ ...template, parameters: paramsObject });
-    }
+    setSelectedTemplate(template)
   };
 
   const onFinish = async (values: any) => {
@@ -85,7 +81,6 @@ const NewWorkspace = () => {
         },
         {},
       );
-      console.log('parameters:', parameters);
       
       // Adjust data to fit the new format
       const adjustedValues = {
@@ -109,7 +104,7 @@ const NewWorkspace = () => {
         },
       };
 
-      console.log('adjustedValues:', adjustedValues);
+    console.log('adjustedValues:', adjustedValues);
 
       const response = await fetch('/api/workspaces', {
         method: 'POST',
@@ -206,7 +201,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
-            defaultValue={currentTemplate ? currentTemplate.id: undefined}
+            value={currentTemplate ? currentTemplate.id: undefined}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available
