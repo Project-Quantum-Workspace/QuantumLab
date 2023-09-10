@@ -1,13 +1,19 @@
-import { request } from '@umijs/max';
 import { BaseApi } from '@/utils/BaseApi';
-import { TemplateClass } from '@/utils/types/TemplateTypes';
-
+import { TemplateClass, TemplateMetaData } from '@/utils/types/TemplateTypes';
+import { request } from '@umijs/max';
 class TemplateApi extends BaseApi {
-  getTemplate(id: string) {
-    return this.loadByGet('/api/templates/'+id)
+  getAccessibleTemplates() {
+    return this.loadByGet('/api/templates')
       .then((res) => {
-        return res.message ? res.message : TemplateClass.fromDTO(res)
-    })
+        if(!res.message) {
+          let templates: TemplateClass[] = []
+          res.forEach((t: TemplateMetaData) => {
+            templates.push(TemplateClass.fromDTO(t))
+          })
+          return templates
+        }
+        return res.message
+      })
   }
   postTemplate(template: object | undefined){
     return this.loadByPost('/api/templates',template)
@@ -16,20 +22,9 @@ class TemplateApi extends BaseApi {
     })
   }
 
-
 }
 export default new TemplateApi()
-//get all templates
-export async function getAllTemplates(){
-    //console.log(id)
-    return request('/api/templates',{
-      method: 'GET',
-      headers:{
-        'Content-Type': 'application/json',
-        
-      }
-    })
-  }
+
   //get all templates that user allowed to access
 export async function getAccessibleTemplates(){
     //console.log(id)

@@ -106,6 +106,12 @@ func (ur *userRepository) Update(user *model.User) error {
 	return err
 }
 
+func (ur *userRepository) SetAccountStatus(id uint, accountStatus bool) error {
+	result := ur.qlDB.Model(&model.User{ID: id}).
+		Update("account_status", accountStatus)
+	return result.Error
+}
+
 func (ur *userRepository) GetCount() (int64, error) {
 	var count int64
 	query := "SELECT COUNT(*) FROM users"

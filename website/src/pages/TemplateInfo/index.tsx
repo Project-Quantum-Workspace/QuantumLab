@@ -2,47 +2,23 @@ import {
   Button,
   Divider, 
   Image,
-  message,
   Row, 
   Result,
   Space,
   Typography,
 } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
-import { history, useIntl, useParams } from '@umijs/max';
+import { history, useParams } from '@umijs/max';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { useEffect, useState } from 'react';
-import { TemplateClass } from "@/utils/types/TemplateTypes";
 import { FrownOutlined } from '@ant-design/icons';
-import TemplateApi from "@/services/quantumlab/template";
 import ReactMarkdown from 'react-markdown';
-import { PageLoading } from '@ant-design/pro-components';
+import useTemplateStore from '@/stores/TemplateStore'
+import { useEffect } from 'react';
 
 const TemplateInfo: React.FC = () => {
   const { Title, Text } = Typography;
   const { templateId } = useParams()
-  const [template, setTemplate] = useState<TemplateClass|undefined>(undefined)
-  const [loading, setLoading] = useState(true);
-  const intl = useIntl();
-
-  useEffect(() => {
-    TemplateApi.getTemplate(templateId as string)
-      .then((res) => {
-        if (!res.message){
-          setTemplate(res)
-        } else {
-          const Errormessage = intl.formatMessage({
-            id: 'pages.templateInfo.failure',
-            defaultMessage: res.message,
-          });
-          message.error(Errormessage);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error)
-      });
-  }, []);
+  const { fetchedTemplates, currentTemplate, setCurrentTemplate } = useTemplateStore()
   
   const projectNameClass = useEmotionCss(() => {
     return {
@@ -163,6 +139,10 @@ const TemplateInfo: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    const template = fetchedTemplates.filter((t) => t.id===Number(templateId))
+    setCurrentTemplate(template[0])
+  },[])
   
   const handleBack = () => {
     history.push('/workspace', { tag: 'template' });
@@ -172,11 +152,8 @@ const TemplateInfo: React.FC = () => {
     history.push('/workspace/new', { templateId: templateId });
   }
 
-  if(loading){
-    return <PageLoading/>
-  }
   return (
-    <>{template ? (
+    <>{currentTemplate ? (
       <>
         <div>
         <Button 
@@ -196,13 +173,14 @@ const TemplateInfo: React.FC = () => {
         <Image
           width={96}
           height={96}
-          src={template.icon}
+          src={currentTemplate.icon}
         />
         <div style={{ width: '100%' }}>
-          <Title className={projectNameClass}>{template?.filename}</Title>
+          <Title className={projectNameClass}>{currentTemplate?.filename}</Title>
           <Button 
+            data-test-id='new-workspace-template'
             icon={<PlusOutlined />}
-            onClick={() => handleCreateWorkspace(template.id)}
+            onClick={() => handleCreateWorkspace(currentTemplate.id)}
             className={createBtnClass}>
             New Workspace Using This Template
           </Button>
@@ -216,7 +194,7 @@ const TemplateInfo: React.FC = () => {
           Overview
         </Title>
         <Space size="middle">
-          {Object.entries(template?.parameters || {}).map(([key, param]) =>
+          {Object.entries(currentTemplate?.parameters || {}).map(([key, param]) =>
             renderParam(key, param.label, param.selections)
           )}
         </Space>
@@ -229,7 +207,7 @@ const TemplateInfo: React.FC = () => {
           README
         </Title>
         <div className={readmeClass}>
-          <ReactMarkdown>{template.readme}</ReactMarkdown>
+          <ReactMarkdown>{currentTemplate.readme}</ReactMarkdown>
         </div>
       </div>
     </>) : (

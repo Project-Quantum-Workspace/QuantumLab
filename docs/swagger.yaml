@@ -36,9 +36,17 @@ definitions:
   model.Role:
     properties:
       id:
+        description: |-
+          declare ID as pointer to let gorm preload the record with id = 0
+          GORM SUCKS!!
         type: integer
       name:
         type: string
+    type: object
+  model.SetAccountStatusRequest:
+    properties:
+      accountStatus:
+        type: boolean
     type: object
   model.SuccessResponse:
     properties:
@@ -152,6 +160,40 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
+  /admin/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Administrator updates desired users account status
+      parameters:
+      - description: Status Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.SetAccountStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update the account status of a user
+      tags:
+      - user admin
   /admin/users:
     get:
       description: Get all users to list in the table.
@@ -377,9 +419,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: 'hasUser": true'
+          description: OK
           schema:
-            additionalProperties: true
+            properties:
+              hasUser:
+                type: boolean
             type: object
       summary: Get if has user
       tags:
@@ -387,15 +431,15 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create the first user.
+      description: Create the first user as a Root Administrator.
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/model.User'
-      summary: Post the first user
+            $ref: '#/definitions/model.SuccessResponse'
+      summary: Initialize root admin
       tags:
       - init
   /templates:

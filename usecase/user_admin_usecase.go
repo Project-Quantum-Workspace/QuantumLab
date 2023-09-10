@@ -60,6 +60,10 @@ func (uau *userAdminUsecase) InviteUsers(
 	return nil
 }
 
+func (uau *userAdminUsecase) GetRoleIDs(userID uint) ([]uint, error) {
+	return uau.userRepository.GetRoleIDs(userID)
+}
+
 func (uau *userAdminUsecase) GetUserList() ([]model.UserListItem, error) {
 	return uau.userRepository.GetAll()
 }
@@ -70,6 +74,10 @@ func (uau *userAdminUsecase) GetUserDetail(id uint) (*model.User, error) {
 
 func (uau *userAdminUsecase) GetAllRoles() ([]model.Role, error) {
 	return uau.roleRepository.GetAll()
+}
+
+func (uau *userAdminUsecase) SetAccountStatus(id uint, accountStatus bool) error {
+	return uau.userRepository.SetAccountStatus(id, accountStatus)
 }
 
 func (uau *userAdminUsecase) UpdateUser(user *model.User) error {
