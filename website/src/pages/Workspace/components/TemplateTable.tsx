@@ -9,13 +9,10 @@ import { TemplateClass } from '@/utils/types/TemplateTypes'
 import useTemplateStore from '@/stores/TemplateStore'
 
 const TemplateTable = () => {
-  const [templates, setTemplates] = useState<TemplateClass[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const { setCurrentTemplate } = useTemplateStore()
+  const { fetchedTemplates, setFetchedTemplates } = useTemplateStore()
   const handleTemplateinfo = (id: number) => {
-    const template = templates.filter((t) => t.id===id)
-    setCurrentTemplate(template[0])
     history.push('/template/' + id);
   }
   const columns: ColumnsType<TemplateClass> = [
@@ -68,7 +65,7 @@ const TemplateTable = () => {
   useEffect(() => {
     TemplateApi.getAccessibleTemplates()
       .then((res) => {
-        setTemplates(res);
+        setFetchedTemplates(res)
         setLoading(false);
       })
       .catch((error) => {
@@ -81,7 +78,7 @@ const TemplateTable = () => {
   if (loading) {
     return <PageLoading />
   }
-  return <Table columns={columns} dataSource={templates}
+  return <Table columns={columns} dataSource={fetchedTemplates}
     rowKey={t => String(t.id)} />
 
 }

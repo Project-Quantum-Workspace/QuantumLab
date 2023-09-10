@@ -8,15 +8,17 @@ import {
   Typography,
 } from 'antd';
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
-import { history } from '@umijs/max';
+import { history, useParams } from '@umijs/max';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FrownOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import useTemplateStore from '@/stores/TemplateStore'
+import { useEffect } from 'react';
 
 const TemplateInfo: React.FC = () => {
   const { Title, Text } = Typography;
-  const { currentTemplate, setCurrentTemplate } = useTemplateStore()
+  const { templateId } = useParams()
+  const { fetchedTemplates, currentTemplate, setCurrentTemplate } = useTemplateStore()
   
   const projectNameClass = useEmotionCss(() => {
     return {
@@ -137,10 +139,13 @@ const TemplateInfo: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    const template = fetchedTemplates.filter((t) => t.id===Number(templateId))
+    setCurrentTemplate(template[0])
+  },[])
   
   const handleBack = () => {
     history.push('/workspace', { tag: 'template' });
-    setCurrentTemplate(undefined)
   };
 
   const handleCreateWorkspace = (templateId: number) => {

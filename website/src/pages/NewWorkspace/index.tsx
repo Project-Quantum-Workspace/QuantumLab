@@ -201,7 +201,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
-            value={currentTemplate ? currentTemplate.id: undefined}
+            defaultValue={selectedTemplate?.id || undefined}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available
