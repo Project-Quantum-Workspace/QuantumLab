@@ -46,47 +46,42 @@ describe('Admin User List', () => {
     cy.get('td').should('contain', 'Root Administrator');
   });
 
-
-
   it('should set button states based on the status of the first user', () => {
     // Get the status of the first row
     cy.get('table tbody tr:first').within(() => {
       cy.get('td.ant-table-cell')
-          .contains(/Active|Inactive/)
-          .invoke('text')
-          .then((status) => {
-            // Select the first row
-            cy.get('input[type="checkbox"]').click();
-          });
+        .contains(/Active|Inactive/)
+        .invoke('text')
+        .then((status) => {
+          // Select the first row
+          cy.get('input[type="checkbox"]').click();
+        });
     });
     cy.wait(500);
 
     // Check the button state after getting the status
     cy.get('td.ant-table-cell')
-        .contains(/Active|Inactive/)
-        .invoke('text')
-        .then((status) => {
-          if (status.trim() === 'Active') {
-            // Check if the "Set Active" button is disabled
-            cy.contains('button', 'Set Active').should('be.disabled');
-            cy.contains('button', 'Set Inactive').should('not.be.disabled');
-          } else {
-            cy.contains('button', 'Set Inactive').should('be.disabled');
-            cy.contains('button', 'Set Active').should('not.be.disabled');
-          }
-        });
+      .contains(/Active|Inactive/)
+      .invoke('text')
+      .then((status) => {
+        if (status.trim() === 'Active') {
+          // Check if the "Set Active" button is disabled
+          cy.contains('button', 'Set Active').should('be.disabled');
+          cy.contains('button', 'Set Inactive').should('not.be.disabled');
+        } else {
+          cy.contains('button', 'Set Inactive').should('be.disabled');
+          cy.contains('button', 'Set Active').should('not.be.disabled');
+        }
+      });
   });
 
-
-
-
-
-  it.only('should set the user status', () => {
+  it('should set the user status', () => {
     let userStatus; // Declare a variable to store the status
 
     // Get the status of the first row
-    cy.get('table tbody tr:first').within(() => {
-      cy.get('td')
+    cy.get('table tbody tr:first')
+      .within(() => {
+        cy.get('td')
           .contains(/Active|Inactive/)
           .invoke('text')
           .then((status) => {
@@ -94,17 +89,18 @@ describe('Admin User List', () => {
             // Check the checkbox in the first row
             cy.get('input[type="checkbox"]').check();
           });
-    }).then(() => { // Use .then() to chain commands after the .within() block is completed
-      if (userStatus === 'Active') {
-        cy.contains('button', 'Set Inactive').click();
-        cy.wait(1000); // This is not recommended, but I kept it as in your original test
-        cy.get('table tbody tr:first').should('contain', 'Inactive');
-      } else {
-        cy.contains('button', 'Set Active').click();
-        cy.wait(1000);
-        cy.get('table tbody tr:first').should('contain', 'Active');
-      }
-    });
+      })
+      .then(() => {
+        // Use .then() to chain commands after the .within() block is completed
+        if (userStatus === 'Active') {
+          cy.contains('button', 'Set Inactive').click();
+          cy.wait(1000); // This is not recommended, but I kept it as in your original test
+          cy.get('table tbody tr:first').should('contain', 'Inactive');
+        } else {
+          cy.contains('button', 'Set Active').click();
+          cy.wait(1000);
+          cy.get('table tbody tr:first').should('contain', 'Active');
+        }
+      });
   });
-
 });
