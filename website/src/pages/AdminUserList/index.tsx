@@ -227,7 +227,7 @@ const AdminUserList: React.FC = () => {
         }}
         columns={columns}
         dataSource={users}
-        rowKey="uuid"
+        rowKey="id"
         loading={loading}
       />
 
