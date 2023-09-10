@@ -34,7 +34,7 @@ export default function index() {
           <Row gutter={[80, 0]}>
             <Col span={6}>
               <div className="avatar">
-                <img src="https://i.ibb.co/RDnTcKL/download.jpg" alt="Avatar"></img>
+                <img src={user.avatar} alt="Avatar"></img>
               </div>
             </Col>
 
@@ -43,20 +43,15 @@ export default function index() {
 
               <Divider orientation="left"></Divider>
               <div className="userInfor">
-                <Row>
-                  <Col span={10}>
-                    <p>User name: {user.user_name} </p>
-                  </Col>
-                </Row>
 
                 <br></br>
                 <Row gutter={48}>
                   <Col className="gutter-row" span={6}>
-                    <p>First Name: {user.first_name}</p>
+                    <p>First Name: {user.firstName}</p>
                   </Col>
 
                   <Col className="gutter-row" span={6}>
-                    <p>Last Name: {user.last_name}</p>
+                    <p>Last Name: {user.lastName}</p>
                   </Col>
                 </Row>
 
@@ -64,7 +59,7 @@ export default function index() {
 
                 <Row>
                   <Col span={8}>
-                    <p>Email: {user.email}</p>
+                    <p>Email: <span id='userEmail'>{user.email}</span></p>
                   </Col>
                 </Row>
 
@@ -72,7 +67,7 @@ export default function index() {
 
                 <Row gutter={48}>
                   <Col className="gutter-row" span={8}>
-                    <p>Password: {user.password}</p>
+                    <p>Password: <span id='userPassword'>{user.password}</span></p>
                   </Col>
                 </Row>
 
@@ -80,15 +75,19 @@ export default function index() {
 
                 <Row gutter={48}>
                   <Col className="gutter-row" span={6}>
-                    <p>Access Level: {user.access_level}</p>
+                    <div>
+                      <p>Access Level: <span id='userAcess'>{user.accessLevel}</span></p>
+                    </div>
                   </Col>
 
                   <Col className="gutter-row" span={6}>
-                    <p>Account Status:??</p>
+                    <p>Account Status:<span id='accountStatus'>{user.accountStatus.toString()}</span></p>
                   </Col>
 
                   <Col className="gutter-row" span={6}>
-                    <p>Role:??</p>
+                    {/* edit in backend-connector */}
+                    <p>Role:{user.accountStatus.toString()}</p>
+                   
                   </Col>
                 </Row>
 
