@@ -1,7 +1,9 @@
 package model
 
 type Role struct {
-	ID   uint   `json:"id"`
+	// declare ID as pointer to let gorm preload the record with id = 0
+	// GORM SUCKS!!
+	ID   *uint  `json:"id"`
 	Name string `json:"name"`
 }
 

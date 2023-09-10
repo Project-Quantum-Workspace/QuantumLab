@@ -19,52 +19,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/userStatus": {
-            "put": {
-                "description": "Administrator updates desired users account status",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user admin"
-                ],
-                "summary": "Update the account status of a user",
-                "parameters": [
-                    {
-                        "description": "Status Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.SetAccountStatusRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Cannot adjust root admin account status",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Unexpected System Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/users": {
             "get": {
                 "description": "Get all users to list in the table.",
@@ -242,6 +196,58 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/{id}/status": {
+            "patch": {
+                "description": "Administrator updates desired users account status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Update the account status of a user",
+                "parameters": [
+                    {
+                        "description": "Status Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SetAccountStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -903,6 +909,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "declare ID as pointer to let gorm preload the record with id = 0\nGORM SUCKS!!",
                     "type": "integer"
                 },
                 "name": {
@@ -913,11 +920,8 @@ const docTemplate = `{
         "model.SetAccountStatusRequest": {
             "type": "object",
             "properties": {
-                "setStatus": {
+                "accountStatus": {
                     "type": "boolean"
-                },
-                "userID": {
-                    "type": "integer"
                 }
             }
         },

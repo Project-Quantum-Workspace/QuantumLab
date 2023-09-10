@@ -27,6 +27,10 @@ type UserListItem struct {
 	AccessLevel   uint   `json:"accessLevel"`
 }
 
+type SetAccountStatusRequest struct {
+	AccountStatus bool `json:"accountStatus"`
+}
+
 type UserAdminUsecase interface {
 	InviteUsers(
 		emailList []string,
@@ -35,11 +39,12 @@ type UserAdminUsecase interface {
 		from string,
 		secret string,
 	) error
+	GetRoleIDs(userID uint) ([]uint, error)
 	GetUserList() ([]UserListItem, error)
 	GetUserDetail(id uint) (*User, error)
 	GetAllRoles() ([]Role, error)
 	UpdateUser(user *User) error
-	SetUserStatus(user *SetAccountStatusRequest) error
+	SetAccountStatus(id uint, accountStatus bool) error
 }
 
 type UserRepository interface {
@@ -53,10 +58,5 @@ type UserRepository interface {
 	GetAll() ([]UserListItem, error)
 	Update(user *User) error
 	GetCount() (int64, error)
-	SetUserStatus(user *SetAccountStatusRequest) error
-}
-
-type SetAccountStatusRequest struct {
-	UserID    uint `json:"userID"`
-	SetStatus bool `json:"setStatus"`
+	SetAccountStatus(id uint, accountStatus bool) error
 }

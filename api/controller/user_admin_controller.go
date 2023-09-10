@@ -216,36 +216,47 @@ func (uac *UserAdminController) UpdateUser(c *gin.Context) {
 // @Produce json
 // @Param request body model.SetAccountStatusRequest true "Status Request"
 // @Success 200 {object} model.SuccessResponse
-// @Failure 400 {object} model.ErrorResponse "Cannot adjust root admin account status"
+// @Failure 400 {object} model.ErrorResponse "Bad Request"
+// @Failure 403 {object} model.ErrorResponse "Forbidden"
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
-// @Router /admin/userStatus [put]
-func (uac *UserAdminController) SetUserStatus(c *gin.Context) {
+// @Router /admin/users/{id}/status [patch]
+func (uac *UserAdminController) SetAccountStatus(c *gin.Context) {
 	if !uac.isAuthorized(c) {
 		return
 	}
 
-	var setRequest *model.SetAccountStatusRequest
+	userID, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid user id",
+		})
+		return
+	}
 
-	err := c.ShouldBind(&setRequest)
+	var setRequest model.SetAccountStatusRequest
+	err = c.ShouldBindJSON(&setRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),
 		})
 		return
 	}
-	user, err := uac.UserAdminUsecase.GetUserDetail(setRequest.UserID)
+
+	roleIDs, err := uac.UserAdminUsecase.GetRoleIDs(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
 		})
 		return
 	}
-	if user.FirstName == "Root" && user.LastName == "Administrator" {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+
+	if slices.Contains(roleIDs, 0) {
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "Cannot adjust root admin account status",
 		})
 		return
 	}
+
 	currUserID, err := tokenutil.ExtractUserID(c, uac.Env.AccessJWTSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
@@ -254,20 +265,22 @@ func (uac *UserAdminController) SetUserStatus(c *gin.Context) {
 		return
 	}
 
-	if currUserID == setRequest.UserID {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+	if currUserID == userID {
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "Cannot change own account status",
 		})
 		return
 	}
 
-	err = uac.UserAdminUsecase.SetUserStatus(setRequest)
+	err = uac.UserAdminUsecase.SetAccountStatus(userID, setRequest.AccountStatus)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: "unexpected system error whilst changing account status",
+			Message: "unexpected system error",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Successfully changed account status"})
+	c.JSON(http.StatusOK, model.SuccessResponse{
+		Message: "Successfully changed account status",
+	})
 }

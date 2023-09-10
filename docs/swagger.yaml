@@ -36,16 +36,17 @@ definitions:
   model.Role:
     properties:
       id:
+        description: |-
+          declare ID as pointer to let gorm preload the record with id = 0
+          GORM SUCKS!!
         type: integer
       name:
         type: string
     type: object
   model.SetAccountStatusRequest:
     properties:
-      setStatus:
+      accountStatus:
         type: boolean
-      userID:
-        type: integer
     type: object
   model.SuccessResponse:
     properties:
@@ -159,8 +160,8 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
-  /admin/userStatus:
-    put:
+  /admin/{id}/status:
+    patch:
       consumes:
       - application/json
       description: Administrator updates desired users account status
@@ -179,7 +180,11 @@ paths:
           schema:
             $ref: '#/definitions/model.SuccessResponse'
         "400":
-          description: Cannot adjust root admin account status
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/model.ErrorResponse'
         "500":
