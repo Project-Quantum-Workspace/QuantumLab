@@ -18,6 +18,7 @@ type Workspace struct {
 	LastAccessed time.Time `json:"lastAccessed"`
 	TemplateID   uint      `json:"templateId"`
 	Template     Template  `json:"template"`
+	Users        []User    `json:"users" gorm:"many2many:user_workspaces;"`
 }
 
 type UserWorkspace struct {
@@ -25,23 +26,20 @@ type UserWorkspace struct {
 	WorkspaceID uint `json:"workspaceId"`
 }
 
-type CreateWorkspaceRequest struct {
-	Workspace Workspace `json:"workspace"`
-	UserID    uint      `json:"userId"`
-}
-
 type WorkspaceRepository interface {
 	Create(workspace *Workspace, userID uint) error
+	GetOwnerIDs(id uint) ([]uint, error)
 	GetAllByUser(userID uint) ([]Workspace, error)
-	GetByID(id uint) (Workspace, error)
+	GetByID(id uint) (*Workspace, error)
 	Update(workspace *Workspace) error
 	Delete(id uint) error
 }
 
 type WorkspaceUsecase interface {
 	CreateWorkspace(workspace *Workspace, userID uint) error
+	CheckWorkspaceAccess(workspaceID uint, userID uint) (bool, error)
 	GetWorkspacesByUser(userID uint) ([]Workspace, error)
-	GetWorkspace(id uint) (Workspace, error)
+	GetWorkspace(id uint) (*Workspace, error)
 	UpdateWorkspace(workspace *Workspace) error
 	DeleteWorkspace(id uint) error
 }

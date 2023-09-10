@@ -3,10 +3,12 @@ package controller
 import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LoginController struct {
@@ -36,36 +38,35 @@ func (lc *LoginController) Login(c *gin.Context) {
 	}
 
 	user, err := lc.LoginUsecase.FindUser(request.Email)
-	// TODO: Hash Passwords
-	if err != nil || user.Password != request.Password {
+	if err != nil || !validationutil.CheckHash(request.Password, user.Password) {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Incorrect Email or Password"})
 		return
 	}
 
-	roles, err := lc.LoginUsecase.GetRoleID(user.ID)
+	roles, err := lc.LoginUsecase.GetRoleIDs(user.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Could not find associated role"})
 		return
 	}
 
 	accessToken, err :=
-		lc.LoginUsecase.CreateAccessToken(&user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
+		lc.LoginUsecase.CreateAccessToken(user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Access Token"})
 		return
 	}
 	refreshToken, err :=
-		lc.LoginUsecase.CreateRefreshToken(&user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
+		lc.LoginUsecase.CreateRefreshToken(user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Refresh Token"})
 		return
 	}
 
-	c.SetCookie("Authorization", accessToken, 7200, "/", "localhost", true, true)
-	c.SetCookie("Refresh", refreshToken, 7200, "/", "localhost", true, true)
+	c.SetCookie("auth", accessToken, 7200, "/", "localhost", false, true)
+	c.SetCookie("refresh", refreshToken, 7200, "/", "localhost", false, true)
 
-	c.SetCookie("Authorization", accessToken, 7200, "/", "quantumlab.cloud", true, true)
-	c.SetCookie("Refresh", refreshToken, 7200, "/", "quantumlab.cloud", true, true)
+	c.SetCookie("auth", accessToken, 7200, "/", "quantumlab.cloud", true, true)
+	c.SetCookie("refresh", refreshToken, 7200, "/", "quantumlab.cloud", true, true)
 
 	loginResponse := model.LoginResponse{
 		Status: "Logged In Successfully",
@@ -91,7 +92,7 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, There is no token!"})
 		return
 	}
-	auth, err := tokenutil.IsAuthorized(authToken, lc.Env.AccessJWTSecret)
+	auth, err := tokenutil.IsAuthenticated(authToken, lc.Env.AccessJWTSecret)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "Token is not authorized!"})
 		return
@@ -103,7 +104,7 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 			print(err)
 			return
 		}
-		userEmail := claims["email"].(string)
+		userEmail := claims.Email
 		user, err := lc.LoginUsecase.FindUser(userEmail)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized,
@@ -123,11 +124,11 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 // @Success 200 {object} model.LoginResponse
 // @Router /auth/logout [post]
 func (lc *LoginController) Logout(c *gin.Context) {
-	c.SetCookie("Authorization", "", -1, "/", "localhost", true, true)
-	c.SetCookie("Refresh", "", -1, "/", "localhost", true, true)
+	c.SetCookie("auth", "", -1, "/", "localhost", false, true)
+	c.SetCookie("refresh", "", -1, "/", "localhost", false, true)
 
-	c.SetCookie("Authorization", "", -1, "/", "quantumlab.cloud", true, true)
-	c.SetCookie("Refresh", "", -1, "/", "quantumlab.cloud", true, true)
+	c.SetCookie("auth", "", -1, "/", "quantumlab.cloud", true, true)
+	c.SetCookie("refresh", "", -1, "/", "quantumlab.cloud", true, true)
 	logoutMessage := model.LoginResponse{Status: "Logged out successfully"}
 	c.JSON(http.StatusOK, logoutMessage)
 }

@@ -2,21 +2,22 @@ package tokenutil
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"time"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CreateAccessToken(user *model.User, roles []int, secret string, expiry int) (accessToken string, err error) {
+func CreateAccessToken(user *model.User, roles []uint, secret string, expiry int) (accessToken string, err error) {
 	exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := &model.JwtCustomClaims{
 		Email:       user.Email,
-		UID:         user.ID,
+		UserID:      user.ID,
 		AccessLevel: user.AccessLevel,
-		RoleID:      roles,
+		RoleIDs:     roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
@@ -29,12 +30,12 @@ func CreateAccessToken(user *model.User, roles []int, secret string, expiry int)
 	return t, err
 }
 
-func CreateRefreshToken(user *model.User, roles []int, secret string, expiry int) (refreshToken string, err error) {
+func CreateRefreshToken(user *model.User, roles []uint, secret string, expiry int) (refreshToken string, err error) {
 	claimsRefresh := &model.JwtCustomRefreshClaims{
 		Email:       user.Email,
-		UID:         user.ID,
+		UserID:      user.ID,
 		AccessLevel: user.AccessLevel,
-		RoleID:      roles,
+		RoleIDs:     roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(expiry))),
 		},
@@ -47,7 +48,15 @@ func CreateRefreshToken(user *model.User, roles []int, secret string, expiry int
 	return rt, err
 }
 
-func IsAuthorized(requestToken string, secret string) (bool, error) {
+func GetAuthToken(c *gin.Context) (token string, err error) {
+	auth, err := c.Cookie("auth")
+	if err != nil {
+		return "token not found", err
+	}
+	return auth, err
+}
+
+func IsAuthenticated(requestToken string, secret string) (bool, error) {
 	_, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -60,8 +69,9 @@ func IsAuthorized(requestToken string, secret string) (bool, error) {
 	return true, nil
 }
 
-func ExtractClaimsFromToken(requestToken string, secret string) (claims jwt.MapClaims, err error) {
-	token, err := jwt.Parse(requestToken, func(token *jwt.Token) (interface{}, error) {
+func ExtractClaimsFromToken(requestToken string, secret string) (*model.JwtCustomClaims, error) {
+	var claims model.JwtCustomClaims
+	_, err := jwt.ParseWithClaims(requestToken, &claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -70,14 +80,31 @@ func ExtractClaimsFromToken(requestToken string, secret string) (claims jwt.MapC
 	if err != nil {
 		return nil, err
 	}
+	return &claims, nil
+}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if !ok && !token.Valid {
-		return nil, fmt.Errorf("invalid token")
+func ExtractUserID(c *gin.Context, secret string) (uint, error) {
+	token, err := GetAuthToken(c)
+	if err != nil {
+		return 0, err
 	}
+	claims, err := ExtractClaimsFromToken(token, secret)
+	if err != nil {
+		return 0, err
+	}
+	return claims.UserID, nil
+}
 
-	return claims, nil
+func ExtractRoleIDs(c *gin.Context, secret string) ([]uint, error) {
+	token, err := GetAuthToken(c)
+	if err != nil {
+		return nil, err
+	}
+	claims, err := ExtractClaimsFromToken(token, secret)
+	if err != nil {
+		return nil, err
+	}
+	return claims.RoleIDs, nil
 }
 
 func ExtractAccessLevelFromToken(requestToken string, secret string) (accessLevel string, err error) {
@@ -86,13 +113,5 @@ func ExtractAccessLevelFromToken(requestToken string, secret string) (accessLeve
 		log.Println(err)
 		return "", err
 	}
-	return fmt.Sprintf("%v", claims["accessLevel"].(float64)), nil
-}
-
-func GetAuthToken(c *gin.Context) (token string, err error) {
-	auth, err := c.Cookie("Authorization")
-	if err != nil {
-		return "token not found", err
-	}
-	return auth, err
+	return fmt.Sprintf("%v", claims.AccessLevel), nil
 }

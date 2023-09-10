@@ -91,6 +91,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/users/roles": {
+            "get": {
+                "description": "Get all roles",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Get all roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Role"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/{id}": {
             "get": {
                 "description": "Get detailed information of a user.",
@@ -301,6 +327,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/logout": {
+            "post": {
+                "description": "Removes both access and refresh JWT Tokens from cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Removes the JWT token from cookies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/init": {
+            "get": {
+                "description": "Check if QL has users already.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Get if has user",
+                "responses": {
+                    "200": {
+                        "description": "hasUser\": true",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create the first user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Post the first user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                }
+            }
+        },
         "/templates": {
             "get": {
                 "description": "Get all authorised templates.",
@@ -365,6 +456,28 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/icons": {
+            "get": {
+                "description": "Get the preset template icons.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Failed to retrieve file list",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -477,12 +590,12 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "New workspace with the ID of owner",
+                        "description": "New workspace",
                         "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
+                            "$ref": "#/definitions/model.Workspace"
                         }
                     }
                 ],
@@ -705,17 +818,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateWorkspaceRequest": {
-            "type": "object",
-            "properties": {
-                "userId": {
-                    "type": "integer"
-                },
-                "workspace": {
-                    "$ref": "#/definitions/model.Workspace"
-                }
-            }
-        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -742,12 +844,6 @@ const docTemplate = `{
         "model.LoginResponse": {
             "type": "object",
             "properties": {
-                "accessToken": {
-                    "type": "string"
-                },
-                "refreshToken": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "string"
                 }
@@ -910,6 +1006,12 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
                 },
                 "uuid": {
                     "type": "string"

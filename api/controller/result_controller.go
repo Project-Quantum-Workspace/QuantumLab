@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type ResultController struct {
@@ -12,7 +13,7 @@ type ResultController struct {
 
 func (controller *ResultController) Create(c *gin.Context) {
 	var tableRequest model.CreateTableRequest
-	err := c.BindJSON(&tableRequest)
+	err := c.ShouldBindJSON(&tableRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
 			Message: err.Error(),

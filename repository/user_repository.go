@@ -2,7 +2,9 @@ package repository
 
 import (
 	"errors"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"github.com/sirupsen/logrus"
 
 	"gorm.io/gorm"
 )
@@ -17,6 +19,13 @@ func NewUserRepository(db *gorm.DB) model.UserRepository {
 	}
 }
 
+func (ur *userRepository) Create(users *model.User) error {
+	result := ur.qlDB.
+		Omit("ID", "UUID", "Workspaces", "Roles.*").
+		Create(users)
+	return result.Error
+}
+
 func (ur *userRepository) CreateBatch(users []model.User) error {
 	result := ur.qlDB.
 		Omit("ID", "UUID", "Workspaces", "Roles.*").
@@ -24,10 +33,10 @@ func (ur *userRepository) CreateBatch(users []model.User) error {
 	return result.Error
 }
 
-func (ur *userRepository) GetByEmail(email string) (model.User, error) {
+func (ur *userRepository) GetByEmail(email string) (*model.User, error) {
 	var user model.User
 	result := ur.qlDB.Where("email = ?", email).First(&user)
-	return user, result.Error
+	return &user, result.Error
 }
 
 func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) {
@@ -42,8 +51,8 @@ func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) 
 	return users[0].QuantumlabToken, nil
 }
 
-func (ur *userRepository) GetRoleID(uid uint) ([]int, error) {
-	var RID []int
+func (ur *userRepository) GetRoleIDs(uid uint) ([]uint, error) {
+	var RID []uint
 	result := ur.qlDB.Raw(`SELECT role_id FROM user_roles WHERE user_roles.user_id = ?`, uid).Scan(&RID)
 	if result.Error != nil {
 		return RID, result.Error
@@ -58,10 +67,10 @@ func (ur *userRepository) GetRegisteredEmails(emailList []string) ([]string, err
 	return registeredEmailList, result.Error
 }
 
-func (ur *userRepository) GetByID(id uint) (model.User, error) {
+func (ur *userRepository) GetByID(id uint) (*model.User, error) {
 	var user model.User
 	result := ur.qlDB.Omit("password").Preload("Roles").First(&user, id)
-	return user, result.Error
+	return &user, result.Error
 }
 
 func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
@@ -70,7 +79,7 @@ func (ur *userRepository) GetAll() ([]model.UserListItem, error) {
 	return users, result.Error
 }
 
-func (ur *userRepository) Update(user model.User) error {
+func (ur *userRepository) Update(user *model.User) error {
 	err := ur.qlDB.Transaction(func(tx *gorm.DB) error {
 		var result *gorm.DB
 		omit := []string{"ID", "UUID", "Workspaces", "Roles"}
@@ -78,21 +87,32 @@ func (ur *userRepository) Update(user model.User) error {
 			omit = append(omit, "Password")
 			// add Select("*") to include non-zero field
 			// gorm sucks!!
-			result = ur.qlDB.Model(&user).Select("*").
-				Omit(omit...).Updates(user)
+			result = ur.qlDB.Model(user).Select("*").
+				Omit(omit...).Updates(*user)
 		} else {
-			result = ur.qlDB.Model(&user).Select("*").
-				Omit(omit...).Updates(user)
+			result = ur.qlDB.Model(user).Select("*").
+				Omit(omit...).Updates(*user)
 		}
 		if result.Error != nil {
 			return result.Error
 		}
 		if user.Roles != nil {
-			err := ur.qlDB.Model(&user).Omit("Roles.*").
+			err := ur.qlDB.Model(user).Omit("Roles.*").
 				Association("Roles").Replace(user.Roles)
 			return err
 		}
 		return nil
 	})
 	return err
+}
+
+func (ur *userRepository) GetCount() (int64, error) {
+	var count int64
+	query := "SELECT COUNT(*) FROM users"
+	err := ur.qlDB.Raw(query).Scan(&count)
+	if err.Error != nil {
+		logrus.Errorf("error counting users: %v", err.Error)
+		return -1, err.Error
+	}
+	return count, err.Error
 }
