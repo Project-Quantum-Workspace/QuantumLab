@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CloudUploadOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons'
 import {
   Button,
@@ -6,55 +6,97 @@ import {
   Form,
   Input,
   InputNumber,
+  Select,
   Slider,
   Space,
   TreeSelect,
   Upload,
+  UploadProps,
+  message,
 } from 'antd';
+import TemplateApi from "@/services/quantumlab/template";
+import { Link } from '@umijs/max';
 
-
-const normFile = (e: any) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
+const templateParameter = "[{\"name\":\"availableZone\",\"label\":\"Available Zone\",\"selections\":[\"qh2\",\"qh2-uom\"],\"isInput\":false},{\"name\":\"diskSize\",\"label\":\"Disk Size\",\"isInput\":true}]";
+type Question = {
+  name: string;
+  label: string;
+  selections?: string[];
+  isInput: boolean;
 };
-const CreateTemplate: React.FC = () => {
-  //TODO: upload info to backend
-  useEffect(()=>{
 
-  },[])
+const CreateTemplate: React.FC = () => {
+  const [form] = Form.useForm();
+  const [fileData, setFileData] = useState("");
+  const [icon, setIcon] = useState(null);
+  const [displayP, setDisplayP] = useState(0);
+  const [params, setParams] = useState<Question[]>([])
+
+  
+  const props: UploadProps = {
+    beforeUpload: (file) => {
+      const isTar = file.type === 'image/png';
+      if (!isTar) {
+        message.error(`${file.name} is not a tar file`);
+      }
+      return isTar || Upload.LIST_IGNORE;
+    },
+    onChange: (info) => {
+      setDisplayP(info.fileList?.length)
+      setFileData(templateParameter)
+      if (fileData) {
+        const params = JSON.parse(fileData);
+        setParams(params);
+      }
+    }
+
+  };
+  //TODO: upload info to backend
+  const onFinish = async (t: any) => {
+    console.log(t)
+    const template = {
+      filename: t.filename,
+      parameters: '[{"name":"AvailableZone","label":"Available Zone","selections":["qh2","qh2-uom"],"isInput":false},{"name":"DiskSize","label":"Disk Size","isInput":true}]',
+      accessLevel: t.accessLevel,
+      icon: t.icon
+    }
+    //const res = await TemplateApi.postTemplate(template)
+    //console.log(res)
+  }
   return (
     <>
       <h1>
         Create A New Template
       </h1>
       <Form
-        labelCol={{ flex: '20%' }}
+      name="create Template"
+        form={form}
+        labelCol={{ flex: '25%' }}
         labelAlign="left"
         labelWrap
         wrapperCol={{ span: 20 }}
         layout="horizontal"
         style={{ maxWidth: 600 }}
+        onFinish={onFinish}
       >
         <h2>General</h2>
-        <Form.Item label="Display Name"
+        <Form.Item name="filename" label="Display Name"
           rules={[{ required: true, message: 'Please enter display name of this template' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label="Template Name"
+          name="templatename"
           rules={[{ required: true, message: 'Please enter the template name' }]}
           extra="Name must start with letters and contain only lowercase letters, uppercase letters, numbers and '-'">
           <Input />
         </Form.Item>
 
         <Form.Item label="Upload template"
-          rules={[{ required: true, message: 'Please upload your template format' }]}
-        >
-          <Form.Item name="upload template" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
-            <Upload.Dragger name="files" action="/upload.do">
+          name="file">
+          <Form.Item name="Upload template" label="Upload template" valuePropName="file" rules={[{ required: true, message: 'Please upload your template format' }]}noStyle>
+            <Upload.Dragger {...props} name="files" maxCount={1} action="/upload.do">
               <p className="ant-upload-drag-icon">
                 <CloudUploadOutlined />
               </p>
@@ -67,7 +109,7 @@ const CreateTemplate: React.FC = () => {
         {/** TODO: select icon, Icon should display when hover 
          * UPDATE: should have default value when admin didn't select this field
         */}
-        <Form.Item label="Icon" valuePropName="fileList" getValueFromEvent={normFile}>
+        <Form.Item name="icon" label="Icon" >
           <TreeSelect >
 
           </TreeSelect>
@@ -76,20 +118,27 @@ const CreateTemplate: React.FC = () => {
 
         <Divider />
         <h2>Permission</h2>
-        <Form.Item label="Access Level">
-        <InputNumber min={0} max={10}  />
+        <Form.Item name="accessLevel" label="Access Level"
+          extra="Any user with greater or equal to access level can use this template to create workspaces.">
+          <InputNumber min={0} max={10} defaultValue={0} />
         </Form.Item>
-        <Divider />
+        {displayP === 1 && params.length !== 0 &&
+          <><Divider />
+            <h2>Workspace Parameters</h2>
+            {/** TODO: parse tar file */}
 
-        {/** TODO: parse tar file */}
 
-        <Divider />
+            <Divider />
+          </>}
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
           <Space>
-            <Button>
-              Cancel
-            </Button>
-            <Button>
+            <Link to="/workspace">
+              <Button>
+                Cancel
+              </Button>
+            </Link>
+            <Button
+              type="primary" htmlType="submit">
               Create Template
             </Button>
           </Space>

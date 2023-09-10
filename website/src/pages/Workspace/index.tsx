@@ -74,7 +74,7 @@ const App: React.FC = () => {
             backgroundColor: '#0F56B3',
             marginTop: "8px",marginRight:"2px"
           }}
-          onClick={() => { history.push('/admin/createTemplate') }}
+          onClick={() => { history.push('/templates/createTemplate') }}
           >
           +
         </Button>
@@ -84,7 +84,7 @@ const App: React.FC = () => {
             backgroundColor: '#0F56B3',
             marginTop: "8px"
           }}
-          onClick={() => { history.push('/admin/createTemplate') }}
+          onClick={() => { history.push('/templates/createTemplate') }}
           >
           +
         </Button>

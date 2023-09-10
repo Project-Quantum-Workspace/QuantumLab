@@ -9,6 +9,12 @@ class TemplateApi extends BaseApi {
         return res.message ? res.message : TemplateClass.fromDTO(res)
     })
   }
+  postTemplate(template: object | undefined){
+    return this.loadByPost('/api/templates',template)
+    .then((res)=>{
+      return res
+    })
+  }
 
 
 }

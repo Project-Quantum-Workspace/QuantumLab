@@ -49,7 +49,7 @@ const columns: ColumnsType<TemplateMetaData> = [
     dataIndex: 'id',
     render: (id) => (
       <Space size="middle">
-        <Link to={'/template/' + `${id}`}>
+        <Link to={'/templates/' + `${id}`}>
           <DoubleRightOutlined />
         </Link>
       </Space>
