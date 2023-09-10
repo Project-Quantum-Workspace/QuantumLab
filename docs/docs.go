@@ -209,6 +209,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/{id}/status": {
+            "patch": {
+                "description": "Administrator updates desired users account status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Update the account status of a user",
+                "parameters": [
+                    {
+                        "description": "Status Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SetAccountStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/agent": {
             "post": {
                 "description": "Update the workspace status according to the heartbeat message sent by a QuantumLab Agent.",
@@ -857,10 +909,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "declare ID as pointer to let gorm preload the record with id = 0\nGORM SUCKS!!",
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.SetAccountStatusRequest": {
+            "type": "object",
+            "properties": {
+                "accountStatus": {
+                    "type": "boolean"
                 }
             }
         },

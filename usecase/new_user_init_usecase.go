@@ -30,7 +30,9 @@ func (uiu *userInitUsecase) CreateRootAdmin(request *model.InitRequest) error {
 	if count != 0 {
 		return errors.New("already has users")
 	}
-	role := model.Role{ID: 0}
+	// Root Administrator has id = 0
+	roleID := uint(0)
+	role := model.Role{ID: &roleID}
 
 	hashedPassword, err := validationutil.GenerateHash(request.Password)
 	if err != nil {

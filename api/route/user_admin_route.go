@@ -27,4 +27,5 @@ func NewUserAdminRouter(
 	userAdminRouterGroup.GET("/:id", uac.GetUserDetail)
 	userAdminRouterGroup.GET("/roles", uac.GetAllRoles)
 	userAdminRouterGroup.PUT("/:id", uac.UpdateUser)
+	userAdminRouterGroup.PATCH("/:id/status", uac.SetAccountStatus)
 }
