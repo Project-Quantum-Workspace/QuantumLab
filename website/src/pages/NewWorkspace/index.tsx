@@ -1,4 +1,4 @@
-import { getAccessibleTemplates } from '@/services/quantumlab/template';
+import TemplateApi from '@/services/quantumlab/template';
 import { useModel } from '@umijs/max';
 import {
   Button,
@@ -12,74 +12,43 @@ import {
   notification,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'umi';
+import { Link } from 'umi';
+import useTemplateStore from '@/stores/TemplateStore'
+import { TemplateClass } from '@/utils/types/TemplateTypes';
+import { PageLoading } from '@ant-design/pro-components';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const NewWorkspace = () => {
   const [form] = Form.useForm();
-
-  type Question = {
-    name: string;
-    label: string;
-    selections?: string[];
-    isInput: boolean;
-  };
-
-  type Template = {
-    accessLevel: string;
-    filename: string;
-    parameters: string;
-    id: number; // Assuming an ID is part of the template
-  };
-
-  type Template2 = {
-    accessLevel: string;
-    filename: string;
-    parameters: Question[];
-    id: number; // Assuming an ID is part of the template
-  };
-
-  const [selectedTemplate, setSelectedTemplate] = useState<Template2 | null>(null);
-
-  const [templates, setTemplates] = useState<Template[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | undefined>(undefined);
+  const [templates, setTemplates] = useState<TemplateClass[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
-  const location = useLocation();
-  const [templateId, setTemplateId] = useState(0)
+  const  { currentTemplate }= useTemplateStore()
 
   useEffect(() => {
     // function to fetch templates
-    getAccessibleTemplates()
-    .then((res)=>{
-      setLoadingTemplates(false)
-      setTemplates(res)
-    })
-    .catch((error)=>{
-      setTemplatesFetchFailed(true)
-      throw new Error(error.message || 'Error fetching templates.');
-    })
-   
+    TemplateApi.getAccessibleTemplates()
+      .then((res)=>{
+        setLoadingTemplates(false)
+        setTemplates(res)
+      })
+      .catch((error)=>{
+        setTemplatesFetchFailed(true)
+        throw new Error(error.message || 'Error fetching templates.');
+      })
   }, []);
 
   useEffect(()=> {
-    
-    if(location.state){
-      setTemplateId( location.state.templateId);
-    }
-    
-    const template = templates.find((template) => template.id === templateId);
-    if (template && typeof template.parameters === 'string') {
-      // Parse the Parameters from string to object
-      const paramsObject = JSON.parse(template.parameters);
-      setSelectedTemplate({ ...template, parameters: paramsObject });
-    }
-  },[templates])
+    if (currentTemplate)
+      setSelectedTemplate(currentTemplate)
+  },[])
   
   if (loadingTemplates) {
-    return <div>Loading templates...</div>;
+    return <PageLoading />;
   }
 
   if (templatesFetchFailed) {
@@ -99,17 +68,11 @@ const NewWorkspace = () => {
 
   const onTemplateChange = (selectedTemplateId: number) => {
     const template = templates.find((template) => template.id === selectedTemplateId);
-    if (template && typeof template.parameters === 'string') {
-      // Parse the Parameters from string to object
-      const paramsObject = JSON.parse(template.parameters);
-      setSelectedTemplate({ ...template, parameters: paramsObject });
-    }
+    setSelectedTemplate(template)
   };
 
   const onFinish = async (values: any) => {
     try {
-      // console.log('values:', values);
-
       // Create parameters from selectedTemplate and form values
       const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
         (acc, question) => {
@@ -118,7 +81,6 @@ const NewWorkspace = () => {
         },
         {},
       );
-      console.log('parameters:', parameters);
       
       // Adjust data to fit the new format
       const adjustedValues = {
@@ -142,7 +104,7 @@ const NewWorkspace = () => {
         },
       };
 
-      console.log('adjustedValues:', adjustedValues);
+    console.log('adjustedValues:', adjustedValues);
 
       const response = await fetch('/api/workspaces', {
         method: 'POST',
@@ -239,7 +201,7 @@ const NewWorkspace = () => {
 
         <Form.Item name="template_id" label="Templates">
           <Select
-            defaultValue={templateId===0 ? undefined :templateId}
+            defaultValue={selectedTemplate?.id || undefined}
             placeholder="Select a template"
             onChange={onTemplateChange}
             loading={!templates} // Show loading indicator if templates are not available
