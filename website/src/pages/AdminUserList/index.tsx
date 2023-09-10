@@ -1,5 +1,5 @@
-import {Button, Table, notification} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Button, Table, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
 import InviteUsersModal from './inviteUsersModal';
 
 type UserRole = {
@@ -17,7 +17,6 @@ type User = {
   accessLevel: number;
   roles: UserRole[];
 };
-
 
 const AdminUserList: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
@@ -56,19 +55,15 @@ const AdminUserList: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, []);
 
-
   const updateUserStatus = async (id: number, status: boolean) => {
     const userToUpdate = users.find((user) => user.id === id);
     if (!userToUpdate) return;
 
-    const accessLevel = status ? userToUpdate.accessLevel : 0;
     const payload = {
-      id,
       accountStatus: status,
-      accessLevel,
     };
 
-    const response = await fetch('/api/admin/users', {
+    const response = await fetch(`/api/admin/${id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -76,24 +71,38 @@ const AdminUserList: React.FC = () => {
       body: JSON.stringify(payload),
     });
 
-    if (response.ok) {
-      // Since the backend only returns success, update the local state based on the changes made
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === id ? {...user, accountStatus: status, accessLevel} : user,
-        ),
-      );
+    const data = await response.json();
 
-      console.log(`${id} updated successfully!`);
+    if (response.status === 200) {
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user.id === id ? { ...user, accountStatus: status } : user)),
+      );
+      notification.success({
+        message: 'Operation Successful',
+        description: data.message || 'User status updated successfully!',
+      });
+    } else if (response.status === 400) {
+      notification.error({
+        message: 'Bad Request',
+        description: data.message || 'There was an error in the request.',
+      });
+    } else if (response.status === 403) {
+      notification.error({
+        message: 'Forbidden',
+        description: data.message || 'You are not allowed to perform this action.',
+      });
+    } else if (response.status === 500) {
+      notification.error({
+        message: 'Unexpected System Error',
+        description: data.message || 'An unexpected system error occurred. Please try again later.',
+      });
     } else {
       notification.error({
-        message: 'Operation Failed',
-        description: 'An error occurred while updating the user. Please try again later.',
+        message: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
       });
-      console.log(`${id} failed!!`);
     }
   };
-
 
   const setUsersStatus = async (status: boolean) => {
     await Promise.all(selectedRowKeys.map((id) => updateUserStatus(id, status)));
@@ -110,17 +119,17 @@ const AdminUserList: React.FC = () => {
   };
 
   const getSelectedUsers = (): User[] => {
-    return users.filter(user => selectedRowKeys.includes(user.id));
+    return users.filter((user) => selectedRowKeys.includes(user.id));
   };
 
   const areAllSelectedUsersActive = (): boolean => {
     const selected = getSelectedUsers();
-    return selected.every(user => user.accountStatus);
+    return selected.every((user) => user.accountStatus);
   };
 
   const areAllSelectedUsersInactive = (): boolean => {
     const selected = getSelectedUsers();
-    return selected.every(user => !user.accountStatus);
+    return selected.every((user) => !user.accountStatus);
   };
 
   const columns = [
@@ -136,12 +145,12 @@ const AdminUserList: React.FC = () => {
     {
       title: 'Role(s)',
       dataIndex: 'roles',
-      render: (roles: UserRole[]) => roles.map(role => role.name).join(", "),
+      render: (roles: UserRole[]) => roles.map((role) => role.name).join(', '),
     },
     {
       title: 'Status',
       dataIndex: 'accountStatus',
-      render: (status: boolean) => status ? 'Active' : 'Inactive',
+      render: (status: boolean) => (status ? 'Active' : 'Inactive'),
     },
   ];
 
@@ -150,13 +159,11 @@ const AdminUserList: React.FC = () => {
   };
 
   const handleSend = async (emailList: string[]) => {
-
     try {
       const response = await fetch('/api/admin/users/invite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-
         },
         body: JSON.stringify(emailList),
       });
@@ -179,7 +186,7 @@ const AdminUserList: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Error during fetch:", error);
+      console.error('Error during fetch:', error);
       notification.error({
         message: 'Network Error',
         description: 'An unexpected error occurred. Please try again later.',
@@ -197,7 +204,7 @@ const AdminUserList: React.FC = () => {
   return (
     <div>
       <div>
-        <Button type="primary" onClick={showModal} style={{marginRight: '10px'}}>
+        <Button type="primary" onClick={showModal} style={{ marginRight: '10px' }}>
           Invite New
         </Button>
         <Button
@@ -205,7 +212,7 @@ const AdminUserList: React.FC = () => {
           onClick={() => setUsersStatus(true)}
           disabled={areAllSelectedUsersActive()}
           loading={loading}
-          style={{marginRight: '10px'}}
+          style={{ marginRight: '10px' }}
         >
           Set Active
         </Button>
@@ -218,7 +225,6 @@ const AdminUserList: React.FC = () => {
         >
           Set Inactive
         </Button>
-
       </div>
 
       <Table
@@ -231,7 +237,7 @@ const AdminUserList: React.FC = () => {
         loading={loading}
       />
 
-      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel}/>
+      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel} />
     </div>
   );
 };
