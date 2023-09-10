@@ -20,7 +20,7 @@ type User = {
 
 
 const AdminUserList: React.FC = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -57,13 +57,13 @@ const AdminUserList: React.FC = () => {
   }, []);
 
 
-  const updateUserStatus = async (uuid: string, status: boolean) => {
-    const userToUpdate = users.find((user) => user.uuid === uuid);
+  const updateUserStatus = async (id: number, status: boolean) => {
+    const userToUpdate = users.find((user) => user.id === id);
     if (!userToUpdate) return;
 
     const accessLevel = status ? userToUpdate.accessLevel : 0;
     const payload = {
-      uuid,
+      id,
       accountStatus: status,
       accessLevel,
     };
@@ -80,23 +80,23 @@ const AdminUserList: React.FC = () => {
       // Since the backend only returns success, update the local state based on the changes made
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.uuid === uuid ? {...user, accountStatus: status, accessLevel} : user,
+          user.id === id ? {...user, accountStatus: status, accessLevel} : user,
         ),
       );
 
-      console.log(`${uuid} updated successfully!`);
+      console.log(`${id} updated successfully!`);
     } else {
       notification.error({
         message: 'Operation Failed',
         description: 'An error occurred while updating the user. Please try again later.',
       });
-      console.log(`${uuid} failed!!`);
+      console.log(`${id} failed!!`);
     }
   };
 
 
   const setUsersStatus = async (status: boolean) => {
-    await Promise.all(selectedRowKeys.map((uuid) => updateUserStatus(uuid, status)));
+    await Promise.all(selectedRowKeys.map((id) => updateUserStatus(id, status)));
     notification.success({
       message: 'Update Successful',
       description: `Successfully updated ${selectedRowKeys.length} users.`,
@@ -105,12 +105,12 @@ const AdminUserList: React.FC = () => {
 
   const rowSelection = {
     onChange: (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys as string[]);
+      setSelectedRowKeys(newSelectedRowKeys as number[]);
     },
   };
 
   const getSelectedUsers = (): User[] => {
-    return users.filter(user => selectedRowKeys.includes(user.uuid));
+    return users.filter(user => selectedRowKeys.includes(user.id));
   };
 
   const areAllSelectedUsersActive = (): boolean => {
