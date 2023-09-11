@@ -53,7 +53,6 @@ const CreateTemplate: React.FC = () => {
       if (fileData) {
         //CT_TODO: post the file and parse the recieved json string here
         const params = JSON.parse(fileData);
-        console.log(params)
         setParams(params);
       }
     }
@@ -62,7 +61,7 @@ const CreateTemplate: React.FC = () => {
   //CT_TODO: get icon list
   //CT_TODO: upload info to backend
   const onFinish = async (t: any) => {
-    console.log(t)
+    
     const template = {
       filename: t.filename,
       parameters: JSON.stringify(params),
@@ -70,7 +69,6 @@ const CreateTemplate: React.FC = () => {
       icon: t.icon
     }
     //const res = await TemplateApi.postTemplate(template)
-    console.log(template)
   }
   
   return (
