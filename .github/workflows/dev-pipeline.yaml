@@ -221,8 +221,6 @@ jobs:
           record: true
           wait-on: http://localhost:8000
           wait-on-timeout: 120
-          spec: tests/cypress/e2e/*
-          config-file: tests/cypress.config.js
           working-directory: ${{ env.working-directory }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
