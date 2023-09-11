@@ -1,6 +1,11 @@
-import {Button, Table, notification} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Button, Table, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
 import InviteUsersModal from './inviteUsersModal';
+
+type UserRole = {
+  id: number;
+  name: string;
+};
 
 type User = {
   email: string;
@@ -8,14 +13,13 @@ type User = {
   id: number;
   firstName: string;
   lastName: string;
-  accountStatus: number;
+  accountStatus: boolean;
   accessLevel: number;
-  role: string;
+  roles: UserRole[];
 };
 
-
 const AdminUserList: React.FC = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -51,55 +55,88 @@ const AdminUserList: React.FC = () => {
     return () => clearTimeout(timeoutId);
   }, []);
 
-
-  const updateUserStatus = async (uuid: string, status: number) => {
-    const userToUpdate = users.find((user) => user.uuid === uuid);
+  const updateUserStatus = async (id: number, status: boolean) => {
+    const userToUpdate = users.find((user) => user.id === id);
     if (!userToUpdate) return;
 
-    const accessLevel = status === 1 ? userToUpdate.accessLevel : 0;
     const payload = {
-      uuid,
-      accountStatus: status,
-      accessLevel,
+      "accountStatus": status
     };
 
-    const response = await fetch('/api/admin/users', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch(`/api/admin/users/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (response.ok) {
-      // Since the backend only returns success, update the local state based on the changes made
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.uuid === uuid ? {...user, accountStatus: status, accessLevel} : user,
-        ),
-      );
+      const data = await response.json();
 
-      console.log(`${uuid} updated successfully!`);
-    } else {
-      // Handle error here (e.g., show notification to the user)
-      console.log(`${uuid} failed!!`);
+      if (response.ok) {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === id ? {...user, accountStatus: status} : user,
+          ),
+        );
+        notification.success({
+          message: 'Operation Successful',
+          description: data.message || 'User status updated successfully!',
+        });
+      } else if (response.status === 400) {
+        notification.error({
+          message: 'Bad Request',
+          description: data.message || 'There was an error in the request.',
+        });
+      } else if (response.status === 403) {
+        notification.error({
+          message: 'Forbidden',
+          description: data.message || 'You are not allowed to perform this action.',
+        });
+      } else if (response.status === 500) {
+        notification.error({
+          message: 'Unexpected System Error',
+          description: data.message || 'An unexpected system error occurred. Please try again later.',
+        });
+      } else {
+        notification.error({
+          message: 'Error',
+          description: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error during fetch operation:", error);
+      notification.error({
+        message: 'System Error',
+        description: 'An unexpected error occurred during the operation. Please try again later.',
+      });
     }
   };
 
-  const setUsersStatus = async (status: number) => {
-    await Promise.all(selectedRowKeys.map((uuid) => updateUserStatus(uuid, status)));
-    notification.success({
-      message: 'Update Successful',
-      description: `Successfully updated ${selectedRowKeys.length} users.`,
-    });
+
+  const setUsersStatus = async (status: boolean) => {
+    await Promise.all(selectedRowKeys.map((id) => updateUserStatus(id, status)));
   };
 
-  // rowSelection object indicates the need for row selection
   const rowSelection = {
     onChange: (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys as string[]);
+      setSelectedRowKeys(newSelectedRowKeys as number[]);
     },
+  };
+
+  const getSelectedUsers = (): User[] => {
+    return users.filter((user) => selectedRowKeys.includes(user.id));
+  };
+
+  const areAllSelectedUsersActive = (): boolean => {
+    const selected = getSelectedUsers();
+    return selected.every((user) => user.accountStatus);
+  };
+
+  const areAllSelectedUsersInactive = (): boolean => {
+    const selected = getSelectedUsers();
+    return selected.every((user) => !user.accountStatus);
   };
 
   const columns = [
@@ -113,38 +150,33 @@ const AdminUserList: React.FC = () => {
       dataIndex: 'id',
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
+      title: 'Role(s)',
+      dataIndex: 'roles',
+      render: (roles: UserRole[]) => roles.map((role) => role.name).join(', '),
     },
     {
       title: 'Status',
       dataIndex: 'accountStatus',
-      render: (status: number) => (status === 1 ? 'Active' : 'Inactive'),
+      render: (status: boolean) => (status ? 'Active' : 'Inactive'),
     },
   ];
-
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleSend = async (emails: string[]) => {
-    // Constructing the payload for the request
-    const payload = {
-      emails,
-    };
-
+  const handleSend = async (emailList: string[]) => {
     try {
       const response = await fetch('/api/admin/users/invite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(emailList),
       });
 
       // Check if the response is successful
+      console.log(JSON.stringify(emailList));
       if (response.ok) {
         const data = await response.json(); // Assuming your server returns some JSON data
         // Handle success scenario here
@@ -161,7 +193,7 @@ const AdminUserList: React.FC = () => {
         });
       }
     } catch (error) {
-      // Handle unexpected errors here
+      console.error('Error during fetch:', error);
       notification.error({
         message: 'Network Error',
         description: 'An unexpected error occurred. Please try again later.',
@@ -179,21 +211,23 @@ const AdminUserList: React.FC = () => {
   return (
     <div>
       <div>
-        <Button type="primary" onClick={showModal}>
+        <Button type="primary" onClick={showModal} style={{ marginRight: '10px' }}>
           Invite New
         </Button>
         <Button
           type="primary"
-          onClick={() => setUsersStatus(1)}
-          disabled={!selectedRowKeys.length}
+          onClick={() => setUsersStatus(true)}
+          disabled={areAllSelectedUsersActive()}
           loading={loading}
+          style={{ marginRight: '10px' }}
         >
           Set Active
         </Button>
+
         <Button
           type="primary"
-          onClick={() => setUsersStatus(0)}
-          disabled={!selectedRowKeys.length}
+          onClick={() => setUsersStatus(false)}
+          disabled={areAllSelectedUsersInactive()}
           loading={loading}
         >
           Set Inactive
@@ -206,11 +240,11 @@ const AdminUserList: React.FC = () => {
         }}
         columns={columns}
         dataSource={users}
-        rowKey="uuid"
+        rowKey="id"
         loading={loading}
       />
 
-      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel}/>
+      <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel} />
     </div>
   );
 };
