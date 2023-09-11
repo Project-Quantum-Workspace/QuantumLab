@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewResultRouter(db *gorm.DB, apiRouterGroup *gin.RouterGroup) {
+func NewResultRouter(apiRouterGroup *gin.RouterGroup, db *gorm.DB) {
 	repo := repository.NewResultRepository(db)
 	resultController := controller.ResultController{
 		ResultUsecase: usecase.NewResultUsecase(repo),

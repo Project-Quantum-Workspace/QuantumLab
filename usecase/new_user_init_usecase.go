@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"errors"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/generatorutil"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/sirupsen/logrus"
 )
@@ -19,27 +21,35 @@ func NewUserInitUsecase(
 	}
 }
 
-func (uiu *userInitUsecase) CreateFirstUser(user model.User) error {
+func (uiu *userInitUsecase) CreateRootAdmin(request *model.InitRequest) error {
 	count, countError := uiu.userRepository.GetCount()
 	if countError != nil {
 		logrus.Errorf("error counting number of users: %v", countError.Error())
 		return countError
 	}
 	if count != 0 {
-		logrus.Infof("error counting number of users")
 		return errors.New("already has users")
 	}
-	role := model.Role{
-		ID:   0,
-		Name: `Root Administrator`,
+	// Root Administrator has id = 0
+	roleID := uint(0)
+	role := model.Role{ID: &roleID}
+
+	hashedPassword, err := validationutil.GenerateHash(request.Password)
+	if err != nil {
+		logrus.Errorf("error hashing password: %v", err.Error())
+		return err
 	}
+	user := &model.User{Email: request.Email, Password: hashedPassword}
 	user.AccessLevel = 10
 	user.AccountStatus = true
 	user.QuantumlabToken = generatorutil.GenerateQuantumLabToken()
 	user.Roles = []model.Role{role}
-	err := uiu.userRepository.CreateFirstUser(user)
+	user.FirstName = "Root"
+	user.LastName = "Administrator"
+
+	err = uiu.userRepository.Create(user)
 	if err != nil {
-		logrus.Errorf("error creating the first user: %v", err.Error())
+		logrus.Errorf("error creating root admin: %v", err.Error())
 		return err
 	}
 	return nil
