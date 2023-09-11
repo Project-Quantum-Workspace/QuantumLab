@@ -1,19 +1,35 @@
 
-import { Form, Input } from 'antd';
+import { Form, Input, Select } from 'antd';
 import React, { Component } from 'react'
-import { FileJson } from '..';
+import { JsonData } from '..';
 
-type Props={
-    data: FileJson
+type Props = {
+  data: JsonData
 }
-export const TemplateCol = (props:Props)=>{
-  return<>
-  <Form.Item name="test" label="Test" >
-    <Input/>
-  </Form.Item>
-  <Form.Item name="test2" label="Test2" >
-    <Input/>
-  </Form.Item>
+const InputStyle = {
+  marginTop: "10px"
+}
+export const TemplateCol = (props: Props) => {
+  const data = props.data
+  var options:Array<{value: string, label: string}>= []
+  
+  if(data.selections){
+    data.selections.forEach((e)=>{
+      options.push({value: e, label: e})
+    })
+  }
+  
+  return <>
+    <Form.Item
+      labelCol={{ flex: '30%' }}
+      wrapperCol={{ span: '30%' }}
+      label={data.label}
+      name={data.name}
+    >
+      {data.isInput?<Input defaultValue={data.value}/>:
+      <Select style={InputStyle} defaultValue={data.value} options={options}/>}
+    </Form.Item>
+   
   </>
 }
 

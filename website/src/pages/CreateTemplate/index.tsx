@@ -1,42 +1,47 @@
-import React, { useEffect, useState } from 'react'
-import { CloudUploadOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { CloudUploadOutlined } from '@ant-design/icons'
 import {
   Button,
   Divider,
   Form,
   Input,
   InputNumber,
+  Select,
   Space,
-  TreeSelect,
   Upload,
   UploadProps,
   message,
 } from 'antd';
-import TemplateApi from "@/services/quantumlab/template";
 import { Link } from '@umijs/max';
 
 import { TemplateCol } from './components/FormItems';
 
-
-const templateParameter = "[{\"name\":\"availableZone\",\"label\":\"Available Zone\",\"selections\":[\"qh2\",\"qh2-uom\"],\"isInput\":false},{\"name\":\"diskSize\",\"label\":\"Disk Size\",\"isInput\":true}]";
-export type FileJson = {
+//CT_TODO: delete this after backend integration
+const templateParameter = "[{\"name\":\"availableZone\",\"label\":\"Available Zone\",\"selections\":[\"qh2\",\"qh2-uom\"],\"isInput\":false, \"value\":\"qh2\"},{\"name\":\"diskSize\",\"label\":\"Disk Size\",\"isInput\":true,\"value\":\"30\"}]";
+const iconList1: Array<{ value: string, label: string }> = [
+  { value: '/unimelb', label: 'Unimelb Icon' },
+  { value: '/quantumLab', label: 'QuantumLab Icon' },
+]
+//CT_TODO: put this to the /utils/types once the data type is settled 
+export type JsonData = {
   name: string;
   label: string;
   selections?: string[];
   isInput: boolean;
+  value:string;
 };
 
 const CreateTemplate: React.FC = () => {
   const [form] = Form.useForm();
   const [fileData, setFileData] = useState("");
-  const [icon, setIcon] = useState(null);
+  const [iconList, setIconList] = useState<Array<{ value: string, label: string }>>(iconList1);
   const [displayP, setDisplayP] = useState(0);
-  const [params, setParams] = useState<FileJson[]>([])
+  const [params, setParams] = useState<JsonData[]>([])
 
-  
+
   const props: UploadProps = {
     beforeUpload: (file) => {
-      const isTar = file.type === 'image/png';
+      const isTar = file.type === 'application/x-tar';
       if (!isTar) {
         message.error(`${file.name} is not a tar file`);
       }
@@ -46,31 +51,35 @@ const CreateTemplate: React.FC = () => {
       setDisplayP(info.fileList?.length)
       setFileData(templateParameter)
       if (fileData) {
+        //CT_TODO: post the file and parse the recieved json string here
         const params = JSON.parse(fileData);
+        console.log(params)
         setParams(params);
       }
     }
 
   };
-  //TODO: upload info to backend
+  //CT_TODO: get icon list
+  //CT_TODO: upload info to backend
   const onFinish = async (t: any) => {
     console.log(t)
     const template = {
       filename: t.filename,
-      parameters: '[{"name":"AvailableZone","label":"Available Zone","selections":["qh2","qh2-uom"],"isInput":false},{"name":"DiskSize","label":"Disk Size","isInput":true}]',
+      parameters: JSON.stringify(params),
       accessLevel: t.accessLevel,
       icon: t.icon
     }
     //const res = await TemplateApi.postTemplate(template)
-    //console.log(res)
+    console.log(template)
   }
+  
   return (
     <>
       <h1>
         Create A New Template
       </h1>
       <Form
-      name="create Template"
+        name="create Template"
         form={form}
         labelCol={{ flex: '25%' }}
         labelAlign="left"
@@ -89,14 +98,23 @@ const CreateTemplate: React.FC = () => {
         <Form.Item
           label="Template Name"
           name="templatename"
-          rules={[{ required: true, message: 'Please enter the template name' }]}
-          extra="Name must start with letters and contain only lowercase letters, uppercase letters, numbers and '-'">
+          rules={[{ required: true, message: 'Please enter the template name'},
+        ()=>({
+          validator(_,value){
+            const pattern = /^[a-zA-Z0-9-]+$/
+           if(pattern.test(value)){
+            return Promise.resolve();
+           }
+           return Promise.reject(new Error("Name must start with letters and contain only lowercase letters, uppercase letters, numbers and '-'"));
+          }
+        })]}
+         >
           <Input />
         </Form.Item>
 
         <Form.Item label="Upload template"
           name="file">
-          <Form.Item name="Upload template" label="Upload template" valuePropName="file" rules={[{ required: true, message: 'Please upload your template format' }]}noStyle>
+          <Form.Item name="Upload template" label="Upload template" valuePropName="file" rules={[{ required: true, message: 'Please upload your template format' }]} noStyle>
             <Upload.Dragger {...props} name="files" maxCount={1} action="/upload.do">
               <p className="ant-upload-drag-icon">
                 <CloudUploadOutlined />
@@ -107,13 +125,11 @@ const CreateTemplate: React.FC = () => {
           </Form.Item>
         </Form.Item>
 
-        {/** TODO: select icon, Icon should display when hover 
-         * UPDATE: should have default value when admin didn't select this field
-        */}
+        {/**CT_TODO: select icon, Icon should display when hover*/}
         <Form.Item name="icon" label="Icon" >
-          <TreeSelect >
-
-          </TreeSelect>
+          <Select
+            defaultValue={"QuantumLab"} options={iconList}
+          />
 
         </Form.Item>
 
@@ -126,8 +142,10 @@ const CreateTemplate: React.FC = () => {
         {displayP === 1 && params.length !== 0 &&
           <><Divider />
             <h2>Workspace Parameters</h2>
-            {/** TODO: parse tar file */}
-            <TemplateCol data ={params[1]}/>
+            {params.map((p) =>
+              <TemplateCol key={p.name} data={p} />
+            )}
+
             <Divider />
           </>}
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
@@ -138,7 +156,11 @@ const CreateTemplate: React.FC = () => {
               </Button>
             </Link>
             <Button
-              type="primary" htmlType="submit">
+              type="primary"
+              style={{
+                backgroundColor: '#0F56B3',
+              }}
+              htmlType="submit">
               Create Template
             </Button>
           </Space>

@@ -5,7 +5,12 @@ import TemplateTable from './components/TemplateTable';
 import { history, useModel } from '@umijs/max';
 import { useLocation } from 'umi';
 import useTemplateStore from '@/stores/TemplateStore';
+import { UploadOutlined } from '@ant-design/icons';
 
+const Buttonstyle={
+  backgroundColor: '#0F56B3',
+  marginTop: "8px"
+}
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
   const [viewT, setViewT] = useState(false);
@@ -50,7 +55,7 @@ const App: React.FC = () => {
           <p style={{ color: "rgba(0,0,0,.6)", width: "70%", height: "50px" }}>Quickly create your new workspace from self-defined templates
           </p>
         </>}
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end" }}>
+      <div style={{ display: 'flex', flexDirection: 'row'}}>
         <Tabs
           defaultActiveKey={tag === 'template' ? "2" : "1"}
           items={[
@@ -69,40 +74,26 @@ const App: React.FC = () => {
 
           onChange={Onchange}
         />
-        {initialState?.currentUser?.accessLevel === 10 && viewT ? 
-        <div>
-          <Button
-          type="primary"
-          style={{
-            backgroundColor: '#0F56B3',
-            marginTop: "8px",marginRight:"2px"
-          }}
-          onClick={() => { history.push('/templates/createTemplate') }}
-          >
-          +
-        </Button>
-        <Button
-          type="primary"
-          style={{
-            backgroundColor: '#0F56B3',
-            marginTop: "8px"
-          }}
-          onClick={() => { history.push('/templates/createTemplate') }}
-          >
-          +
-        </Button>
-        </div>
-          : <Button type="primary"
-            style={{
-              width: "150px",
-              backgroundColor: '#0F56B3',
-              marginTop: "8px"
-            }}
+        <Button type="primary"
+            style={{width: "150px",...Buttonstyle}}
             onClick={() => { history.push('/workspace/new') }}
           >
             + New Project
           </Button>
+        
+        {initialState?.currentUser?.accessLevel === 10 && viewT && 
+       
+          <Button
+          type="primary"
+          icon={<UploadOutlined />}
+          style={{...Buttonstyle,marginLeft:"3px"}}
+          onClick={() => { history.push('/templates/createTemplate') }}
+          >
+            Template
+          </Button>
+    
         }
+       
       </div>
       {viewP && <ProjectsTable data={initialState?.currentUser?.id} />}
       {viewT && <TemplateTable />}
