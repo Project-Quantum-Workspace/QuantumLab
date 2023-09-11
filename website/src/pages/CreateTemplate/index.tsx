@@ -17,8 +17,11 @@ import {
 import TemplateApi from "@/services/quantumlab/template";
 import { Link } from '@umijs/max';
 
+import { TemplateCol } from './components/FormItems';
+
+
 const templateParameter = "[{\"name\":\"availableZone\",\"label\":\"Available Zone\",\"selections\":[\"qh2\",\"qh2-uom\"],\"isInput\":false},{\"name\":\"diskSize\",\"label\":\"Disk Size\",\"isInput\":true}]";
-type Question = {
+export type FileJson = {
   name: string;
   label: string;
   selections?: string[];
@@ -30,7 +33,7 @@ const CreateTemplate: React.FC = () => {
   const [fileData, setFileData] = useState("");
   const [icon, setIcon] = useState(null);
   const [displayP, setDisplayP] = useState(0);
-  const [params, setParams] = useState<Question[]>([])
+  const [params, setParams] = useState<FileJson[]>([])
 
   
   const props: UploadProps = {
@@ -126,8 +129,7 @@ const CreateTemplate: React.FC = () => {
           <><Divider />
             <h2>Workspace Parameters</h2>
             {/** TODO: parse tar file */}
-
-
+            <TemplateCol data ={params[1]}/>
             <Divider />
           </>}
         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>

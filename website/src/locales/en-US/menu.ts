@@ -11,6 +11,7 @@ export default {
   'menu.admin.users':'Users',
   'menu.admin.user-information':'User Information',
   'menu.admin.admin-update':'Admin Update',
+  'menu.admin.admininitialization':'Admin Initializarion',
   'menu.login': 'Login',
   'menu.exception.404': '404',
   
