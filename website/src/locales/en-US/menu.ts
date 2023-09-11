@@ -1,3 +1,4 @@
+// en-US/menu.js
 export default {
   'menu.workspace': 'Workspace',
   'menu.welcome': 'Welcome',
@@ -14,5 +15,4 @@ export default {
   'menu.admin.admininitialization':'Admin Initializarion',
   'menu.login': 'Login',
   'menu.exception.404': '404',
-  
 };

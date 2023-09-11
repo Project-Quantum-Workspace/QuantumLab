@@ -6,8 +6,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Select,
-  Slider,
   Space,
   TreeSelect,
   Upload,

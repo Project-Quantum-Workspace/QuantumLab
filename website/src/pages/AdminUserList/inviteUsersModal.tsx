@@ -1,5 +1,6 @@
 import { Button, Input, Modal, notification } from 'antd';
 import React, { useState } from 'react';
+import { CloseOutlined } from '@ant-design/icons';
 
 type InviteUsersModalProps = {
   isVisible: boolean;
@@ -19,18 +20,6 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return emailRegex.test(email);
-  };
-
-  const handleEmailsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-
-    if (newValue.includes('\n')) {
-      setCurrentEmails(newValue);
-      handleEmailsInput(newValue);
-      setCurrentEmails(''); // Clear after processing
-    } else {
-      setCurrentEmails(newValue);
-    }
   };
 
   const handleEmailsInput = (inputValue: string) => {
@@ -62,7 +51,7 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
     for (const email of uniqueEmailsFromInput) {
       if (existingEmails.includes(email)) {
         notification.error({
-          message: 'Duplicate Email',
+          message: 'Already Exist',
           description: `The email "${email}" is already in the list.`,
         });
         continue;
@@ -72,6 +61,18 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
 
     setEmailItems((prevItems) => [...prevItems, ...newEmailItems]);
     setCurrentEmails('');
+  };
+
+  const handleEmailsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+
+    if (newValue.includes('\n')) {
+      setCurrentEmails(newValue);
+      handleEmailsInput(newValue);
+      setCurrentEmails(''); // Clear after processing
+    } else {
+      setCurrentEmails(newValue);
+    }
   };
 
   const removeEmail = (emailToRemove: string) => {
@@ -126,14 +127,17 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
       onCancel={onCancel}
       okText={currentEmails !== '' ? 'Add' : 'Send'}
       okButtonProps={{ disabled: emailItems.length === 0 && currentEmails === '' }}
-      maskClosable={false} // prevents closing modal when clicking outside
+      cancelButtonProps={{ style: { display: 'inline-block' } }} // Display the Cancel button
+      maskClosable={false} // Prevents closing modal when clicking outside
+      closable={false} // Disable the close (cross) icon
     >
       <div style={{ marginBottom: '10px' }}>
         {emailItems.map((item) => (
           <span
             key={item.email}
             style={{
-              display: 'inline-block',
+              display: 'inline-flex', // Use flex to align items vertically
+              alignItems: 'center', // Vertically center items
               margin: '5px',
               padding: '5px',
               backgroundColor: item.isValid ? '#96d265' : 'salmon',
@@ -143,10 +147,14 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
             {item.email}
             <Button
               size="small"
-              style={{ marginLeft: '5px' }}
+              style={{
+                marginLeft: '5px',
+                background: 'none', // Make the button background transparent
+                border: 'none', // Remove the button border
+              }}
               onClick={() => removeEmail(item.email)}
             >
-              X
+              <CloseOutlined style={{ color: 'white' }} /> {/* Close icon */}
             </Button>
           </span>
         ))}
@@ -157,8 +165,9 @@ const InviteUsersModal: React.FC<InviteUsersModalProps> = ({ isVisible, onSend, 
         placeholder="Enter emails, separated by commas, spaces, or new lines"
         rows={4}
       />
-      {/*<Button style={{ marginTop: '10px' }} onClick={handleEmailsInput}>Add Emails</Button>*/}
-      <p>The new users will be created with a default password and access level 1.</p>
+      <p style={{ whiteSpace: 'nowrap' }}>
+        The new users will be created with a default password and access level 1.
+      </p>
     </Modal>
   );
 };
