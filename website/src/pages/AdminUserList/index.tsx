@@ -60,56 +60,63 @@ const AdminUserList: React.FC = () => {
     if (!userToUpdate) return;
 
     const payload = {
-      accountStatus: status,
+      "accountStatus": status
     };
 
-    const response = await fetch(`/api/admin/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch(`/api/admin/users/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.status === 200) {
-      setUsers((prevUsers) =>
-        prevUsers.map((user) => (user.id === id ? { ...user, accountStatus: status } : user)),
-      );
-      notification.success({
-        message: 'Operation Successful',
-        description: data.message || 'User status updated successfully!',
-      });
-    } else if (response.status === 400) {
+      if (response.ok) {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === id ? {...user, accountStatus: status} : user,
+          ),
+        );
+        notification.success({
+          message: 'Operation Successful',
+          description: data.message || 'User status updated successfully!',
+        });
+      } else if (response.status === 400) {
+        notification.error({
+          message: 'Bad Request',
+          description: data.message || 'There was an error in the request.',
+        });
+      } else if (response.status === 403) {
+        notification.error({
+          message: 'Forbidden',
+          description: data.message || 'You are not allowed to perform this action.',
+        });
+      } else if (response.status === 500) {
+        notification.error({
+          message: 'Unexpected System Error',
+          description: data.message || 'An unexpected system error occurred. Please try again later.',
+        });
+      } else {
+        notification.error({
+          message: 'Error',
+          description: 'An unexpected error occurred. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error during fetch operation:", error);
       notification.error({
-        message: 'Bad Request',
-        description: data.message || 'There was an error in the request.',
-      });
-    } else if (response.status === 403) {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message || 'You are not allowed to perform this action.',
-      });
-    } else if (response.status === 500) {
-      notification.error({
-        message: 'Unexpected System Error',
-        description: data.message || 'An unexpected system error occurred. Please try again later.',
-      });
-    } else {
-      notification.error({
-        message: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
+        message: 'System Error',
+        description: 'An unexpected error occurred during the operation. Please try again later.',
       });
     }
   };
 
+
   const setUsersStatus = async (status: boolean) => {
     await Promise.all(selectedRowKeys.map((id) => updateUserStatus(id, status)));
-    notification.success({
-      message: 'Update Successful',
-      description: `Successfully updated ${selectedRowKeys.length} users.`,
-    });
   };
 
   const rowSelection = {
