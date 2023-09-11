@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["jest", "node", "@testing-library/jest-dom"],
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
@@ -21,5 +20,7 @@
       "@@test/*": ["./src/.umi-test/*"]
     }
   },
-  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx", "tests/cypress/e2e/new_workspace.cy.js"]
+  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx",
+    "cypress/e2e/new_workspace.cy.js"
+  ]
 }
