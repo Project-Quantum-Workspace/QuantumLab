@@ -12,41 +12,45 @@ import {
   notification,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link } from 'umi';
-import useTemplateStore from '@/stores/TemplateStore'
+import { history, Link } from 'umi';
+import useTemplateStore from '@/stores/TemplateStore';
 import { TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
+import React from 'react';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const NewWorkspace = () => {
+  // const history = useHistory();
   const [form] = Form.useForm();
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | undefined>(undefined);
   const [templates, setTemplates] = useState<TemplateClass[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
-  const  { currentTemplate }= useTemplateStore()
+  const { currentTemplate } = useTemplateStore();
 
   useEffect(() => {
-    // function to fetch templates
+    // Fetch templates
     TemplateApi.getAccessibleTemplates()
-      .then((res)=>{
-        setLoadingTemplates(false)
-        setTemplates(res)
+      .then((res) => {
+        setLoadingTemplates(false);
+        setTemplates(res);
       })
-      .catch((error)=>{
-        setTemplatesFetchFailed(true)
-        throw new Error(error.message || 'Error fetching templates.');
-      })
+      .catch((error) => {
+        setTemplatesFetchFailed(true);
+        console.error('Error fetching templates:', error.message);
+        notification.error({
+          message: 'Error',
+          description: 'Error fetching templates.',
+          duration: 5,
+        });
+      });
+
+    if (currentTemplate) setSelectedTemplate(currentTemplate);
   }, []);
 
-  useEffect(()=> {
-    if (currentTemplate)
-      setSelectedTemplate(currentTemplate)
-  },[])
-  
   if (loadingTemplates) {
     return <PageLoading />;
   }
@@ -68,12 +72,11 @@ const NewWorkspace = () => {
 
   const onTemplateChange = (selectedTemplateId: number) => {
     const template = templates.find((template) => template.id === selectedTemplateId);
-    setSelectedTemplate(template)
+    setSelectedTemplate(template);
   };
 
   const onFinish = async (values: any) => {
     try {
-      // Create parameters from selectedTemplate and form values
       const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
         (acc, question) => {
           acc[question.name] = values[question.name];
@@ -81,8 +84,7 @@ const NewWorkspace = () => {
         },
         {},
       );
-      
-      // Adjust data to fit the new format
+
       const adjustedValues = {
         userId: initialState?.currentUser?.id,
         workspace: {
@@ -104,13 +106,12 @@ const NewWorkspace = () => {
         },
       };
 
-    console.log('adjustedValues:', adjustedValues);
+      console.log('adjustedValues:', adjustedValues);
 
       const response = await fetch('/api/workspaces', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          
         },
         body: JSON.stringify(adjustedValues),
       });
@@ -124,7 +125,7 @@ const NewWorkspace = () => {
           duration: 3,
         });
         setTimeout(() => {
-          <Link to="/workspace" />;
+          history.push('/workspace');
         }, 3000);
       } else if (response.status === 400) {
         notification.error({
@@ -139,7 +140,7 @@ const NewWorkspace = () => {
           duration: 5,
         });
       } else {
-        console.log(response)
+        console.log(response);
         notification.error({
           message: 'Error',
           description: 'An unknown error occurred.',
@@ -158,7 +159,7 @@ const NewWorkspace = () => {
 
   return (
     <>
-      <Form form={form} onFinish={onFinish}>
+      <Form form={form} onFinish={onFinish} initialValues={{ template_id: selectedTemplate?.id }}>
         <Title level={3}>Create a New Project</Title>
         <Title level={4}>General</Title>
         <Form.Item
@@ -200,12 +201,7 @@ const NewWorkspace = () => {
         </Form.Item>
 
         <Form.Item name="template_id" label="Templates">
-          <Select
-            defaultValue={selectedTemplate?.id || undefined}
-            placeholder="Select a template"
-            onChange={onTemplateChange}
-            loading={!templates} // Show loading indicator if templates are not available
-          >
+          <Select placeholder="Select a template" onChange={onTemplateChange} loading={!templates}>
             {templates ? (
               templates.map((template) => (
                 <Option key={template.id} value={template.id}>
@@ -221,7 +217,7 @@ const NewWorkspace = () => {
         {selectedTemplate &&
           selectedTemplate.parameters &&
           selectedTemplate.parameters.map((question, index) => (
-            <>
+            <React.Fragment key={question.name}>
               {index === 0 && (
                 <>
                   <Divider />
@@ -241,7 +237,7 @@ const NewWorkspace = () => {
                   </Select>
                 )}
               </Form.Item>
-            </>
+            </React.Fragment>
           ))}
 
         <Form.Item>

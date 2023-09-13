@@ -9,7 +9,6 @@ module.exports = defineConfig({
   "env":{
     "API_LINK":"https://dev.quantumlab.cloud",
     "QUANTUMLAB_WEB":"http://localhost:8000",
-    "mock":true
   },
-  
+
 });
