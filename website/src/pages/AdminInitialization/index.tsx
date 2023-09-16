@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Form,
   Input,
   Button,
   Typography,
   Result,
-  message
+  message,
+  Alert,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
-const AdminInitialization = () => {
+const AdminInitialization = ({ hasUser }) => {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -31,7 +32,7 @@ const AdminInitialization = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData), // 将用户输入的邮箱和密码发送给服务器
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -48,6 +49,15 @@ const AdminInitialization = () => {
       console.error('Error:', error);
     }
   };
+
+  useEffect(() => {
+    if (hasUser === 'true') {
+      message.warning('You are already logged in as an admin. Redirecting to login page...', 2);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    }
+  }, [hasUser]);
 
   return (
     <div className="admin-initialization">
