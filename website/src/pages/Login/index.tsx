@@ -80,12 +80,12 @@ const Login: React.FC = () => {
 
 
   useEffect(() => {
-    // 在页面加载时发送GET请求以检查是否有用户
+  
     const checkForUser = async () => {
       try {
-        // 发送GET请求
+       
         const response = await fetch('/api/init', {
-          method: 'GET', // 使用GET方法
+          method: 'GET', 
           headers: {
             'Content-Type': 'application/json',
           },
@@ -112,6 +112,7 @@ const Login: React.FC = () => {
 
     checkForUser();
   }, [navigate]);
+
 
   const containerClassName = useEmotionCss(() => {
     return {
