@@ -4,11 +4,7 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-compone
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
-<<<<<<< Updated upstream
-import React, { useState } from 'react';
-=======
 import React, { useState,useEffect } from 'react';
->>>>>>> Stashed changes
 import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
@@ -79,8 +75,6 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-<<<<<<< Updated upstream
-=======
   const history = useHistory();
   const [hasUser, setHasUser] = useState(false);
 
@@ -120,7 +114,6 @@ const Login: React.FC = () => {
 
     checkForUser();
   }, [history]);
->>>>>>> Stashed changes
 
   const containerClassName = useEmotionCss(() => {
     return {
