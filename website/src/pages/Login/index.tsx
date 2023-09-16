@@ -1,16 +1,14 @@
+import React, { useState, useEffect } from 'react';
 import { Footer } from '@/components';
 import { GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
-import React, { useState,useEffect } from 'react';
-import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
 import { useNavigate } from 'react-router-dom';
-
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -78,12 +76,9 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [hasUser, setHasUser] = useState(false);
 
-
   useEffect(() => {
-
     const checkForUser = async () => {
       try {
-
         const response = await fetch('/api/init', {
           method: 'GET',
           headers: {
@@ -95,17 +90,16 @@ const Login: React.FC = () => {
           const data = await response.json();
           console.log('hasUser:', data.hasUser);
           if (data.hasUser) {
-            setHasUser(true);
+            message.info('Database already has a user. Please proceed to login.');
+            navigate('/login');
           } else {
             navigate('/admin/adminInitialization');
           }
         } else {
-
           console.error('Error checking for user:', response.statusText);
           message.error('Error checking for user');
         }
       } catch (error) {
-
         console.error('Error checking for user:', error);
         message.error('Error checking for user');
       }
@@ -113,7 +107,6 @@ const Login: React.FC = () => {
 
     checkForUser();
   }, [navigate]);
-
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -143,7 +136,6 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // Login
       const obj = {
         email: values.email,
         password: values.password
@@ -157,11 +149,9 @@ const Login: React.FC = () => {
         });
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
-        //const urlParams = new URL(window.location.href).searchParams;
         history.push('/');
         return;
       }
-      // If it fails to set user error message
       setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = intl.formatMessage({
@@ -196,12 +186,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-
-
           logo={<img alt="logo" src={Logo} style={{ width: '80%', height: 'auto'}}/>}
-
-
-
           title="QuantumLab"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
