@@ -4,11 +4,16 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-compone
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
+<<<<<<< Updated upstream
 import React, { useState } from 'react';
+=======
+import React, { useState,useEffect } from 'react';
+>>>>>>> Stashed changes
 import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
+import { useHistory } from 'react-router-dom';
 
 
 const OAuthLogin = () => {
@@ -74,6 +79,48 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
+<<<<<<< Updated upstream
+=======
+  const history = useHistory();
+  const [hasUser, setHasUser] = useState(false);
+
+
+  useEffect(() => {
+    // 在页面加载时发送GET请求以检查是否有用户
+    const checkForUser = async () => {
+      try {
+        // 发送GET请求
+        const response = await fetch('/api/init', {
+          method: 'GET', // 使用GET方法
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.hasUser) {
+            // 如果有用户，不进行重定向
+            setHasUser(true);
+          } else {
+            // 如果没有用户，重定向到管理员页面
+            history.push('/admin/adminInitialization');
+          }
+        } else {
+
+          console.error('Error checking for user:', response.statusText);
+          message.error('Error checking for user');
+        }
+      } catch (error) {
+
+        console.error('Error checking for user:', error);
+        message.error('Error checking for user');
+      }
+    };
+
+    checkForUser();
+  }, [history]);
+>>>>>>> Stashed changes
 
   const containerClassName = useEmotionCss(() => {
     return {
