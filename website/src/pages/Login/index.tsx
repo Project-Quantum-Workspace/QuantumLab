@@ -80,12 +80,12 @@ const Login: React.FC = () => {
 
 
   useEffect(() => {
-  
+
     const checkForUser = async () => {
       try {
-       
+
         const response = await fetch('/api/init', {
-          method: 'GET', 
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -93,6 +93,7 @@ const Login: React.FC = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log('hasUser:', data.hasUser);
           if (data.hasUser) {
             setHasUser(true);
           } else {
