@@ -6,7 +6,6 @@ import {
   Typography,
   Result,
   message,
-  Alert,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +18,15 @@ const AdminInitialization = ({ hasUser }) => {
     password: ''
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (hasUser === true) {
+      message.warning('You are already logged in as an admin. Redirecting to login page...', 2);
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    }
+  }, [hasUser]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,18 +57,6 @@ const AdminInitialization = ({ hasUser }) => {
       console.error('Error:', error);
     }
   };
-
-  useEffect(() => {
-    if (hasUser === 'true') {
-      console.log('hasUser is true');
-      console.log('Displaying warning message');
-      message.warning('You are already logged in as an admin. Redirecting to login page...', 2);
-      console.log('Navigating to login page');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-    }
-  }, [hasUser]);
 
   return (
     <div className="admin-initialization">
