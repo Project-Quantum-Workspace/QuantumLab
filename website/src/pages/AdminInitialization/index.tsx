@@ -52,7 +52,10 @@ const AdminInitialization = ({ hasUser }) => {
 
   useEffect(() => {
     if (hasUser === 'true') {
+      console.log('hasUser is true');
+      console.log('Displaying warning message');
       message.warning('You are already logged in as an admin. Redirecting to login page...', 2);
+      console.log('Navigating to login page');
       setTimeout(() => {
         navigate('/login');
       }, 2000);
