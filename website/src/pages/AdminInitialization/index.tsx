@@ -13,28 +13,35 @@ const { Title, Paragraph } = Typography;
 
 const AdminInitialization = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const navigate = useNavigate();
 
-  const handleSubmit = async (values) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async () => {
     try {
-      // Assuming you have a backend API to save admin details
       const response = await fetch('/api/init', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(formData), // 将用户输入的邮箱和密码发送给服务器
       });
 
       if (response.ok) {
         setSubmitted(true);
-        message.success('Admin account setup successful! Redirecting to login page...', 2); // Show success message for 2 seconds
-        setSubmitted(true);
+        message.success('Admin account setup successful! Redirecting to login page...', 2);
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       } else {
-        // Handle error
-        console.error('Error saving admin details');
+        console.error('Error setting up admin account');
         message.error('Failed to set up admin account. Please try again.');
       }
     } catch (error) {
@@ -51,11 +58,19 @@ const AdminInitialization = () => {
             <Paragraph>
               We are excited to have you on board. Please provide your email and password to set up your admin account.
             </Paragraph>
-            <Form.Item label="email" name="email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}>
-              <Input />
+            <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}>
+              <Input
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
             </Form.Item>
-            <Form.Item label="password" name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
-              <Input.Password />
+            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter your password' }]}>
+              <Input.Password
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
