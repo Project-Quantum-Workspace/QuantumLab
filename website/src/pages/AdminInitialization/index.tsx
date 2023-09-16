@@ -18,7 +18,7 @@ const AdminInitialization = () => {
   const handleSubmit = async (values) => {
     try {
       // Assuming you have a backend API to save admin details
-      const response = await fetch('/api/admin', {
+      const response = await fetch('/api/init', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
