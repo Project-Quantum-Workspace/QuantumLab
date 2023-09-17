@@ -4,7 +4,7 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-compone
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
@@ -74,7 +74,7 @@ const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-
+  
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',

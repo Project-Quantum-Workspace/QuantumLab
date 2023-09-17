@@ -1,4 +1,4 @@
-import { TemplateMetaData } from '@/pages/Workspace/utils/types/TemplateTypes';
+import { TemplateMetaData } from '@/utils/types/TemplateTypes';
 import { Request, Response} from 'express';
 
 
@@ -26,7 +26,7 @@ const genTemplateList = (current:number, pageSize:number)=>{
   console.log(tableData)
   return tableData;
 }
-let wl = genTemplateList(1,3) 
+let wl = genTemplateList(1,3)
 export default{
   'GET /api/templates': wl,
 }

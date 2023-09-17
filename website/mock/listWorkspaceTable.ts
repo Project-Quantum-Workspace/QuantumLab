@@ -1,4 +1,4 @@
-import { TemplateMetaData } from '@/pages/Workspace/utils/types/TemplateTypes';
+import { TemplateMetaData } from '@/utils/types/TemplateTypes';
 import { Request, Response} from 'express';
 
 import moment  from 'moment';
@@ -37,7 +37,7 @@ const genWorkspaceList = (current:number, pageSize:number)=>{
             parameters: '{"Disk Size": "50G", "Available Zone": "qh2-uom"}',
             tags: 'CPU, Qiskit',
             template:defaultTemplate(1)
-  
+
         })
     }
     tableData.reverse()
