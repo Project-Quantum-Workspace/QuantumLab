@@ -17,10 +17,49 @@ import useTemplateStore from '@/stores/TemplateStore';
 import { TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
+import AuthApi from '@/services/quantumlab/auth';
+import {log} from "debug";
 
 const { Title } = Typography;
 const { Option } = Select;
-
+type UserType = {
+  accessLevel: number;
+  accountStatus: boolean;
+  avatar: string;
+  email: string;
+  firstName: string;
+  id: number;
+  lastName: string;
+  password: string;
+  quantumlabToken: string;
+  roles: {
+    id: number;
+    name: string;
+  }[];
+  uuid: string;
+  workspaces: {
+    createdAt: string;
+    description: string;
+    id: number;
+    lastAccessed: string;
+    name: string;
+    parameters: string;
+    state: string;
+    tags: string;
+    template: {
+      accessLevel: number;
+      filename: string;
+      icon: string;
+      id: number;
+      parameters: string;
+    };
+    templateId: number;
+    type: string;
+    updatedAt: string;
+    users: string[];
+    uuid: string;
+  }[];
+};
 const NewWorkspace = () => {
   // const history = useHistory();
   const [form] = Form.useForm();
@@ -30,6 +69,19 @@ const NewWorkspace = () => {
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
   const { initialState } = useModel('@@initialState');
   const { currentTemplate } = useTemplateStore();
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    (async function() {
+      try {
+        const user = await AuthApi.currentUser();
+        setCurrentUser(user);
+        console.log(user);
+      } catch (error) {
+        console.error("Failed to fetch current user:", error);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     // Fetch templates
@@ -75,7 +127,12 @@ const NewWorkspace = () => {
     setSelectedTemplate(template);
   };
 
+
   const onFinish = async (values: any) => {
+    if (!currentUser) {
+      console.error('Current user data not available');
+      return;
+    }
     try {
       const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
         (acc, question) => {
@@ -86,24 +143,45 @@ const NewWorkspace = () => {
       );
 
       const adjustedValues = {
-        userId: initialState?.currentUser?.id,
-        workspace: {
-          createdAt: new Date().toISOString(),
-          description: values.description || 'string',
-          id: 111,
-          lastAccessed: new Date().toISOString(),
-          name: values.name || 'string',
+        createdAt: new Date().toISOString(),
+        description: values.description || 'string',
+        id: 0, // hardcoded
+        lastAccessed: new Date().toISOString(),
+        name: values.name || 'string',
+        parameters: JSON.stringify(parameters) || 'string',
+        state: 'Running',
+        tags:
+          values.tags
+            .split(',')
+            .map((tag: string) => tag.trim())
+            .join(',') || 'string',
+        template: {
+          accessLevel: selectedTemplate?.accessLevel || 0,
+          filename: selectedTemplate?.filename || 'string',
+          icon: selectedTemplate?.icon || 'string',
+          id: selectedTemplate?.id || 0,
           parameters: JSON.stringify(parameters) || 'string',
-          state: 'Running',
-          tags:
-            values.tags
-              .split(',')
-              .map((tag: string) => tag.trim())
-              .join(',') || 'string',
-          templateId: selectedTemplate?.id || 0,
-          type: values.type || 'string',
-          updatedAt: new Date().toISOString(),
         },
+        templateId: selectedTemplate?.id || 0,
+        type: values.type || 'string',
+        updatedAt: new Date().toISOString(),
+        users: [
+          {
+            accessLevel: currentUser.accessLevel,
+            accountStatus: currentUser.accountStatus,
+            avatar: currentUser.avatar,
+            email: currentUser.email,
+            firstName: currentUser.firstName,
+            id: currentUser.id,
+            lastName: currentUser.lastName,
+            password: currentUser.password, // Revisit this as discussed before.
+            quantumlabToken: currentUser.quantumlabToken,
+            roles: currentUser.roles,
+            uuid: currentUser.uuid,
+            workspaces: currentUser.workspaces,
+          }
+        ],
+        uuid: "0" // hardcoded
       };
 
       console.log('adjustedValues:', adjustedValues);
