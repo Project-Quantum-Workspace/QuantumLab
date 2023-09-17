@@ -18,7 +18,8 @@ import { TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
 import AuthApi from '@/services/quantumlab/auth';
-import {log} from "debug";
+import { log } from 'debug';
+import './newWorkspce.css';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -72,13 +73,13 @@ const NewWorkspace = () => {
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       try {
         const user = await AuthApi.currentUser();
         setCurrentUser(user);
         console.log(user);
       } catch (error) {
-        console.error("Failed to fetch current user:", error);
+        console.error('Failed to fetch current user:', error);
       }
     })();
   }, []);
@@ -126,7 +127,6 @@ const NewWorkspace = () => {
     const template = templates.find((template) => template.id === selectedTemplateId);
     setSelectedTemplate(template);
   };
-
 
   const onFinish = async (values: any) => {
     if (!currentUser) {
@@ -179,9 +179,9 @@ const NewWorkspace = () => {
             roles: currentUser.roles,
             uuid: currentUser.uuid,
             workspaces: currentUser.workspaces,
-          }
+          },
         ],
-        uuid: "0" // hardcoded
+        uuid: '0', // hardcoded
       };
 
       console.log('adjustedValues:', adjustedValues);
@@ -237,57 +237,88 @@ const NewWorkspace = () => {
 
   return (
     <>
-      <Form form={form} onFinish={onFinish} initialValues={{ template_id: selectedTemplate?.id }}>
-        <Title level={3}>Create a New Project</Title>
-        <Title level={4}>General</Title>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        initialValues={{ template_id: selectedTemplate?.id }}
+        className="workspace-form"
+      >
+        <Title level={3} className="workspace-title">
+          Create a New Project
+        </Title>
+        <Title level={4} className="section-title">
+          General
+        </Title>
+
+        {/* General Section */}
         <Form.Item
           name="name"
           label="Name"
           rules={[{ required: true, message: 'Please input a name!' }]}
+          className="form-item"
         >
-          <Input />
+          <Input className="form-input" />
         </Form.Item>
 
         <Form.Item
           name="tags"
           label="Tag"
           rules={[{ required: true, message: 'At least ONE tag reqired!' }]}
+          className="form-item"
         >
-          <Input placeholder="Multiple tags accepted, separated by commas(,) please." />
+          <Input
+            placeholder="Multiple tags accepted, separated by commas(,) please."
+            className="form-input"
+          />
         </Form.Item>
 
         <Form.Item
           name="description"
           label="Description"
           rules={[{ required: true, message: 'Description needed!' }]}
+          className="form-item-textarea"
         >
-          <Input.TextArea placeholder="Enter a detailed description of your workspace here..." />
+          <Input.TextArea
+            placeholder="Enter a detailed description of your workspace here..."
+            className="form-textarea"
+          />
         </Form.Item>
 
-        <Divider />
+        <Divider className="section-divider" />
 
-        {/* type section */}
-        <Title level={4}>Workspace Type</Title>
+        {/* Workspace Type Section */}
+        <Title level={4} className="section-title">
+          Workspace Type
+        </Title>
 
-        <Form.Item name="type" label="Type">
-          <Radio.Group size="large">
-            <Radio.Button value="standard">Standard QuantumLab</Radio.Button>
-            <Radio.Button value="flow" disabled>
+        <Form.Item name="type" label="Type" className="form-item">
+          <Radio.Group size="large" className="radio-group">
+            <Radio.Button value="standard" className="radio-button">
+              Standard QuantumLab
+            </Radio.Button>
+            <Radio.Button value="flow" disabled className="radio-button">
               QuantumFlow(Unavailable Now)
             </Radio.Button>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="template_id" label="Templates">
-          <Select placeholder="Select a template" onChange={onTemplateChange} loading={!templates}>
+        <Form.Item name="template_id" label="Templates" className="form-item-select">
+          <Select
+            placeholder="Select a template"
+            onChange={onTemplateChange}
+            loading={!templates}
+            className="form-select"
+          >
             {templates ? (
               templates.map((template) => (
-                <Option key={template.id} value={template.id}>
+                <Option key={template.id} value={template.id} className="select-option">
                   {template.filename}
                 </Option>
               ))
             ) : (
-              <Option disabled>Loading templates...</Option>
+              <Option disabled className="select-option-loading">
+                Loading templates...
+              </Option>
             )}
           </Select>
         </Form.Item>
@@ -298,17 +329,19 @@ const NewWorkspace = () => {
             <React.Fragment key={question.name}>
               {index === 0 && (
                 <>
-                  <Divider />
-                  <Title level={4}>Workspace Parameters</Title>
+                  <Divider className="parameters-divider" />
+                  <Title level={4} className="section-title">
+                    Workspace Parameters
+                  </Title>
                 </>
               )}
-              <Form.Item name={question.name} label={question.label}>
+              <Form.Item name={question.name} label={question.label} className="form-item">
                 {question.isInput ? (
-                  <InputNumber min={0} step={1} />
+                  <InputNumber min={0} step={1} className="input-number" />
                 ) : (
-                  <Select>
+                  <Select className="form-select">
                     {question.selections?.map((option: string, index: number) => (
-                      <Option key={index} value={option}>
+                      <Option key={index} value={option} className="select-option">
                         {option}
                       </Option>
                     ))}
@@ -318,12 +351,12 @@ const NewWorkspace = () => {
             </React.Fragment>
           ))}
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
+        <Form.Item className="submit-buttons">
+          <Button type="primary" htmlType="submit" className="submit-button">
             Submit
           </Button>
-          <Link to="/workspace">
-            <Button>Go Back</Button>
+          <Link to="/workspace" className="go-back-link">
+            <Button className="go-back-button">Go Back</Button>
           </Link>
         </Form.Item>
       </Form>

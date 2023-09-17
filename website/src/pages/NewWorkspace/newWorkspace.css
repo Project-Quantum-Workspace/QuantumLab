@@ -1,0 +1,77 @@
+:root {
+  --grey-06: #414141;
+}
+
+/* Form styles */
+.workspace-form {
+  /* INSERT_FORM_STYLES_HERE */
+}
+
+/* Title styles */
+.workspace-title {
+  color: #414141;
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Headline 4 */
+  font-family: Manrope, sans-serif;
+  align-self: stretch;
+}
+
+.section-title {
+  color: var(--grey-06, #414141);
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Headline 5 */
+  font-family: Manrope, sans-serif;
+
+  align-self: stretch;
+}
+
+/* General Form items */
+.form-item, .form-item-textarea, .form-item-select {
+  color: var(--grey-06, #414141);
+  text-align: right;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Subtitle 1 */
+  font-family: Manrope, sans-serif;
+}
+
+.form-input, .form-textarea, .form-select {
+  /* INSERT_COMMON_FORM_INPUT_STYLES_HERE */
+}
+
+.form-textarea {
+  /* INSERT_TEXTAREA_SPECIFIC_STYLES_HERE */
+}
+
+/* Radio Buttons */
+.radio-group {
+  /* INSERT_RADIO_GROUP_STYLES_HERE */
+}
+
+.radio-button {
+  /* INSERT_RADIO_BUTTON_STYLES_HERE */
+}
+
+/* Divider */
+.section-divider {
+  /* INSERT_DIVIDER_STYLES_HERE */
+}
+
+/* Submit buttons */
+.submit-buttons {
+  /* INSERT_SUBMIT_BUTTONS_CONTAINER_STYLES_HERE */
+}
+
+.submit-button {
+  /* INSERT_SUBMIT_BUTTON_STYLES_HERE */
+}
+
+.go-back-link {
+  /* INSERT_LINK_STYLES_HERE */
+}
+
+.go-back-button {
+  /* INSERT_GO_BACK_BUTTON_STYLES_HERE */
+}
+
+/* Add more placeholders as needed */
