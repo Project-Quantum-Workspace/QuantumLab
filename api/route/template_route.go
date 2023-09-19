@@ -19,6 +19,7 @@ func NewTemplateRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.Rout
 	}
 
 	apiRouterGroup.GET("/templates", templateController.GetAllTemplates)
+	apiRouterGroup.GET("/templates/:id",templateController.GetTemplateByID)
 	apiRouterGroup.POST("/templates", templateController.PostOneTemplate)
 	apiRouterGroup.PUT("/templates/:id", templateController.UpdateOneTemplate)
 	apiRouterGroup.DELETE("/templates/:id", templateController.DeleteTemplate)

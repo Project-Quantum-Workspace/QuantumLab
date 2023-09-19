@@ -542,6 +542,40 @@ const docTemplate = `{
             }
         },
         "/templates/{id}": {
+            "get": {
+                "description": "Get template by its id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "templates"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            
+                            "$ref": "#/definitions/model.Template"
+                            
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Update an existing workspace template.",
                 "consumes": [

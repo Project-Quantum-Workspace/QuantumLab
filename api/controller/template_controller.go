@@ -85,6 +85,35 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	c.JSON(http.StatusOK, templates)
 }
 
+// GetTemplateByID @summary get one template
+// @Description get the template with its id
+// @Tags templates
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Success 200 {object} model.Template
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /templates/{id} [get]
+func (tc *TemplateController)GetTemplateByID(c *gin.Context){
+	var template model.Template
+	err := c.ShouldBindJSON(&template)
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid template id",
+		})
+		return
+	}
+	template, err = tc.TemplateUsecase.GetByID(id)
+	if err !=nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, template)
+
+}
+
 // UpdateOneTemplate @Summary Update template
 // @Description Update an existing workspace template.
 // @Tags templates
