@@ -1,6 +1,6 @@
 ﻿/**
  * @doc https://pro.ant.design/docs/test
-*/
+ */
 
 const localStorageMock = {
   getItem: jest.fn(),
@@ -19,13 +19,15 @@ Object.defineProperty(URL, 'createObjectURL', {
 class Worker {
   constructor(stringUrl) {
     this.url = stringUrl;
-    this.onmessage = () => {};
+    this.onmessage = () => {
+    };
   }
 
   postMessage(msg) {
     this.onmessage(msg);
   }
 }
+
 window.Worker = Worker;
 
 /* eslint-disable global-require */
