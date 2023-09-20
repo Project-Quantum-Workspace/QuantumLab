@@ -1,6 +1,7 @@
 import { request } from '@umijs/max';
 import type { AxiosError, Method, ResponseType } from 'axios'
 
+
 export class BaseApi {
   private loadBy(
     url: string,
@@ -21,7 +22,7 @@ export class BaseApi {
   }
 
   loadByGet(
-    url: string, 
+    url: string,
     withCredentials?: boolean,
     headers?: Record<string, string>
   ) {
@@ -29,7 +30,7 @@ export class BaseApi {
   }
 
   loadByPost(
-    url: string, 
+    url: string,
     data?: object,
     responseType?: ResponseType,
     withCredentials?: boolean,
