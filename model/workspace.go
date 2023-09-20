@@ -32,11 +32,12 @@ type CreateWorkspaceRequest struct {
 }
 
 type Toolset struct {
+	ID         uint   `json:"id"`
 	Name       string `json:"name"`
 	Icon       string `json:"icon"`
 	Type       string `json:"type"`
 	AccessType string `json:"accessType"`
-	AccessID   string `json:"accessID"`
+	AccessID   string `json:"accessId"`
 }
 
 type WorkspaceRepository interface {

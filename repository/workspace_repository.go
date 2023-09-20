@@ -73,7 +73,7 @@ func (wr *workspaceRepository) Delete(id uint) error {
 
 func (wr *workspaceRepository) GetWorkspaceToolset(id uint) ([]model.Toolset, error) {
 	var toolsets []model.Toolset
-	result := wr.qlDB.Raw(`SELECT * FROM toolset WHERE toolset.workspace_id = ?`, id).Scan(&toolsets)
+	result := wr.qlDB.Raw(`SELECT * FROM toolsets WHERE toolsets.workspace_id = ?`, id).Scan(&toolsets)
 	if result.Error != nil {
 		return toolsets, result.Error
 	}
