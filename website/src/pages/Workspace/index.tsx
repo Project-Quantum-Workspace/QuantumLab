@@ -4,6 +4,7 @@ import ProjectsTable from './components/ProjectsTable';
 import TemplateTable from './components/TemplateTable';
 import { history, useModel} from '@umijs/max';
 import { useLocation } from 'umi';
+import useTemplateStore from '@/stores/TemplateStore';
 
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
@@ -11,8 +12,10 @@ const App: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const location = useLocation();
   const { tag } = location.state || 'workspace';
+  const { setCurrentTemplate } = useTemplateStore()
 
   useEffect(()=> {
+    setCurrentTemplate(undefined)
     if(tag === 'template') {
       setViewP(false);
       setViewT(true);
@@ -78,7 +81,7 @@ const App: React.FC = () => {
         </Button>
       </div>
       {viewP && <ProjectsTable data={initialState?.currentUser?.id} />}
-      {viewT && <TemplateTable data={initialState?.currentUser?.id}/>}
+      {viewT && <TemplateTable />}
 
     </>
   );

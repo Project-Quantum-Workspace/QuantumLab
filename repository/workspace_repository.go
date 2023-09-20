@@ -20,7 +20,7 @@ func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) e
 	err := wr.qlDB.Transaction(func(tx *gorm.DB) error {
 		// Omit `ID` to avoid error triggered by frontend developers adding id field in requests
 		// Omit `Template` to forbid auto create of Templates
-		result := tx.Omit("ID", "UUID", "Template").Create(workspace)
+		result := tx.Omit("ID", "UUID", "Template", "Users").Create(workspace)
 		if result.Error != nil {
 			return result.Error
 		}
@@ -33,26 +33,36 @@ func (wr *workspaceRepository) Create(workspace *model.Workspace, userID uint) e
 	return err
 }
 
+func (wr *workspaceRepository) GetOwnerIDs(id uint) ([]uint, error) {
+	var userIDs []uint
+	err := wr.qlDB.Select("id").
+		Model(&model.Workspace{ID: id}).Association("Users").Find(&userIDs)
+	if userIDs == nil {
+		userIDs = []uint{}
+	}
+	return userIDs, err
+}
+
 func (wr *workspaceRepository) GetAllByUser(userID uint) ([]model.Workspace, error) {
 	var workspaces []model.Workspace
-	association := wr.qlDB.Joins("Template").
-		Model(&model.User{ID: userID}).Association("Workspaces")
-	if association.Error != nil {
-		return workspaces, association.Error
+	err := wr.qlDB.Joins("Template").
+		Model(&model.User{ID: userID}).Association("Workspaces").Find(&workspaces)
+	// return an empty array instead of nil if no rows are found
+	if workspaces == nil {
+		workspaces = []model.Workspace{}
 	}
-	err := association.Find(&workspaces)
 	return workspaces, err
 }
 
-func (wr *workspaceRepository) GetByID(id uint) (model.Workspace, error) {
+func (wr *workspaceRepository) GetByID(id uint) (*model.Workspace, error) {
 	var workspace model.Workspace
 	result := wr.qlDB.Joins("Template").First(&workspace, id)
-	return workspace, result.Error
+	return &workspace, result.Error
 }
 
 func (wr *workspaceRepository) Update(workspace *model.Workspace) error {
-	result := wr.qlDB.Model(&workspace).
-		Omit("ID", "UUID", "Template").Updates(*workspace)
+	result := wr.qlDB.Model(workspace).
+		Omit("ID", "UUID", "Template", "Users").Updates(*workspace)
 	return result.Error
 }
 

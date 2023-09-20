@@ -8,7 +8,7 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import React from 'react';
 import Logo from '../public/icons/logo.svg';
-import AuthApi from "@/services/quantumlab/auth";
+import AuthApi from '@/services/quantumlab/auth';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
@@ -25,7 +25,10 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const msg = await AuthApi.currentUser();
-      return {...msg,avatar:'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'};
+      return {
+        ...msg,
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      };
     } catch (error) {
       history.push(loginPath);
     }
@@ -48,13 +51,23 @@ export async function getInitialState(): Promise<{
 }
 
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
-  
   return {
     actionsRender: () => [<Feedback key="doc" />, <SelectLang key="SelectLang" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
-      render: (_: any, avatarChildren: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined) => {
+      render: (
+        _: any,
+        avatarChildren:
+          | string
+          | number
+          | boolean
+          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+          | Iterable<React.ReactNode>
+          | React.ReactPortal
+          | null
+          | undefined,
+      ) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
@@ -97,7 +110,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         ]
       : [],
     menuHeaderRender: undefined,
-    
+
     childrenRender: (children) => {
       return (
         <>
@@ -119,7 +132,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
-    logo: <img src={Logo} />,
+    logo: <img src={Logo}  alt={"logo"}/>,
   };
 };
 

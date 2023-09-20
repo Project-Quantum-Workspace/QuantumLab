@@ -1,6 +1,9 @@
 package usecase
 
-import "github.com/Project-Quantum-Workspace/QuantumLab/model"
+import (
+	"github.com/Project-Quantum-Workspace/QuantumLab/model"
+	"golang.org/x/exp/slices"
+)
 
 type workspaceUsecase struct {
 	workspaceRepository model.WorkspaceRepository
@@ -16,11 +19,19 @@ func (wu *workspaceUsecase) CreateWorkspace(workspace *model.Workspace, userID u
 	return wu.workspaceRepository.Create(workspace, userID)
 }
 
+func (wu *workspaceUsecase) CheckWorkspaceAccess(workspaceID uint, userID uint) (bool, error) {
+	ownerIDs, err := wu.workspaceRepository.GetOwnerIDs(workspaceID)
+	if err != nil {
+		return false, err
+	}
+	return slices.Contains(ownerIDs, userID), nil
+}
+
 func (wu *workspaceUsecase) GetWorkspacesByUser(userID uint) ([]model.Workspace, error) {
 	return wu.workspaceRepository.GetAllByUser(userID)
 }
 
-func (wu *workspaceUsecase) GetWorkspace(id uint) (model.Workspace, error) {
+func (wu *workspaceUsecase) GetWorkspace(id uint) (*model.Workspace, error) {
 	return wu.workspaceRepository.GetByID(id)
 }
 

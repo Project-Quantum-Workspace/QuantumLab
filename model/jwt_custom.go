@@ -4,16 +4,16 @@ import "github.com/golang-jwt/jwt/v4"
 
 type JwtCustomClaims struct {
 	Email       string `json:"email"`
-	UID         uint   `json:"uid"`
+	UserID      uint   `json:"userID"`
 	AccessLevel uint   `json:"accessLevel"`
-	RoleID      []int  `json:"roleID"`
+	RoleIDs     []uint `json:"roleIDs"`
 	jwt.RegisteredClaims
 }
 
 type JwtCustomRefreshClaims struct {
 	Email       string `json:"email"`
-	UID         uint   `json:"uid"`
+	UserID      uint   `json:"userID"`
 	AccessLevel uint   `json:"accessLevel"`
-	RoleID      []int  `json:"roleID"`
+	RoleIDs     []uint `json:"roleIDs"`
 	jwt.RegisteredClaims
 }

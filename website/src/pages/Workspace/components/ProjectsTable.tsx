@@ -6,13 +6,48 @@ import ProjectStatus from './ProjectStatus';
 import { getAllWorkspace } from '@/services/quantumlab/workspace';
 import { WorkspaceInfoMetaData } from '@/utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
-import moment from 'moment';
 import { PageLoading } from '@ant-design/pro-components';
 import {Image} from 'antd'
 
 interface Props {
   data: number | undefined
 }
+const periods = {
+  year: 12*30 * 24 * 60 * 60 * 1000,
+  month: 30 * 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000,
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000
+};
+const durationCalculator = (t : string)=>{
+  
+  let lastAcc : Date = new Date(t);
+  let curtime : Date = new Date();
+  let diff = curtime.valueOf()-lastAcc.valueOf()
+  if(diff>periods.year){
+    const m = Math.floor(diff / periods.year)
+    return m===1?'a year ago': String(m) + " years ago";
+  }else if (diff > periods.month) {
+    const m = Math.floor(diff / periods.month)
+    return m===1?'a month ago': String(m) + " months ago";
+  } else if (diff > periods.week) {
+    const w = Math.floor(diff / periods.week)
+    return w===1? 'a week ago': String(w)+ " weeks ago";
+  } else if (diff > periods.day) {
+    const d = Math.floor(diff / periods.day)
+    return d===1? 'a day ago' : String(d)+" days ago";
+  } else if (diff > periods.hour) {
+    const h = Math.floor(diff / periods.hour)
+    return h===1? 'an hour ago': String(h)+" hours ago";
+  } else if (diff > periods.minute) {
+    const m = Math.floor(diff / periods.minute)
+    return m===1? 'a minute ago': String(m)+" minutes ago";
+  }
+  return "Just now";
+
+}
+
 const columns: ColumnsType<WorkspaceInfoMetaData> = [
   {
     title: '',
@@ -34,14 +69,17 @@ const columns: ColumnsType<WorkspaceInfoMetaData> = [
     title: 'Date Created',
     dataIndex: 'createdAt',
     key: 'createdAt',
-    render:(t)=><a style={{ fontSize: '15px',  color: 'black' }}>{moment(t).format("MMM Do YYYY")}</a>
+    render:(t)=><a style={{ fontSize: '15px',  color: 'black' }}>{new Date(t).toLocaleString().substring(0,9)}</a>
   },
   {
     title: 'Last Accessed',
     dataIndex: 'lastAccessed',
     key: 'lastAccessed',
-    render:(t)=>
-    <a style={{ fontSize: '15px',  color: 'black' }}>{moment(moment(t).format("MMM Do YYYY"), "YYYYMMDD").fromNow()}</a>
+    render:(t)=>{
+      return <a style={{ fontSize: '15px',  color: 'black' }}>{durationCalculator(t)}</a>
+    }
+
+    
   },
 
   {

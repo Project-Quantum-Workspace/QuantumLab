@@ -91,6 +91,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/users/roles": {
+            "get": {
+                "description": "Get all roles",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Get all roles",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Role"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/{id}": {
             "get": {
                 "description": "Get detailed information of a user.",
@@ -170,6 +196,58 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/{id}/status": {
+            "patch": {
+                "description": "Administrator updates desired users account status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user admin"
+                ],
+                "summary": "Update the account status of a user",
+                "parameters": [
+                    {
+                        "description": "Status Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SetAccountStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -313,15 +391,61 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "auth"
-                ],
                 "summary": "Removes the JWT token from cookies",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/init": {
+            "get": {
+                "description": "Check if QL has users already.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Get if has user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "hasUser": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create the first user as a Root Administrator.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "init"
+                ],
+                "summary": "Initialize root admin",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
                         }
                     }
                 }
@@ -391,6 +515,28 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/icons": {
+            "get": {
+                "description": "Get the preset template icons.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "templates"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Failed to retrieve file list",
                         "schema": {
                             "$ref": "#/definitions/model.ErrorResponse"
                         }
@@ -503,12 +649,12 @@ const docTemplate = `{
                 "summary": "Create workspace",
                 "parameters": [
                     {
-                        "description": "New workspace with the ID of owner",
+                        "description": "New workspace",
                         "name": "workspace",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateWorkspaceRequest"
+                            "$ref": "#/definitions/model.Workspace"
                         }
                     }
                 ],
@@ -775,17 +921,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateWorkspaceRequest": {
-            "type": "object",
-            "properties": {
-                "userId": {
-                    "type": "integer"
-                },
-                "workspace": {
-                    "$ref": "#/definitions/model.Workspace"
-                }
-            }
-        },
         "model.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -821,10 +956,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "declare ID as pointer to let gorm preload the record with id = 0\nGORM SUCKS!!",
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.SetAccountStatusRequest": {
+            "type": "object",
+            "properties": {
+                "accountStatus": {
+                    "type": "boolean"
                 }
             }
         },
@@ -994,6 +1138,12 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
                 },
                 "uuid": {
                     "type": "string"
