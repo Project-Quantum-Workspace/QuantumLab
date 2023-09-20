@@ -8,7 +8,6 @@ import {
   message,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { setupAdminAccount } from '@/services/quantumlab/admininitialization';
 
 const { Title, Paragraph } = Typography;
 
@@ -36,20 +35,23 @@ const AdminInitialization = ({ hasUser }) => {
 
   const handleSubmit = async () => {
     try {
-      const result = await setupAdminAccount(formData);
+      const response = await fetch('/api/init', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      if (result.success) {
+      if (response.ok) {
         setSubmitted(true);
-        message.success(
-          'Admin account setup successful! Redirecting to login page...',
-          2
-        );
+        message.success('Admin account setup successful! Redirecting to login page...', 2);
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       } else {
         console.error('Error setting up admin account');
-        message.error(result.message);
+        message.error('Failed to set up admin account. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);

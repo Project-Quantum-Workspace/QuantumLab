@@ -9,6 +9,7 @@ import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
 import { useNavigate } from 'react-router-dom';
+import { BaseApi } from './BaseApi';
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
