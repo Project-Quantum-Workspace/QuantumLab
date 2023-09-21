@@ -20,9 +20,7 @@ export default {
   'POST /api/admin': async (req: Request, res: Response) => {
     res.send(firstadmin);
   },
-};
 
-export default {
   'GET /api/admin': async (req: Request, res: Response) => {
     res.send(isUser);
   },
