@@ -9,7 +9,6 @@ import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
 import { useNavigate } from 'react-router-dom';
-import { BaseApi } from './BaseApi';
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -89,8 +88,7 @@ const Login: React.FC = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('hasUser:', data.hasUser);
-          if (data.hasUser) {
+          if (hasUser) {
             message.info('Database already has a user. Please proceed to login.');
             navigate('/login');
           } else {
