@@ -8,6 +8,7 @@ import {
   message,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { BaseApi } from '@/utils/BaseApi';
 
 const { Title, Paragraph } = Typography;
 
@@ -27,12 +28,8 @@ const AdminInitialization = ({ hasUser }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('/api/init', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      const response = await BaseApi.loadByPost('/api/init', formData, 'json', true, {
+        'Content-Type': 'application/json',
       });
 
       if (response.ok) {

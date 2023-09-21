@@ -10,6 +10,7 @@ import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';
 import AuthApi from "@/services/quantumlab/auth";
 import { useNavigate } from 'react-router-dom';
+import { BaseApi } from '@/utils/BaseApi';
 
 const OAuthLogin = () => {
   const authClass = useEmotionCss(({ token }) => {
@@ -76,23 +77,22 @@ const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const navigate = useNavigate();
   const [hasUser, setHasUser] = useState(false);
+  const baseApi = new BaseApi();
 
   useEffect(() => {
     const checkForUser = async () => {
       try {
-        const response = await fetch('/api/init', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await baseApi.loadByGet('/api/init', true, {
+          'Content-Type': 'application/json',
         });
+
         if (response.ok) {
           const data = await response.json();
           if (data.hasUser) {
             setHasUser(true);
             message.info('Database already has a user. Please proceed to login.');
           } else {
-            message.info('There is no user, please creat your account');
+            message.info('There is no user, please create your account');
             navigate('/admin/adminInitialization');
           }
         } else {
@@ -108,7 +108,8 @@ const Login: React.FC = () => {
     checkForUser();
   }, [navigate]);
 
-  const containerClassName = useEmotionCss(() => {
+
+    const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
       flexDirection: 'column',
