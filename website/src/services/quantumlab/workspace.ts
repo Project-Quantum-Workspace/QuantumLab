@@ -26,7 +26,6 @@ export async function getAllWorkspace(id:string){
     method: 'GET',
     headers:{
       'Content-Type': 'application/json',
-      
     }
   })
 }
