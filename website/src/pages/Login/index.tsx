@@ -88,7 +88,7 @@ const Login: React.FC = () => {
 
         if (response.ok) {
           const data = await response.json();
-          if (hasUser) {
+          if (data.hasUser) {
             setHasUser(true);
             message.info('Database already has a user. Please proceed to login.');
           } else {
