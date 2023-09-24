@@ -30,3 +30,4 @@ func (usecase *templateUsecase) Update(template *model.Template, id uint) error 
 func (usecase *templateUsecase) Delete(id uint) error {
 	return usecase.templateRepository.Delete(id)
 }
+

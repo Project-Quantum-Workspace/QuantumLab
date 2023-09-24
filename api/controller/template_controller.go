@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -95,7 +96,6 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 // @Router /templates/{id} [get]
 func (tc *TemplateController)GetTemplateByID(c *gin.Context){
 	var template model.Template
-	err := c.ShouldBindJSON(&template)
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
@@ -226,4 +226,30 @@ func listFilesInDirectory(directoryPath string) ([]string, error) {
 	}
 
 	return fileList, nil
+}
+
+//UploadFile @Summary Upload file and parse the parameters
+// @Description Get the preset template icons.
+// @Tags templates
+// @Param multipart/form-data
+// @Produce json
+func (tc *TemplateController)UploadFile(c *gin.Context){
+	c.Request.Body = http.MaxBytesReader(c.Writer,c.Request.Body,10*1024*1024)
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		c.String(http.StatusBadRequest, "Error retrieving the file")
+		return
+	}
+	defer file.Close()
+	if header.Size > 10*1024*1024 {
+		c.String(http.StatusBadRequest, "File too big!")
+		return
+	}
+	// TODO: get parsed template string
+	
+	//response with retrived data string
+	c.JSON(http.StatusOK, gin.H{
+		"msg":"file successfully parsed",
+		"params": "parsed string"})
 }

@@ -14,6 +14,7 @@ type TemplateRepository interface {
 	GetByID(id uint) (Template, error)
 	Update(template *Template, id uint) error
 	Delete(id uint) error
+	
 }
 
 type TemplateUsecase interface {
@@ -22,4 +23,5 @@ type TemplateUsecase interface {
 	GetByID(id uint) (Template, error)
 	Update(template *Template, id uint) error
 	Delete(id uint) error
+	
 }
