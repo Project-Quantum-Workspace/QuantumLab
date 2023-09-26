@@ -24,7 +24,6 @@ const getAccess = () => {
 export default {
 
   'GET /api/auth/currUser': (req: Request, res: Response) => {
-    console.log(getAccess())
     if (!getAccess()) {
       res.status(401).send({
         data: {
