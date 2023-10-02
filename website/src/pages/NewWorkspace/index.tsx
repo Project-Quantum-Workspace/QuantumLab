@@ -19,7 +19,7 @@ import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
 import AuthApi from '@/services/quantumlab/auth';
 import { log } from 'debug';
-import './newWorkspce.css';
+import './newWorkspace.css';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -251,26 +251,29 @@ const NewWorkspace = () => {
         </Title>
 
         {/* General Section */}
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: 'Please input a name!' }]}
-          className="form-item"
-        >
-          <Input className="form-input" />
-        </Form.Item>
+        <div className="name-tag">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input a name!' }]}
+            className="form-item"
+          >
+            <Input className="form-input" />
+          </Form.Item>
 
-        <Form.Item
-          name="tags"
-          label="Tag"
-          rules={[{ required: true, message: 'At least ONE tag reqired!' }]}
-          className="form-item"
-        >
-          <Input
-            placeholder="Multiple tags accepted, separated by commas(,) please."
-            className="form-input"
-          />
-        </Form.Item>
+          <Form.Item
+            name="tags"
+            label="Tag"
+            rules={[{ required: true, message: 'At least ONE tag reqired!' }]}
+            className="form-item"
+          >
+            <Input
+              placeholder="Multiple tags accepted, separated by commas(,) please."
+              className="form-input"
+            />
+          </Form.Item>
+        </div>
+
 
         <Form.Item
           name="description"
@@ -335,13 +338,13 @@ const NewWorkspace = () => {
                   </Title>
                 </>
               )}
-              <Form.Item name={question.name} label={question.label} className="form-item">
+              <Form.Item name={question.name} label={question.label}>
                 {question.isInput ? (
                   <InputNumber min={0} step={1} className="input-number" />
                 ) : (
-                  <Select className="form-select">
+                  <Select className="question">
                     {question.selections?.map((option: string, index: number) => (
-                      <Option key={index} value={option} className="select-option">
+                      <Option key={index} value={option}>
                         {option}
                       </Option>
                     ))}
@@ -352,12 +355,12 @@ const NewWorkspace = () => {
           ))}
 
         <Form.Item className="submit-buttons">
-          <Button type="primary" htmlType="submit" className="submit-button">
-            Submit
-          </Button>
           <Link to="/workspace" className="go-back-link">
-            <Button className="go-back-button">Go Back</Button>
+            <Button className="go-back-button">Cancel</Button>
           </Link>
+          <Button type="primary" htmlType="submit" className="submit-button">
+            Create My Project
+          </Button>
         </Form.Item>
       </Form>
     </>
