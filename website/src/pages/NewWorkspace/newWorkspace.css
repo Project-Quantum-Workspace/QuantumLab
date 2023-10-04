@@ -39,9 +39,9 @@
   font-family: Manrope, sans-serif;
 }
 
-.form-input, .form-textarea {
-  background-color: #E0E0E0;
-}
+/*.form-input, .form-textarea {*/
+/*  !*background-color: #E0E0E0;*!*/
+/*}*/
 
 .name-tag {
   display: flex;

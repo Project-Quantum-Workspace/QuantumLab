@@ -1,5 +1,5 @@
 import TemplateApi from '@/services/quantumlab/template';
-import { useModel } from '@umijs/max';
+// import { useModel } from '@umijs/max';
 import {
   Button,
   Divider,
@@ -18,57 +18,21 @@ import { TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
 import AuthApi from '@/services/quantumlab/auth';
-import { log } from 'debug';
+// import { log } from 'debug';
 import './newWorkspace.css';
+import { UserMetaData } from '@/utils/types/UserTypes';
 
 const { Title } = Typography;
 const { Option } = Select;
-type UserType = {
-  accessLevel: number;
-  accountStatus: boolean;
-  avatar: string;
-  email: string;
-  firstName: string;
-  id: number;
-  lastName: string;
-  password: string;
-  quantumlabToken: string;
-  roles: {
-    id: number;
-    name: string;
-  }[];
-  uuid: string;
-  workspaces: {
-    createdAt: string;
-    description: string;
-    id: number;
-    lastAccessed: string;
-    name: string;
-    parameters: string;
-    state: string;
-    tags: string;
-    template: {
-      accessLevel: number;
-      filename: string;
-      icon: string;
-      id: number;
-      parameters: string;
-    };
-    templateId: number;
-    type: string;
-    updatedAt: string;
-    users: string[];
-    uuid: string;
-  }[];
-};
+type UserType = UserMetaData;
+
 const NewWorkspace = () => {
-  // const history = useHistory();
   const [form] = Form.useForm();
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | undefined>(undefined);
   const [templates, setTemplates] = useState<TemplateClass[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
-  const { initialState } = useModel('@@initialState');
+  // const { initialState } = useModel('@@initialState');
   const { currentTemplate } = useTemplateStore();
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
@@ -274,7 +238,6 @@ const NewWorkspace = () => {
           </Form.Item>
         </div>
 
-
         <Form.Item
           name="description"
           label="Description"
@@ -295,7 +258,7 @@ const NewWorkspace = () => {
         </Title>
 
         <Form.Item name="type" label="Type" className="form-item">
-          <Radio.Group size="large" className="radio-group">
+          <Radio.Group size="large" className="radio-group" defaultValue="standard">
             <Radio.Button value="standard" className="radio-button">
               Standard QuantumLab
             </Radio.Button>
