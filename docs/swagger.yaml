@@ -67,6 +67,19 @@ definitions:
       parameters:
         type: string
     type: object
+  model.Toolset:
+    properties:
+      accessID:
+        type: string
+      accessType:
+        type: string
+      icon:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
   model.User:
     properties:
       accessLevel:
@@ -363,6 +376,8 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Gets user details based on the current token
+      tags:
+      - auth
   /auth/login:
     post:
       consumes:
@@ -676,6 +691,35 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update workspace
+      tags:
+      - workspaces
+  /workspaces/{id}/toolset:
+    get:
+      description: Retrieve workspace toolsets by workspace id
+      parameters:
+      - description: Workspace ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Toolset'
+            type: array
+        "400":
+          description: Invalid workspace ID
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all toolsets associated with a workspace
       tags:
       - workspaces
   /workspaces/users/{id}:

@@ -41,6 +41,7 @@ export type WorkspaceInfoMetaData = {
   type?: string;
   parameters?: string;
   message?: string;
+  uuid?: string;  // Added the uuid here
 };
 
 export class WorkspaceInfoClass {
