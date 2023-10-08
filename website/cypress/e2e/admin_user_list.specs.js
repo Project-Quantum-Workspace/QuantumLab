@@ -1,10 +1,36 @@
+import { mockAuthIntercepts } from '../utils/authHelpers';
+
 describe('Admin User List', () => {
-  beforeEach(() => {
+  before(() => {
+    mockAuthIntercepts();
     cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
+  });
+
+  after(() => {
+    cy.logout();
+  });
+
+  beforeEach(() => {
+    cy.intercept('GET', '/api/admin/users', { fixture: 'users.json' }).as('fetchUsers');
+
+    // Intercept the PATCH request to update user status and mimic successful update
+    cy.intercept('PATCH', '/api/admin/users/**/status', (req) => {
+      req.reply({
+        statusCode: 200,
+        body: { message: 'User updated successfully' },
+      });
+    });
+
+    // Intercept the POST request to invite users and mimic successful invitation
+    cy.intercept('POST', '/api/admin/users/invite', {
+      statusCode: 200,
+      body: { message: 'Invitations sent successfully!' },
+    });
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 
   it('should have all the expected headers', () => {
+    cy.wait('@fetchUsers'); // Wait for the mock API call to complete
     // List out your expected headers
     const expectedHeaders = ['Name', 'User ID', 'Role(s)', 'Status'];
 
@@ -43,7 +69,7 @@ describe('Admin User List', () => {
   });
 
   it('should load user data correctly', () => {
-    cy.get('td').should('contain', 'Root Administrator');
+    cy.get('td').should('contain', 'John Doe');
   });
 
   it('should set button states based on the status of the first user', () => {
