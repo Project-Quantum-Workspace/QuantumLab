@@ -20,7 +20,6 @@
       "@@test/*": ["./src/.umi-test/*"]
     }
   },
-  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx",
-    "cypress/e2e/new_workspace.cy.js"
+  "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx"
   ]
 }

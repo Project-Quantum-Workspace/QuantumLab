@@ -1,18 +1,21 @@
-import {mockAuthIntercepts} from "../utils/authHelpers";
+
+import {workspaceInfoData, workspaceInfoUrl} from "../utils/workspaceInfoCy";
+import {templateData, templatesEndpoint} from "../utils/listTemplateTableCy";
+import {workspaceMockData, workspaceMockEndpoint} from "../utils/listWorkspaceTableCy";
+import {workspaceIDData, workspaceIDUrl} from "../utils/templateCy";
 
 describe('Template Info', () => {
 
-  before(() => {
-    mockAuthIntercepts();
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
-  });
 
   after(() => {
     cy.logout();
   });
 
   beforeEach(() => {
-    mockAuthIntercepts();
+    cy.intercept('GET', workspaceInfoUrl, workspaceInfoData).as('getTemplate');
+    cy.intercept('GET', templatesEndpoint, templateData).as('getTemplate');
+    cy.intercept('GET', workspaceMockEndpoint, workspaceMockData).as('getWorkspaces');
+    cy.intercept('GET', workspaceIDUrl, workspaceIDData).as('workspaceInfo');
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace`);
     cy.get('.ant-tabs-tab-btn:contains("Templates")').click();
     cy.get('.ant-btn-icon').click();

@@ -1,7 +1,5 @@
-import { TemplateMetaData } from '@/utils/types/TemplateTypes';
-
-export const defaultTemplate = (i: number) => {
-  const temp: TemplateMetaData = {
+export const defaultTemplate = (i) => {
+  return {
     id: i,
     filename: 'AWS Machine Learning Template 1',
     createdAt: '2023-08-10T15:04:05Z',
@@ -11,10 +9,9 @@ export const defaultTemplate = (i: number) => {
       '[{"name":"AvailableZone","label":"Available Zone","selections":["qh2","qh2-uom"],"isInput":false},{"name":"DiskSize","label":"Disk Size","isInput":true}]',
     readme: '',
   };
-  return temp;
 };
-const genTemplateList = (current: number, pageSize: number) => {
-  const tableData: TemplateMetaData[] = [];
+const genTemplateList = (current, pageSize) => {
+  const tableData = [];
   for (let i = 1; i < pageSize; i += 1) {
     tableData.push(defaultTemplate(i));
   }
@@ -23,6 +20,8 @@ const genTemplateList = (current: number, pageSize: number) => {
   return tableData;
 };
 let wl = genTemplateList(1, 2);
-export default {
-  'GET /api/templates': wl,
-};
+// export default {
+//   'GET /api/templates': wl,
+// };
+export const templatesEndpoint = '/api/templates*';
+export const templateData = wl;

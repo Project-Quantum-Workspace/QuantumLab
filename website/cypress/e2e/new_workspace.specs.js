@@ -1,20 +1,21 @@
-import { mockAuthIntercepts } from '../utils/authHelpers';
+import { workspaceInfoData, workspaceInfoUrl } from '../utils/workspaceInfoCy';
+import { templateData, templatesEndpoint } from '../utils/listTemplateTableCy';
+import { workspaceMockData, workspaceMockEndpoint } from '../utils/listWorkspaceTableCy';
+import { workspaceIDData, workspaceIDUrl } from '../utils/templateCy';
 
 describe('New a Workspace Form', () => {
-  before(() => {
-    mockAuthIntercepts();
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
-  });
-
   after(() => {
     cy.logout();
   });
 
   beforeEach(() => {
-    mockAuthIntercepts();
-    cy.intercept('POST', '/api/workspaces', (req) => {
+    cy.intercept('GET', workspaceInfoUrl, workspaceInfoData).as('getTemplate');
+    cy.intercept('GET', templatesEndpoint, templateData).as('getTemplate');
+    cy.intercept('GET', workspaceMockEndpoint, workspaceMockData).as('getWorkspaces');
+    cy.intercept('GET', workspaceIDUrl, workspaceIDData).as('workspaceInfo');
+    cy.intercept('POST', '/api/workspaces*', (req) => {
       req.reply(201, { message: 'Mock submission successful!' });
-    });
+    }).as('workspaceSubmission');
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace/new`);
   });
 

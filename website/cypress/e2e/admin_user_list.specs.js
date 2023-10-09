@@ -1,10 +1,6 @@
-import { mockAuthIntercepts } from '../utils/authHelpers';
 
 describe('Admin User List', () => {
-  before(() => {
-    mockAuthIntercepts();
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
-  });
+
 
   after(() => {
     cy.logout();
@@ -14,7 +10,7 @@ describe('Admin User List', () => {
     cy.intercept('GET', '/api/admin/users', { fixture: 'users.json' }).as('fetchUsers');
 
     // Intercept the PATCH request to update user status and mimic successful update
-    cy.intercept('PATCH', '/api/admin/users/**/status', (req) => {
+    cy.intercept('PATCH', '/api/admin/users/*/status', (req) => {
       req.reply({
         statusCode: 200,
         body: { message: 'User updated successfully' },

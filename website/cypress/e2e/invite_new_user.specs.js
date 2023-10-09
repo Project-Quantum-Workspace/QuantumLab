@@ -1,11 +1,6 @@
-import {mockAuthIntercepts} from "../utils/authHelpers";
+import { mockAuthIntercepts } from '../utils/authHelpers';
 
 describe('Admin User List', () => {
-  before(() => {
-    mockAuthIntercepts();
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
-  });
-
   after(() => {
     cy.logout();
   });
@@ -17,7 +12,7 @@ describe('Admin User List', () => {
     cy.intercept('POST', '/api/admin/users/invite', {
       statusCode: 200,
       body: { message: 'Invitations sent successfully!' },
-    });
+    }).as('inviteUsers');
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 
@@ -149,6 +144,7 @@ describe('Admin User List', () => {
 
     // Type the different emails into the textarea and add them
     cy.get('.ant-modal-body textarea').type(differentEmails);
+    // cy.get('textarea').invoke('val', differentEmails).trigger('blur').type('{enter}');
     cy.get('.ant-modal-footer').contains('button', 'Add').click();
 
     // Ensure an error message is displayed

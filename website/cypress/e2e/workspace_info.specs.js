@@ -1,24 +1,26 @@
-import {mockAuthIntercepts} from "../utils/authHelpers";
+import { workspaceIDData, workspaceIDUrl } from '../utils/templateCy';
+import { workspaceMockData, workspaceMockEndpoint } from '../utils/listWorkspaceTableCy';
+import { templateData, templatesEndpoint } from '../utils/listTemplateTableCy';
+import { workspaceInfoData, workspaceInfoUrl } from '../utils/workspaceInfoCy';
 
 describe('Workspaces Info', () => {
-
-  before(() => {
-    mockAuthIntercepts();
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
-  });
-
   after(() => {
     cy.logout();
   });
 
   beforeEach(() => {
-    mockAuthIntercepts();
-    cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace/4`);
+    cy.intercept('GET', workspaceInfoUrl, workspaceInfoData).as('getTemplate');
+    cy.intercept('GET', templatesEndpoint, templateData).as('getTemplate');
+    cy.intercept('GET', workspaceMockEndpoint, workspaceMockData).as('getWorkspaces');
+    cy.intercept('GET', workspaceIDUrl, workspaceIDData).as('workspaceInfo');
+    cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace/1`);
   });
 
   it('should display workspace information', () => {
-    cy.get('h1.ant-typography.css-k3n9e3.css-dev-only-do-not-override-1ocvw8')
-        .should('have.text', 'AWS Example Project');
+    cy.get('h1.ant-typography.css-k3n9e3.css-dev-only-do-not-override-1ocvw8').should(
+      'have.text',
+      'AWS Example Project',
+    );
     cy.contains('Running').should('be.visible');
   });
 
@@ -27,5 +29,4 @@ describe('Workspaces Info', () => {
     cy.get('button.ant-btn-text:contains("Back to My Project")').click();
     cy.contains('Manage your projects in Quantum Workspace').should('be.visible');
   });
-
 });
