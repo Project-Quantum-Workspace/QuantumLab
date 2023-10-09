@@ -1,6 +1,23 @@
+import {mockAuthIntercepts} from "../utils/authHelpers";
+
 describe('Admin User List', () => {
-  beforeEach(() => {
+  before(() => {
+    mockAuthIntercepts();
     cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
+  });
+
+  after(() => {
+    cy.logout();
+  });
+
+  beforeEach(() => {
+    cy.intercept('GET', '/api/admin/users', { fixture: 'users.json' }).as('fetchUsers');
+
+    // Intercept the POST request to invite users and mimic successful invitation
+    cy.intercept('POST', '/api/admin/users/invite', {
+      statusCode: 200,
+      body: { message: 'Invitations sent successfully!' },
+    });
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 

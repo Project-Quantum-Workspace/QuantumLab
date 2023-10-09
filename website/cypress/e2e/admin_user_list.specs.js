@@ -20,13 +20,6 @@ describe('Admin User List', () => {
         body: { message: 'User updated successfully' },
       });
     });
-
-    // Intercept the POST request to invite users and mimic successful invitation
-    cy.intercept('POST', '/api/admin/users/invite', {
-      statusCode: 200,
-      body: { message: 'Invitations sent successfully!' },
-    });
-    cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 
   it('should have all the expected headers', () => {
