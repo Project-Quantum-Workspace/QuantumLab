@@ -20,10 +20,10 @@ describe('Admin User List', () => {
         body: { message: 'User updated successfully' },
       });
     });
+    cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 
   it('should have all the expected headers', () => {
-    cy.wait('@fetchUsers'); // Wait for the mock API call to complete
     // List out your expected headers
     const expectedHeaders = ['Name', 'User ID', 'Role(s)', 'Status'];
 

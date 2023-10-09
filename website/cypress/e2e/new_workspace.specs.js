@@ -12,12 +12,6 @@ describe('New a Workspace Form', () => {
 
   beforeEach(() => {
     mockAuthIntercepts();
-    cy.fixture('templates.json').as('mockTemplates');
-
-    cy.intercept('GET', '/api/templates', (req) => {
-      req.reply(200, '@mockTemplates');
-    });
-
     cy.intercept('POST', '/api/workspaces', (req) => {
       req.reply(201, { message: 'Mock submission successful!' });
     });

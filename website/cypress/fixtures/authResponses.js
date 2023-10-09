@@ -1,5 +1,6 @@
 // cypress/fixtures/authResponses.js
 export const currUserAdmin = {
+  id: 1,
   success: true,
   firstName: 'LoisW-Admin',
   avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',

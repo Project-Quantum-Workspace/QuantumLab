@@ -15,6 +15,7 @@ describe('Homepage test', () => {
   beforeEach(() => {
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/home`);
   });
+
   it('Three modules are successfully loaded', () => {
     cy.get('.ant-layout-content').should('contain', 'Composer');
     cy.get('.ant-layout-content').should('contain', 'Workspace');
@@ -25,12 +26,16 @@ describe('Homepage test', () => {
     cy.get(':nth-child(2) > :nth-child(1) > .ant-btn:contains("Launch")').click();
     cy.url().should('include', '/composer');
   });
-  it('Workspace module redirects to workspacepage', () => {
+
+  it('Workspace module redirects to workspace page', () => {
     cy.get(':nth-child(2) > .ant-btn:contains("View Last")').click();
     cy.url().should('include', '/workspace');
   });
-  it('Job monitor module redirects to jobmonitor page', () => {
-    cy.get(':nth-child(3) > .sc-bcPKhP > .ant-btn:contains("Create")').click();
+
+  it('Job monitor module redirects to job monitor page', () => {
+    cy.get(
+      'button.ant-btn.css-dev-only-do-not-override-1ocvw8.ant-btn-primary.ant-btn-block:contains("Create")',
+    ).click();
     cy.url().should('include', '/jobmonitor');
   });
 });
