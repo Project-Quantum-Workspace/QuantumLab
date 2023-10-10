@@ -4,10 +4,9 @@ import { WorkspaceInfoClass } from '@/utils/types/WorkspaceTypes';
 
 class WorkspaceApi extends BaseApi {
   getWorkspace(id: string) {
-    return this.loadByGet('/api/workspaces/' + id)
-      .then((res) => {
-         return res.message ? res.message : WorkspaceInfoClass.fromDTO(res)
-      })
+    return this.loadByGet('/api/workspaces/' + id).then((res) => {
+      return res.message ? res.message : WorkspaceInfoClass.fromDTO(res);
+    });
   }
 
   // getAllWorkspace(id:string) {
@@ -16,16 +15,17 @@ class WorkspaceApi extends BaseApi {
   // }
 }
 
-export default new WorkspaceApi()
-
+export default new WorkspaceApi();
 
 //get all workspace by user id
-export async function getAllWorkspace(id:string){
+export async function getAllWorkspace(id: string) {
   //console.log(id)
-  return request('/api/workspaces/users/'+id,{
+  return request('/api/workspaces/users/' + id, {
     method: 'GET',
-    headers:{
+    headers: {
       'Content-Type': 'application/json',
-    }
-  })
+
+    },
+  });
+
 }

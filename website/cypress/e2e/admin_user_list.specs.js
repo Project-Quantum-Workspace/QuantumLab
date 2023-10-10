@@ -1,6 +1,21 @@
+
 describe('Admin User List', () => {
+
+
+  after(() => {
+    cy.logout();
+  });
+
   beforeEach(() => {
-    cy.autoLogin('workspacequantum@gmail.com', 'workspacequantum@gmail.com');
+    cy.intercept('GET', '/api/admin/users', { fixture: 'users.json' }).as('fetchUsers');
+
+    // Intercept the PATCH request to update user status and mimic successful update
+    cy.intercept('PATCH', '/api/admin/users/*/status', (req) => {
+      req.reply({
+        statusCode: 200,
+        body: { message: 'User updated successfully' },
+      });
+    });
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/admin/users`);
   });
 
@@ -43,7 +58,7 @@ describe('Admin User List', () => {
   });
 
   it('should load user data correctly', () => {
-    cy.get('td').should('contain', 'Root Administrator');
+    cy.get('td').should('contain', 'John Doe');
   });
 
   it('should set button states based on the status of the first user', () => {
