@@ -22,7 +22,6 @@ const getAccess = () => {
 };
 
 export default {
-
   'GET /api/auth/currUser': (req: Request, res: Response) => {
     if (!getAccess()) {
       res.status(401).send({
@@ -34,8 +33,9 @@ export default {
         success: true,
       });
       return;
-    } else if(getAccess() === 'admin') {
+    } else if (getAccess() === 'admin') {
       res.send({
+        id: 1,
         success: true,
         firstName: 'LoisW-Admin',
         avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
@@ -43,20 +43,19 @@ export default {
         notifyCount: 12,
         unreadCount: 11,
         access: getAccess(),
-        accessLevel:10
+        accessLevel: 10,
       });
     } else {
       res.send({
         success: true,
-        
-          firstName: 'LoisW-User',
-          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-          email: 'loisw@test.com',
-          notifyCount: 12,
-          unreadCount: 11,
-          access: getAccess(),
-          accessLevel:0
-        
+
+        firstName: 'LoisW-User',
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        email: 'loisw@test.com',
+        notifyCount: 12,
+        unreadCount: 11,
+        access: getAccess(),
+        accessLevel: 0,
       });
     }
   },
@@ -64,9 +63,10 @@ export default {
     const { password, email, type } = req.body;
 
     await waitTime(200);
-    if ((password === 'admin' && email === 'admin') ||
-        (password === 'workspacequantum@gmail.com' && 
-        email === 'workspacequantum@gmail.com')) {
+    if (
+      (password === 'admin' && email === 'admin') ||
+      (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com')
+    ) {
       res.send({
         status: 'Logged In Successfully',
         type,
@@ -75,7 +75,7 @@ export default {
       access = 'admin';
       return;
     }
-  
+
     if (password === 'user' && email === 'user') {
       res.send({
         status: 'Logged In Successfully',

@@ -1,30 +1,11 @@
-import { TemplateMetaData } from '@/utils/types/TemplateTypes';
-import { Request, Response } from 'express';
+const { defaultTemplate } = require('./listTemplateTableCy');
 
-// import moment from 'moment';
-import { defaultTemplate } from './listTemplateTable';
-
-type WorkspaceInfoMetaData = {
-  id?: number;
-  name?: string;
-  createdAt?: string;
-  lastAccessed?: string;
-  updatedAt?: string;
-  description?: string;
-  templateId?: number;
-  template?: TemplateMetaData;
-  state?: string;
-  tags?: string;
-  type?: string;
-  parameters?: string;
-  message?: string;
-};
 const statusValue = ['Stopped', 'Pending', 'Running', 'Failed', 'Connecting'];
 
-const genWorkspaceList = (current: number, pageSize: number) => {
-  const tableData: WorkspaceInfoMetaData[] = [];
+const genWorkspaceList = (current, pageSize) => {
+  const tableData = [];
 
-  const getRandomDate = (start: Date, end: Date): Date => {
+  const getRandomDate = (start, end) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   };
 
@@ -56,10 +37,13 @@ const genWorkspaceList = (current: number, pageSize: number) => {
 
 let wl = genWorkspaceList(1, 5);
 
-function getAllWorkspace(req: Request, res: Response, u: string) {
+function getAllWorkspace(req, res, u) {
   return wl;
 }
 
-export default {
-  'GET /api/workspaces/users/1': wl,
-};
+// Export the mock data and the endpoint to be intercepted
+export const workspaceMockEndpoint = '/api/workspaces/users/1*';
+export const workspaceMockData = wl;
+
+// If you were using Cypress in your TypeScript version, you might use it in JavaScript as:
+// cy.intercept('GET', workspaceMockEndpoint, workspaceMockData).as('getWorkspaces');
