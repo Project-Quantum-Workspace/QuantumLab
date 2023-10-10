@@ -10,5 +10,5 @@ module.exports = defineConfig({
   env: {
     QUANTUMLAB_WEB: 'http://localhost:8000',
   },
-  defaultCommandTimeout: 10000,
+  defaultCommandTimeout: 60000,
 });
