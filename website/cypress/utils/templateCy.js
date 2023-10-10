@@ -1,9 +1,6 @@
-import { Response } from 'express';
-import { TemplateMetaData } from '@/utils/types/TemplateTypes';
-import { WorkspaceInfoMetaData } from '@/utils/types/WorkspaceTypes';
 import moment from 'moment';
 
-const template: TemplateMetaData = {
+const template = {
   id: 1,
   filename: 'Quantum Template',
   parameters:
@@ -14,7 +11,7 @@ const template: TemplateMetaData = {
   createdAt: '',
 };
 
-const workspace: WorkspaceInfoMetaData = {
+const workspace = {
   id: 1,
   name: 'AWS Example Project',
   createdAt: '2023-08-10T15:04:05Z',
@@ -27,8 +24,11 @@ const workspace: WorkspaceInfoMetaData = {
   tags: 'CPU, Qiskit',
   template: template,
 };
-export default {
-  'GET /api/workspaces/:id': (req: Request, res: Response) => {
-    res.send(workspace);
-  },
-};
+// export default {
+//     'GET /api/workspaces/:id': (req: Request, res: Response) => {
+//         res.send(workspace);
+//     },
+// };
+// Export the mock data and the endpoint to be intercepted
+export const workspaceIDUrl = '/api/workspaces/1*';
+export const workspaceIDData = workspace;

@@ -97,6 +97,17 @@ const NewWorkspace = () => {
       console.error('Current user data not available');
       return;
     }
+
+    // Check if the selectedTemplate is undefined
+    if (!selectedTemplate) {
+      notification.error({
+        message: 'Template Not Selected',
+        description: 'Template is not selected or not available.',
+        duration: 5,
+      });
+      return; // Exit the function if the template is not defined
+    }
+
     try {
       const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
         (acc, question) => {
@@ -159,7 +170,7 @@ const NewWorkspace = () => {
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (response.status === 201) {
         notification.success({
           message: 'Success',
@@ -268,7 +279,17 @@ const NewWorkspace = () => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="template_id" label="Templates" className="form-item-select">
+        <Form.Item
+          name="template_id"
+          label="Templates"
+          className="form-item-select"
+          rules={[
+            {
+              required: true,
+              message: 'Please select a template!',
+            },
+          ]}
+        >
           <Select
             placeholder="Select a template"
             onChange={onTemplateChange}
@@ -301,7 +322,16 @@ const NewWorkspace = () => {
                   </Title>
                 </>
               )}
-              <Form.Item name={question.name} label={question.label}>
+              <Form.Item
+                name={question.name}
+                label={question.label}
+                rules={[
+                  {
+                    required: true,
+                    message: 'This field and not be empty!',
+                  },
+                ]}
+              >
                 {question.isInput ? (
                   <InputNumber min={0} step={1} className="input-number" />
                 ) : (

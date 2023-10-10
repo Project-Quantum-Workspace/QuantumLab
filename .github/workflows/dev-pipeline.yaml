@@ -78,6 +78,8 @@ jobs:
         uses: golangci/golangci-lint-action@v3.3.1
         with:
           version: v1.53
+          skip-cache: true
+          args: --timeout=10m
 
       - name: Build Backend
         run: go build -o ./build/quantumlab ./cmd/main.go
@@ -175,30 +177,56 @@ jobs:
       - name: Run unit tests
         run: go test -v ./...
 
-#  run-e2e-tests:
-#    runs-on: ubuntu-latest
-#    needs:
-#      - frontend
+  run-e2e-tests-on-mock:
+    runs-on: ubuntu-latest
+    needs:
+      - frontend
 #      - backend
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        containers: [1, 2] # Uses 2 parallel instances
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Run Cypress e2e tests
-#        uses: cypress-io/github-action@v5
+    env:
+      working-directory: website
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2] # Uses 2 parallel instances
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+#      - name: Set up pnpm
+#        uses: pnpm/action-setup@v2
 #        with:
-#          browser: chrome
-##          start: WIP
-#          parallel: true
-#          record: true
-#          wait-on: http://localhost:8000
-#          wait-on-timeout: 120
-#        env:
-#          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          version: 8
+
+      - name: Cache dependencies
+        id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-frontend-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-${{ env.cache-name }}-
+            ${{ runner.os }}-frontend-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ env.working-directory }}
+
+      - name: Run Cypress e2e tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          start: npm start
+          parallel: true
+          record: true
+          wait-on: http://localhost:8000
+          wait-on-timeout: 120
+          working-directory: ${{ env.working-directory }}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
   dev-deploy:
     runs-on: ubuntu-latest
