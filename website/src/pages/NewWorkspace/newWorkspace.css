@@ -1,0 +1,108 @@
+:root {
+  --grey-06: #414141;
+}
+
+/* Form styles */
+.workspace-form {
+  width: 1000px;
+  max-width: calc(100% - 50px);
+  margin: 10px auto;
+  padding: 0 10px;
+
+}
+
+/* Title styles */
+.workspace-title {
+  color: #414141;
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Headline 4 */
+  font-family: Manrope, sans-serif;
+  align-self: stretch;
+}
+
+.section-title {
+  color: var(--grey-06, #414141);
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Headline 5 */
+  font-family: Manrope, sans-serif;
+
+  align-self: stretch;
+}
+
+/* General Form items */
+.form-item, .form-item-textarea {
+  color: var(--grey-06, #414141);
+  text-align: right;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: 'clig' off, 'liga' off;
+  /* Manrope / Subtitle 1 */
+  font-family: Manrope, sans-serif;
+}
+
+/*.form-input, .form-textarea {*/
+/*  !*background-color: #E0E0E0;*!*/
+/*}*/
+
+.name-tag {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-item {
+  width: 48%; /* Set to 48% to account for potential margins and borders */
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.radio-button {
+  min-width: 150px;
+  overflow: hidden; /* This will hide any overflowing content */
+  white-space: nowrap; /* This ensures the text does not wrap */
+  text-overflow: ellipsis; /* This will show '...' if the text overflows */
+}
+
+/* InputNumber and Select styling */
+.input-number, .question {
+  width: 70%; /* You can adjust this value to what fits your design */
+  max-width: 300px; /* You can adjust this too */
+  flex: 2; /* takes 2 fractions of space, i.e., twice the space of the label */
+}
+
+
+/* Positioning the submit-buttons container at the bottom and to the right */
+.submit-buttons {
+  display: flex;
+  justify-content: flex-end; /* move its children (the buttons) to the right */
+  margin-top: auto; /* pushes the container to the bottom of the form if there's available space */
+}
+
+/* Style for the "Submit" button (Create My Project) */
+.submit-button {
+  color: #C5DCFA;
+  font-family: 'Manrope', sans-serif;
+  text-transform: capitalize;
+  letter-spacing: 0.80px;
+  word-wrap: break-word;
+  margin-left: 10px; /* Space between the buttons if they are side by side */
+  background: #0F56B3
+}
+
+/* Style for the "Go Back" button (Cancel) */
+.go-back-button {
+  color: #0F56B3;
+  font-family: 'Manrope', sans-serif;
+  text-transform: capitalize;
+  letter-spacing: 0.80px;
+  word-wrap: break-word;
+  border-color: #0F56B3; /* if you want the border to match the text color */
+}
+
+/* If you want the "Go Back" button to have a transparent background */
+.go-back-button.ant-btn {
+  background-color: transparent;
+}
+
+
