@@ -26,10 +26,10 @@ const AdminInitialization = ({ hasUser }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const baseApi = new BaseApi();
   const handleSubmit = async () => {
     try {
-
-      const response = await BaseApi.loadByPost('/api/init', formData, 'json', true, {
+      const response = await baseApi.loadByPost('/api/init', formData, 'json', true, {
         'Content-Type': 'application/json',
       });
 
