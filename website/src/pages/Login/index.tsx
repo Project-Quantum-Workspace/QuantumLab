@@ -80,7 +80,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     const checkForUser = async () => {
       try {
-        const response = await fetch('/api/admin', {
+        const response = await fetch('/api/init', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
