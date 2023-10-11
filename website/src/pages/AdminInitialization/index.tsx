@@ -28,7 +28,7 @@ const AdminInitialization = ({ hasUser }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await BaseApi.loadByPost('/api/init, formData, 'json', true, {
+      const response = await BaseApi.loadByPost('/api/init', formData, 'json', true, {
         'Content-Type': 'application/json',
       });
 
