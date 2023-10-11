@@ -21,6 +21,7 @@ type UserTokenController struct {
 // @Produce json
 // @Success 200 {object} []model.Token
 // @Failure 400 {object} model.ErrorResponse "Bad Request"
+// @Failure 500 {object} model.ErrorResponse "Error: Failed to retrieve users tokens!"
 // @Router /api/token/list [get]
 func (utc *UserTokenController) GetUserTokens(c *gin.Context) {
 	userID, err := tokenutil.ExtractUserID(c, utc.Env.AccessJWTSecret)
@@ -30,6 +31,10 @@ func (utc *UserTokenController) GetUserTokens(c *gin.Context) {
 	}
 
 	tokens, err := utc.UserTokenUsecase.GetUserTokens(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error: Failed to retrieve users tokens!"})
+		return
+	}
 	c.JSON(http.StatusOK, tokens)
 }
 
