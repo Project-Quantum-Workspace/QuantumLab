@@ -13,13 +13,13 @@ export default {
     res.send(firstadmin);
   },
 
-  'GET /api/admin': async (req, res)=> {
+  'GET /api/admin/hasUser': async (req, res)=> {
     res.send(isUser);
   },
 };
 
-export const adminInitializationPosturl = '/api/admin*';
+export const adminInitializationPosturl = '/api/admin';
 export const adminInitializationPostData = firstadmin;
-export const adminInitializationGeturl = '/api/admin*';
+export const adminInitializationGeturl = '/api/admin/hasUser';
 export const adminInitializationGetData = isUser;
 
