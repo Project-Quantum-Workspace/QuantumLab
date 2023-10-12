@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'antd';
 import {
-  CheckOutlined,
   DeleteOutlined,
-  EditOutlined,
   ExportOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
@@ -11,33 +9,31 @@ import {
 const JobMonitor: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [popupContent, setPopupContent] = useState<'info' | 'delete' | 'export' | null>(null);
 
-  const handleOpenResult = (jobId: string) => {
+  const handleOpenInfo = (jobId: string) => {
     setSelectedJob(jobId);
+    setPopupContent('info');
     setVisible(true);
   };
+
+  const handleOpenDelete = (jobId: string) => {
+    setSelectedJob(jobId);
+    setPopupContent('delete');
+    setVisible(true);
+  };
+
+  const handleOpenExport = (jobId: string) => {
+    setSelectedJob(jobId);
+    setPopupContent('export');
+    setVisible(true);
+  };
+
 
   const handleCloseResult = () => {
     setSelectedJob(null);
     setVisible(false);
   };
-  const dataSource = [
-    {
-      key: '1',
-      id: 'ID00110',
-      name: 'JOB_title',
-      backend: 'Backend_01',
-      status: 'Completed',
-    },
-    {
-      key: '2',
-      id: 'ID0020',
-      name: 'JOB_title',
-      backend: 'Backend_02',
-      status: 'Queued',
-    },
-    // ... Add other rows similarly
-  ];
 
   const columns = [
     {
@@ -65,9 +61,9 @@ const JobMonitor: React.FC = () => {
       key: 'operation',
       render: (text: any, record: any) => (
         <>
-          <Button type="link" icon={<InfoCircleOutlined />} />
-          <Button type="link" icon={<DeleteOutlined />} />
-          <ExportOutlined onClick={() => handleOpenResult(record.id)} />
+          <Button type="link" icon={<InfoCircleOutlined />} onClick={() => handleOpenInfo(record.id)} />
+          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleOpenDelete(record.id)} />
+          <ExportOutlined onClick={() => handleOpenExport(record.id)} />
         </>
       ),
     },
@@ -89,8 +85,8 @@ const JobMonitor: React.FC = () => {
       <Table columns={columns} dataSource={data} />
 
       <Modal
-        title="Open with Result Analyser"
-        open={visible}
+        title="Job Details"
+        visible={visible}
         onOk={handleCloseResult}
         onCancel={handleCloseResult}
         footer={[
@@ -102,8 +98,11 @@ const JobMonitor: React.FC = () => {
           </Button>,
         ]}
       >
-        {selectedJob && <p>You are trying to open the job: {selectedJob} in result Analyser</p>}
+        {popupContent === 'info' && selectedJob && <p>Details for the job: {selectedJob}</p>}
+        {popupContent === 'delete' && selectedJob && <p>Confirm deletion for the job: {selectedJob}?</p>}
+        {popupContent === 'export' && selectedJob && <p>Export details for the job: {selectedJob}</p>}
       </Modal>
+
     </div>
   );
 };
