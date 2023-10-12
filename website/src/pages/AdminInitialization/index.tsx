@@ -26,17 +26,19 @@ const AdminInitialization = ({ hasUser }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const baseApi = new BaseApi();
-  const handleSubmit = async () => {
+  const handleSubmit = async () =>{
     try {
-      const response = await baseApi.loadByPost('/api/init', formData, 'json', true, {
-        'Content-Type': 'application/json',
+      const response = await fetch('/api/init', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData), // 将用户输入的邮箱和密码发送给服务器
       });
 
       if (response.ok) {
         setSubmitted(true);
         message.success('Admin account setup successful! Redirecting to login page...', 2);
-
         setTimeout(() => {
           navigate('/login');
         }, 2000);
