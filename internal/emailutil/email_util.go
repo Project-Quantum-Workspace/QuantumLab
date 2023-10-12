@@ -11,7 +11,7 @@ import (
 func SendUserInvitation(userEmail string, userPassword string,
 	host string, port int, from string, secret string,
 ) error {
-	bytes, err := os.ReadFile("dist/email_templates/invite_user_template.html")
+	bytes, err := os.ReadFile("docs/email_templates/invite_user_template.html")
 	if err != nil {
 		logrus.Errorf("error loading email template: %v:", err.Error())
 		return err
