@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/emailutil"
@@ -119,7 +118,7 @@ func sendUserInvitations(emailList []string,
 ) ([]model.User, error) {
 	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	var err error
 
 	for i, email := range emailList {
@@ -132,10 +131,10 @@ func sendUserInvitations(emailList []string,
 			continue
 		}
 		qlToken := generatorutil.GenerateQuantumLabToken()
-		wg.Add(1)
+		// wg.Add(1)
 
 		// go func(index int, email string) {
-		defer wg.Done()
+		// defer wg.Done()
 		err = emailutil.SendUserInvitation(email, password, host, port, from, secret)
 		if err == nil {
 			userArray[i] = defaultUser(email, hashedPassword, qlToken, role)
@@ -143,7 +142,7 @@ func sendUserInvitations(emailList []string,
 		// }(i, email)
 	}
 
-	wg.Wait()
+	// wg.Wait()
 	var users []model.User
 	for _, user := range userArray {
 		if user.Email != "" {
