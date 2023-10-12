@@ -61,13 +61,13 @@ export default [
     icon:'slidersOutlined',
     path:'/composer'
   },
-  
-  {
 
+  {
     name:'jobMonitor',
     icon:'dashboardOutlined',
-    path:'/jobMonitor'
-  }, 
+    path:'/jobMonitor',
+    component: './JobMonitor',
+  },
   {
     name: 'backendStatus',
     icon: 'databaseOutlined',
@@ -82,7 +82,7 @@ export default [
     //component: './AnalyseTool',
   },
 
- 
+
   {
     name: 'setting',
     icon: 'settingOutlined',
@@ -106,7 +106,7 @@ export default [
         path: '/admin',
         redirect: '/admin/sub-page',
       },
-      
+
       {
         name:'users',
         path:'/admin/users',
