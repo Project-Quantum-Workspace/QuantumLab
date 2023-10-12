@@ -120,12 +120,13 @@ func sendUserInvitations(emailList []string,
 	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
 	var wg sync.WaitGroup
-	var testErr error
+	var err error
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
 		// hash password
-		hashedPassword, err := validationutil.GenerateHash(password)
+		var hashedPassword string
+		hashedPassword, err = validationutil.GenerateHash(password)
 		if err != nil {
 			logrus.Errorf("error hashing password: %v", err.Error())
 			continue
@@ -133,15 +134,13 @@ func sendUserInvitations(emailList []string,
 		qlToken := generatorutil.GenerateQuantumLabToken()
 		wg.Add(1)
 
-		go func(index int, email string, e *error) {
-			defer wg.Done()
-			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
-			if err == nil {
-				userArray[index] = defaultUser(email, hashedPassword, qlToken, role)
-			}
-			logrus.Info(e)
-			e = &err
-		}(i, email, &testErr)
+		// go func(index int, email string) {
+		defer wg.Done()
+		err = emailutil.SendUserInvitation(email, password, host, port, from, secret)
+		if err == nil {
+			userArray[i] = defaultUser(email, hashedPassword, qlToken, role)
+		}
+		// }(i, email)
 	}
 
 	wg.Wait()
@@ -152,7 +151,7 @@ func sendUserInvitations(emailList []string,
 		}
 	}
 
-	return users, testErr
+	return users, err
 }
 
 func defaultUser(email string, password string, qlToken string, role *model.Role) model.User {
