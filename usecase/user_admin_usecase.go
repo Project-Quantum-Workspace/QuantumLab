@@ -43,21 +43,21 @@ func (uau *userAdminUsecase) InviteUsers(
 	}
 
 	// send emails to invited users
-	go func() {
-		start := time.Now()
-		users := sendUserInvitations(processedEmailList, host, port, from, secret, role)
-		timeElapsed := time.Since(start)
-		logrus.Infof("sendUserInvitations took %s", timeElapsed)
+	// go func() {
+	start := time.Now()
+	users, err := sendUserInvitations(processedEmailList, host, port, from, secret, role)
+	timeElapsed := time.Since(start)
+	logrus.Infof("sendUserInvitations took %s", timeElapsed)
 
-		if len(users) > 0 {
-			err = uau.userRepository.CreateBatch(users)
-			if err != nil {
-				logrus.Errorf("error creating users: %v", err.Error())
-			}
+	if len(users) > 0 {
+		err = uau.userRepository.CreateBatch(users)
+		if err != nil {
+			logrus.Errorf("error creating users: %v", err.Error())
 		}
-	}()
+	}
+	// }()
 
-	return nil
+	return err
 }
 
 func (uau *userAdminUsecase) GetRoleIDs(userID uint) ([]uint, error) {
@@ -116,10 +116,11 @@ func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, 
 
 func sendUserInvitations(emailList []string,
 	host string, port int, from string, secret string, role *model.Role,
-) []model.User {
+) ([]model.User, error) {
 	// for concurrent access by goroutines
 	userArray := make([]model.User, len(emailList))
 	var wg sync.WaitGroup
+	var testErr error
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
@@ -132,13 +133,15 @@ func sendUserInvitations(emailList []string,
 		qlToken := generatorutil.GenerateQuantumLabToken()
 		wg.Add(1)
 
-		go func(index int, email string) {
+		go func(index int, email string, e *error) {
 			defer wg.Done()
 			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
 			if err == nil {
 				userArray[index] = defaultUser(email, hashedPassword, qlToken, role)
 			}
-		}(i, email)
+			logrus.Info(e)
+			e = &err
+		}(i, email, &testErr)
 	}
 
 	wg.Wait()
@@ -149,7 +152,7 @@ func sendUserInvitations(emailList []string,
 		}
 	}
 
-	return users
+	return users, testErr
 }
 
 func defaultUser(email string, password string, qlToken string, role *model.Role) model.User {
