@@ -84,10 +84,10 @@ export default [
 
  
   {
-    name: 'setting',
+    name: 'settings',
     icon: 'settingOutlined',
-    path: '/setting',
-    //component: './Setting',
+    path: '/settings',
+    component: './Settings',
   },
 
   {
