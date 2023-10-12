@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'antd';
-import {
-  DeleteOutlined,
-  ExportOutlined,
-  InfoCircleOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, ExportOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { history } from '@umijs/max';
 
 const JobMonitor: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
-  const [popupContent, setPopupContent] = useState<'info' | 'delete' | 'export' | null>(null);
+  const [popupContent, setPopupContent] = useState<'info' | 'cancel' | 'open' | null>(null);
+  const [selectedJobStatus, setSelectedJobStatus] = useState<string | null>(null);
 
   const handleOpenInfo = (jobId: string) => {
     setSelectedJob(jobId);
@@ -19,21 +17,30 @@ const JobMonitor: React.FC = () => {
 
   const handleOpenDelete = (jobId: string) => {
     setSelectedJob(jobId);
-    setPopupContent('delete');
+    setPopupContent('cancel');
     setVisible(true);
   };
 
   const handleOpenExport = (jobId: string) => {
     setSelectedJob(jobId);
-    setPopupContent('export');
+    setPopupContent('open');
     setVisible(true);
   };
 
-
   const handleCloseResult = () => {
     setSelectedJob(null);
+
     setVisible(false);
   };
+
+  const handleOpenDetails = () => {
+    handleCloseResult(); // Close the modal first
+    // history.push('/analyseTool'); // Redirect to /analyseTool
+  };
+
+  function handleConfirm() {
+    console.log('The job is cancelled!');
+  }
 
   const columns = [
     {
@@ -61,8 +68,8 @@ const JobMonitor: React.FC = () => {
       key: 'operation',
       render: (text: any, record: any) => (
         <>
-          <Button type="link" icon={<InfoCircleOutlined />} onClick={() => handleOpenInfo(record.id)} />
-          <Button type="link" icon={<DeleteOutlined />} onClick={() => handleOpenDelete(record.id)} />
+          <InfoCircleOutlined onClick={() => handleOpenInfo(record.id)} />
+          <DeleteOutlined onClick={() => handleOpenDelete(record.id)} />
           <ExportOutlined onClick={() => handleOpenExport(record.id)} />
         </>
       ),
@@ -77,32 +84,88 @@ const JobMonitor: React.FC = () => {
       backend: 'Backend_01',
       status: 'Completed',
     },
-    // ... Add other rows similarly
   ];
+
+  const handleConfirmCancel = () => {
+    // logic to handle the confirmation of cancel
+    handleCloseResult();
+  };
+
+  const handleConfirmOpen = () => {
+    // logic to handle the confirmation of open
+    handleCloseResult();
+  };
+
+  const renderFooter = () => {
+    switch (popupContent) {
+      case 'info':
+        if (selectedJobStatus === 'Queued') {
+          return [
+            <Button key="back" onClick={handleCloseResult}>
+              Back
+            </Button>,
+            <Button key="details" onClick={handleOpenDetails}>
+              Details
+            </Button>,
+          ];
+        }
+        return [
+          <Button key="back" onClick={handleCloseResult}>
+            Back
+          </Button>,
+        ];
+
+      case 'cancel':
+        return [
+          <Button key="back" onClick={handleCloseResult}>
+            Back
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleConfirmCancel}>
+            Confirm
+          </Button>,
+        ];
+
+      case 'open':
+        return [
+          <Button key="back" onClick={handleCloseResult}>
+            Back
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleConfirmOpen}>
+            Confirm
+          </Button>,
+        ];
+
+      default:
+        return null;
+    }
+  };
+
 
   return (
     <div>
       <Table columns={columns} dataSource={data} />
 
       <Modal
-        title="Job Details"
-        visible={visible}
+        title={
+          popupContent === 'info'
+            ? 'Job Details'
+            : popupContent === 'cancel'
+            ? 'Status Update'
+            : popupContent === 'open'
+            ? 'Open with Result Analyser'
+            : 'Modal'
+        }
+        open={visible}
         onOk={handleCloseResult}
         onCancel={handleCloseResult}
-        footer={[
-          <Button key="back" onClick={handleCloseResult}>
-            Back
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleCloseResult}>
-            Confirm
-          </Button>,
-        ]}
+        footer={renderFooter()}
       >
         {popupContent === 'info' && selectedJob && <p>Details for the job: {selectedJob}</p>}
-        {popupContent === 'delete' && selectedJob && <p>Confirm deletion for the job: {selectedJob}?</p>}
-        {popupContent === 'export' && selectedJob && <p>Export details for the job: {selectedJob}</p>}
+        {popupContent === 'cancel' && selectedJob && (
+          <p>Confirm deletion for the job: {selectedJob}?</p>
+        )}
+        {popupContent === 'open' && selectedJob && <p>Export details for the job: {selectedJob}</p>}
       </Modal>
-
     </div>
   );
 };
