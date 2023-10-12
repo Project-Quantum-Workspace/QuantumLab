@@ -17,7 +17,7 @@ export default {
       // The address to be proxied
       // target:'http://localhost:8080',
       //target: 'https://preview.pro.ant.design',
-      target: 'https://dev.quantumlab.cloud',
+      target: 'https://quantumlab.cloud',
       // Configuring this allows proxying from http to https
       // Features dependent on origin may need this, e.g. cookies
       changeOrigin: true,

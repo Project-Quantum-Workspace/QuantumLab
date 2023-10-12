@@ -250,3 +250,32 @@ func (wc *WorkspaceController) DeleteWorkspace(c *gin.Context) {
 		Message: "success",
 	})
 }
+
+// @Summary Get all toolsets associated with a workspace
+// @Description Retrieve workspace toolsets by workspace id
+// @Tags workspaces
+// @Produce json
+// @Param id path uint true "Workspace ID"
+// @Success 200 {object} []model.Toolset
+// @Failure 400 {object} model.ErrorResponse "Invalid workspace ID"
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /workspaces/{id}/toolset [get]
+func (wc *WorkspaceController) GetWorkspaceToolset(c *gin.Context) {
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid workspace id",
+		})
+		return
+	}
+
+	toolsets, err := wc.WorkspaceUsecase.GetWorkspaceToolset(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, toolsets)
+}

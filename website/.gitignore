@@ -39,3 +39,9 @@ screenshot
 .eslintcache
 
 build
+
+# Cypress artifact
+cypress/results/*
+cypress/reports/*
+cypress/screenshots/*
+cypress/videos/*

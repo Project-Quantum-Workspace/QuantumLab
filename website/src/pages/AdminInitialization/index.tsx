@@ -28,6 +28,8 @@ const AdminInitialization = ({ hasUser }) => {
 
   const handleSubmit = async () =>{
     try {
+
+      // Assuming you have a backend API to save admin details
       const response = await fetch('/api/init', {
         method: 'POST',
         headers: {

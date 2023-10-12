@@ -21,9 +21,7 @@ const getAccess = () => {
   return access;
 };
 
-// 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
-  // 支持值为 Object 和 Array
   'GET /api/auth/currUser': (req: Request, res: Response) => {
     if (!getAccess()) {
       res.status(401).send({
@@ -31,37 +29,33 @@ export default {
           isLogin: false,
         },
         errorCode: '401',
-        errorMessage: 'Please Login！',
+        errorMessage: 'Please Login!',
         success: true,
       });
       return;
-    }
-    if (req.headers.authorization === 'Bearer admin-token') {
+    } else if (getAccess() === 'admin') {
       res.send({
+        id: 1,
         success: true,
-        
-          firstName: 'LoisW-Admin',
-          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-          email: 'loisw@test.com',
-          notifyCount: 12,
-          unreadCount: 11,
-          access: getAccess(),
-          accessLevel:10
-        
+        firstName: 'LoisW-Admin',
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        email: 'loisw@test.com',
+        notifyCount: 12,
+        unreadCount: 11,
+        access: getAccess(),
+        accessLevel: 10,
       });
-    }
-    if (req.headers.authorization === 'Bearer user-token') {
+    } else {
       res.send({
         success: true,
-        
-          firstName: 'LoisW-User',
-          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-          email: 'loisw@test.com',
-          notifyCount: 12,
-          unreadCount: 11,
-          access: getAccess(),
-          accessLevel:0
-        
+
+        firstName: 'LoisW-User',
+        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        email: 'loisw@test.com',
+        notifyCount: 12,
+        unreadCount: 11,
+        access: getAccess(),
+        accessLevel: 0,
       });
     }
   },
@@ -69,35 +63,24 @@ export default {
     const { password, email, type } = req.body;
 
     await waitTime(200);
-    if (password === 'admin' && email === 'admin') {
+    if (
+      (password === 'admin' && email === 'admin') ||
+      (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com')
+    ) {
       res.send({
         status: 'Logged In Successfully',
         type,
         currentAuthority: 'admin',
-        accessToken: 'admin-token',
-        refreshToken: 'admin-token',
       });
       access = 'admin';
       return;
     }
-    if (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com') {
-      res.send({
-        status: 'Logged In Successfully',
-        type,
-        currentAuthority: 'admin',
-        accessToken: 'admin-token',
-        refreshToken: 'admin-token',
-      });
-      access = 'admin';
-      return;
-    }
+
     if (password === 'user' && email === 'user') {
       res.send({
         status: 'Logged In Successfully',
         type,
         currentAuthority: 'user',
-        accessToken: 'user-token',
-        refreshToken: 'user-token',
       });
       access = 'user';
       return;

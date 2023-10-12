@@ -1,5 +1,5 @@
 import TemplateApi from '@/services/quantumlab/template';
-import { useModel } from '@umijs/max';
+// import { useModel } from '@umijs/max';
 import {
   Button,
   Divider,
@@ -17,19 +17,36 @@ import useTemplateStore from '@/stores/TemplateStore';
 import { TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
+import AuthApi from '@/services/quantumlab/auth';
+// import { log } from 'debug';
+import './newWorkspace.css';
+import { UserMetaData } from '@/utils/types/UserTypes';
 
 const { Title } = Typography;
 const { Option } = Select;
+type UserType = UserMetaData;
 
 const NewWorkspace = () => {
-  // const history = useHistory();
   const [form] = Form.useForm();
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateClass | undefined>(undefined);
   const [templates, setTemplates] = useState<TemplateClass[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [templatesFetchFailed, setTemplatesFetchFailed] = useState(false);
-  const { initialState } = useModel('@@initialState');
+  // const { initialState } = useModel('@@initialState');
   const { currentTemplate } = useTemplateStore();
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const user = await AuthApi.currentUser();
+        setCurrentUser(user);
+        console.log(user);
+      } catch (error) {
+        console.error('Failed to fetch current user:', error);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     // Fetch templates
@@ -76,6 +93,21 @@ const NewWorkspace = () => {
   };
 
   const onFinish = async (values: any) => {
+    if (!currentUser) {
+      console.error('Current user data not available');
+      return;
+    }
+
+    // Check if the selectedTemplate is undefined
+    if (!selectedTemplate) {
+      notification.error({
+        message: 'Template Not Selected',
+        description: 'Template is not selected or not available.',
+        duration: 5,
+      });
+      return; // Exit the function if the template is not defined
+    }
+
     try {
       const parameters = selectedTemplate?.parameters.reduce<Record<string, any>>(
         (acc, question) => {
@@ -86,24 +118,45 @@ const NewWorkspace = () => {
       );
 
       const adjustedValues = {
-        userId: initialState?.currentUser?.id,
-        workspace: {
-          createdAt: new Date().toISOString(),
-          description: values.description || 'string',
-          id: 111,
-          lastAccessed: new Date().toISOString(),
-          name: values.name || 'string',
+        createdAt: new Date().toISOString(),
+        description: values.description || 'string',
+        id: 0, // hardcoded
+        lastAccessed: new Date().toISOString(),
+        name: values.name || 'string',
+        parameters: JSON.stringify(parameters) || 'string',
+        state: 'Running',
+        tags:
+          values.tags
+            .split(',')
+            .map((tag: string) => tag.trim())
+            .join(',') || 'string',
+        template: {
+          accessLevel: selectedTemplate?.accessLevel || 0,
+          filename: selectedTemplate?.filename || 'string',
+          icon: selectedTemplate?.icon || 'string',
+          id: selectedTemplate?.id || 0,
           parameters: JSON.stringify(parameters) || 'string',
-          state: 'Running',
-          tags:
-            values.tags
-              .split(',')
-              .map((tag: string) => tag.trim())
-              .join(',') || 'string',
-          templateId: selectedTemplate?.id || 0,
-          type: values.type || 'string',
-          updatedAt: new Date().toISOString(),
         },
+        templateId: selectedTemplate?.id || 0,
+        type: values.type || 'string',
+        updatedAt: new Date().toISOString(),
+        users: [
+          {
+            accessLevel: currentUser.accessLevel,
+            accountStatus: currentUser.accountStatus,
+            avatar: currentUser.avatar,
+            email: currentUser.email,
+            firstName: currentUser.firstName,
+            id: currentUser.id,
+            lastName: currentUser.lastName,
+            password: currentUser.password, // Revisit this as discussed before.
+            quantumlabToken: currentUser.quantumlabToken,
+            roles: currentUser.roles,
+            uuid: currentUser.uuid,
+            workspaces: currentUser.workspaces,
+          },
+        ],
+        uuid: '0', // hardcoded
       };
 
       console.log('adjustedValues:', adjustedValues);
@@ -117,7 +170,7 @@ const NewWorkspace = () => {
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (response.status === 201) {
         notification.success({
           message: 'Success',
@@ -159,57 +212,100 @@ const NewWorkspace = () => {
 
   return (
     <>
-      <Form form={form} onFinish={onFinish} initialValues={{ template_id: selectedTemplate?.id }}>
-        <Title level={3}>Create a New Project</Title>
-        <Title level={4}>General</Title>
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: 'Please input a name!' }]}
-        >
-          <Input />
-        </Form.Item>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        initialValues={{ template_id: selectedTemplate?.id }}
+        className="workspace-form"
+      >
+        <Title level={3} className="workspace-title">
+          Create a New Project
+        </Title>
+        <Title level={4} className="section-title">
+          General
+        </Title>
 
-        <Form.Item
-          name="tags"
-          label="Tag"
-          rules={[{ required: true, message: 'At least ONE tag reqired!' }]}
-        >
-          <Input placeholder="Multiple tags accepted, separated by commas(,) please." />
-        </Form.Item>
+        {/* General Section */}
+        <div className="name-tag">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: 'Please input a name!' }]}
+            className="form-item"
+          >
+            <Input className="form-input" />
+          </Form.Item>
+
+          <Form.Item
+            name="tags"
+            label="Tag"
+            rules={[{ required: true, message: 'At least ONE tag reqired!' }]}
+            className="form-item"
+          >
+            <Input
+              placeholder="Multiple tags accepted, separated by commas(,) please."
+              className="form-input"
+            />
+          </Form.Item>
+        </div>
 
         <Form.Item
           name="description"
           label="Description"
           rules={[{ required: true, message: 'Description needed!' }]}
+          className="form-item-textarea"
         >
-          <Input.TextArea placeholder="Enter a detailed description of your workspace here..." />
+          <Input.TextArea
+            placeholder="Enter a detailed description of your workspace here..."
+            className="form-textarea"
+          />
         </Form.Item>
 
-        <Divider />
+        <Divider className="section-divider" />
 
-        {/* type section */}
-        <Title level={4}>Workspace Type</Title>
+        {/* Workspace Type Section */}
+        <Title level={4} className="section-title">
+          Workspace Type
+        </Title>
 
-        <Form.Item name="type" label="Type">
-          <Radio.Group size="large">
-            <Radio.Button value="standard">Standard QuantumLab</Radio.Button>
-            <Radio.Button value="flow" disabled>
+        <Form.Item name="type" label="Type" className="form-item">
+          <Radio.Group size="large" className="radio-group" defaultValue="standard">
+            <Radio.Button value="standard" className="radio-button">
+              Standard QuantumLab
+            </Radio.Button>
+            <Radio.Button value="flow" disabled className="radio-button">
               QuantumFlow(Unavailable Now)
             </Radio.Button>
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="template_id" label="Templates">
-          <Select placeholder="Select a template" onChange={onTemplateChange} loading={!templates}>
+        <Form.Item
+          name="template_id"
+          label="Templates"
+          className="form-item-select"
+          rules={[
+            {
+              required: true,
+              message: 'Please select a template!',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Select a template"
+            onChange={onTemplateChange}
+            loading={!templates}
+            className="form-select"
+          >
             {templates ? (
               templates.map((template) => (
-                <Option key={template.id} value={template.id}>
+                <Option key={template.id} value={template.id} className="select-option">
                   {template.filename}
                 </Option>
               ))
             ) : (
-              <Option disabled>Loading templates...</Option>
+              <Option disabled className="select-option-loading">
+                Loading templates...
+              </Option>
             )}
           </Select>
         </Form.Item>
@@ -220,15 +316,26 @@ const NewWorkspace = () => {
             <React.Fragment key={question.name}>
               {index === 0 && (
                 <>
-                  <Divider />
-                  <Title level={4}>Workspace Parameters</Title>
+                  <Divider className="parameters-divider" />
+                  <Title level={4} className="section-title">
+                    Workspace Parameters
+                  </Title>
                 </>
               )}
-              <Form.Item name={question.name} label={question.label}>
+              <Form.Item
+                name={question.name}
+                label={question.label}
+                rules={[
+                  {
+                    required: true,
+                    message: 'This field and not be empty!',
+                  },
+                ]}
+              >
                 {question.isInput ? (
-                  <InputNumber min={0} step={1} />
+                  <InputNumber min={0} step={1} className="input-number" />
                 ) : (
-                  <Select>
+                  <Select className="question">
                     {question.selections?.map((option: string, index: number) => (
                       <Option key={index} value={option}>
                         {option}
@@ -240,13 +347,13 @@ const NewWorkspace = () => {
             </React.Fragment>
           ))}
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-          <Link to="/workspace">
-            <Button>Go Back</Button>
+        <Form.Item className="submit-buttons">
+          <Link to="/workspace" className="go-back-link">
+            <Button className="go-back-button">Cancel</Button>
           </Link>
+          <Button type="primary" htmlType="submit" className="submit-button">
+            Create My Project
+          </Button>
         </Form.Item>
       </Form>
     </>
