@@ -88,7 +88,7 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // Intercept request configuration for personalized handling.
-      const url = config?.url?.concat('?token = 123');
+      const url = config?.url;
       return { ...config, url };
     },
   ],
