@@ -29,13 +29,7 @@ const JobMonitor: React.FC = () => {
 
   const handleCloseResult = () => {
     setSelectedJob(null);
-
     setVisible(false);
-  };
-
-  const handleOpenDetails = () => {
-    handleCloseResult(); // Close the modal first
-    // history.push('/analyseTool'); // Redirect to /analyseTool
   };
 
   function handleConfirm() {
@@ -86,6 +80,10 @@ const JobMonitor: React.FC = () => {
     },
   ];
 
+  const handleOpenDetails = () => {
+    handleCloseResult(); // Close the modal first
+  };
+
   const handleConfirmCancel = () => {
     // logic to handle the confirmation of cancel
     handleCloseResult();
@@ -134,7 +132,6 @@ const JobMonitor: React.FC = () => {
             Confirm
           </Button>,
         ];
-
       default:
         return null;
     }
