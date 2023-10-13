@@ -35,7 +35,7 @@ func (ur *userRepository) CreateBatch(users []model.User) error {
 
 func (ur *userRepository) GetByEmail(email string) (*model.User, error) {
 	var user model.User
-	result := ur.qlDB.Where("email = ?", email).First(&user)
+	result := ur.qlDB.Preload("Roles").Where("email = ?", email).First(&user)
 	return &user, result.Error
 }
 
@@ -88,10 +88,10 @@ func (ur *userRepository) Update(user *model.User) error {
 			// add Select("*") to include non-zero field
 			// gorm sucks!!
 			result = ur.qlDB.Model(user).Select("*").
-				Omit(omit...).Updates(*user)
+				Omit(omit...).Updates(user)
 		} else {
 			result = ur.qlDB.Model(user).Select("*").
-				Omit(omit...).Updates(*user)
+				Omit(omit...).Updates(user)
 		}
 		if result.Error != nil {
 			return result.Error
@@ -104,6 +104,12 @@ func (ur *userRepository) Update(user *model.User) error {
 		return nil
 	})
 	return err
+}
+
+func (ur *userRepository) UpdateSelf(user *model.User) error {
+	omit := []string{"ID", "UUID", "Workspaces", "Roles", "QuantumlabToken", "AccountStatus"}
+	result := ur.qlDB.Model(user).Omit(omit...).Updates(user)
+	return result.Error
 }
 
 func (ur *userRepository) SetAccountStatus(id uint, accountStatus bool) error {

@@ -43,20 +43,14 @@ func (lc *LoginController) Login(c *gin.Context) {
 		return
 	}
 
-	roles, err := lc.LoginUsecase.GetRoleIDs(user.ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "Could not find associated role"})
-		return
-	}
-
 	accessToken, err :=
-		lc.LoginUsecase.CreateAccessToken(user, roles, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
+		lc.LoginUsecase.CreateAccessToken(user, lc.Env.AccessJWTSecret, lc.Env.AccessJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Access Token"})
 		return
 	}
 	refreshToken, err :=
-		lc.LoginUsecase.CreateRefreshToken(user, roles, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
+		lc.LoginUsecase.CreateRefreshToken(user, lc.Env.RefreshJWTSecret, lc.Env.RefreshJWTExpiryHour)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error Creating Refresh Token"})
 		return
@@ -99,14 +93,12 @@ func (lc *LoginController) CheckUser(c *gin.Context) {
 		return
 	}
 	if auth {
-		claims, err := tokenutil.ExtractClaimsFromToken(authToken, lc.Env.AccessJWTSecret)
+		userID, err := tokenutil.ExtractUserID(c, lc.Env.AccessJWTSecret)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, model.ErrorResponse{Message: "You are not authorized, there is no ID!"})
-			print(err)
 			return
 		}
-		userEmail := claims.Email
-		user, err := lc.LoginUsecase.FindUser(userEmail)
+		user, err := lc.LoginUsecase.GetCurrentUser(userID)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized,
 				model.ErrorResponse{Message: "You are not authorized, could not find user from token!"})

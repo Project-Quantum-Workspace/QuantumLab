@@ -21,7 +21,7 @@ type WorkspaceController struct {
 func (wc *WorkspaceController) checkUser(c *gin.Context, id uint) bool {
 	userID, err := tokenutil.ExtractUserID(c, wc.Env.AccessJWTSecret)
 	if err != nil || id != userID {
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "unauthorized",
 		})
 		if err != nil {
@@ -35,7 +35,7 @@ func (wc *WorkspaceController) checkUser(c *gin.Context, id uint) bool {
 func (wc *WorkspaceController) checkWorkspaceAccess(c *gin.Context, workspaceID uint) bool {
 	userID, err := tokenutil.ExtractUserID(c, wc.Env.AccessJWTSecret)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "unauthorized",
 		})
 		logrus.Errorf("error parsing token: %v", err)
@@ -43,7 +43,7 @@ func (wc *WorkspaceController) checkWorkspaceAccess(c *gin.Context, workspaceID 
 	}
 	hasAccess, err := wc.WorkspaceUsecase.CheckWorkspaceAccess(workspaceID, userID)
 	if err != nil || !hasAccess {
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "unauthorized",
 		})
 		if err != nil {

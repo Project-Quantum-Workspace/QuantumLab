@@ -11,13 +11,14 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func CreateAccessToken(user *model.User, roles []uint, secret string, expiry int) (accessToken string, err error) {
+func CreateAccessToken(user *model.User, secret string, expiry int) (accessToken string, err error) {
+	roleIDs := processRoles(user)
 	exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := &model.JwtCustomClaims{
 		Email:       user.Email,
 		UserID:      user.ID,
 		AccessLevel: user.AccessLevel,
-		RoleIDs:     roles,
+		RoleIDs:     roleIDs,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
 		},
@@ -30,12 +31,13 @@ func CreateAccessToken(user *model.User, roles []uint, secret string, expiry int
 	return t, err
 }
 
-func CreateRefreshToken(user *model.User, roles []uint, secret string, expiry int) (refreshToken string, err error) {
+func CreateRefreshToken(user *model.User, secret string, expiry int) (refreshToken string, err error) {
+	roleIDs := processRoles(user)
 	claimsRefresh := &model.JwtCustomRefreshClaims{
 		Email:       user.Email,
 		UserID:      user.ID,
 		AccessLevel: user.AccessLevel,
-		RoleIDs:     roles,
+		RoleIDs:     roleIDs,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(expiry))),
 		},
@@ -46,6 +48,14 @@ func CreateRefreshToken(user *model.User, roles []uint, secret string, expiry in
 		return "", err
 	}
 	return rt, err
+}
+
+func processRoles(user *model.User) []uint {
+	var roleIDs []uint
+	for _, role := range user.Roles {
+		roleIDs = append(roleIDs, *(role.ID))
+	}
+	return roleIDs
 }
 
 func GetAuthToken(c *gin.Context) (token string, err error) {
