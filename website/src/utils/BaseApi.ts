@@ -39,8 +39,12 @@ export class BaseApi {
     return this.loadBy(url, 'POST', data, responseType, withCredentials, headers)
   }
 
-  loadByDelete(url: string) {
-    return this.loadBy(url, 'DELETE')
+  loadByDelete(url: string, data?: object) {
+    return this.loadBy(url, 'DELETE', data)
+  }
+
+  loadbyPut(url: string, data?: object) {
+    return this.loadBy(url, 'PUT', data)
   }
 
   loadbyPatch(url: string, data?: object) {
