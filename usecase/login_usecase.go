@@ -20,7 +20,7 @@ func (lu *loginUsecase) FindUser(email string) (*model.User, error) {
 }
 
 func (lu *loginUsecase) GetCurrentUser(id uint) (*model.User, error) {
-	return lu.userRepository.GetCurrentUser(id)
+	return lu.userRepository.GetByID(id)
 }
 
 func (lu *loginUsecase) GetRoleIDs(uid uint) ([]uint, error) {
