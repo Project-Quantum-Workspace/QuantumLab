@@ -19,6 +19,10 @@ func (lu *loginUsecase) FindUser(email string) (*model.User, error) {
 	return lu.userRepository.GetByEmail(email)
 }
 
+func (lu *loginUsecase) GetCurrentUser(id uint) (*model.User, error) {
+	return lu.userRepository.GetCurrentUser(id)
+}
+
 func (lu *loginUsecase) GetRoleIDs(uid uint) ([]uint, error) {
 	return lu.userRepository.GetRoleIDs(uid)
 }

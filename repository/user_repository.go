@@ -39,6 +39,15 @@ func (ur *userRepository) GetByEmail(email string) (*model.User, error) {
 	return &user, result.Error
 }
 
+func (ur *userRepository) GetCurrentUser(id uint) (*model.User, error) {
+	var user model.User
+	result := ur.qlDB.
+		Select("id", "uuid", "email", "access_level", "quantumlab_token",
+			"avatar", "first_name", "last_name", "account_status").
+		First(&user, id)
+	return &user, result.Error
+}
+
 func (ur *userRepository) GetQuantumlabTokenByUUID(uuid string) (string, error) {
 	var users []model.User
 	result := ur.qlDB.Select("quantumlab_token").Where("uuid = ?", uuid).Find(&users)
@@ -88,10 +97,10 @@ func (ur *userRepository) Update(user *model.User) error {
 			// add Select("*") to include non-zero field
 			// gorm sucks!!
 			result = ur.qlDB.Model(user).Select("*").
-				Omit(omit...).Updates(*user)
+				Omit(omit...).Updates(user)
 		} else {
 			result = ur.qlDB.Model(user).Select("*").
-				Omit(omit...).Updates(*user)
+				Omit(omit...).Updates(user)
 		}
 		if result.Error != nil {
 			return result.Error
