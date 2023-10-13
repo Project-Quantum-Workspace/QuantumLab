@@ -17,10 +17,7 @@ describe('Workspaces Info', () => {
   });
 
   it('should display workspace information', () => {
-    cy.get('h1.ant-typography.css-k3n9e3.css-dev-only-do-not-override-1ocvw8').should(
-      'have.text',
-      'AWS Example Project',
-    );
+    cy.get('[data-test-id="workspace-name"]').should('have.text', 'AWS Example Project');
     cy.contains('Running').should('be.visible');
   });
 
