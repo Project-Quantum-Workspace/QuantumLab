@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
@@ -75,7 +74,7 @@ func (uac *UserAdminController) InviteUsers(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: fmt.Sprintf("test %v", err),
+			Message: err.Error(),
 		})
 		return
 	}

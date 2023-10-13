@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/emailutil"
@@ -42,21 +43,21 @@ func (uau *userAdminUsecase) InviteUsers(
 	}
 
 	// send emails to invited users
-	// go func() {
-	start := time.Now()
-	users, err := sendUserInvitations(processedEmailList, host, port, from, secret, role)
-	timeElapsed := time.Since(start)
-	logrus.Infof("sendUserInvitations took %s", timeElapsed)
+	go func() {
+		start := time.Now()
+		users := sendUserInvitations(processedEmailList, host, port, from, secret, role)
+		timeElapsed := time.Since(start)
+		logrus.Infof("sendUserInvitations took %s", timeElapsed)
 
-	if len(users) > 0 {
-		err = uau.userRepository.CreateBatch(users)
-		if err != nil {
-			logrus.Errorf("error creating users: %v", err.Error())
+		if len(users) > 0 {
+			err = uau.userRepository.CreateBatch(users)
+			if err != nil {
+				logrus.Errorf("error creating users: %v", err.Error())
+			}
 		}
-	}
-	// }()
+	}()
 
-	return err
+	return nil
 }
 
 func (uau *userAdminUsecase) GetRoleIDs(userID uint) ([]uint, error) {
@@ -115,42 +116,42 @@ func (uau *userAdminUsecase) preprocessEmailList(emailList []string) ([]string, 
 
 func sendUserInvitations(emailList []string,
 	host string, port int, from string, secret string, role *model.Role,
-) ([]model.User, error) {
+) []model.User {
 	// for concurrent access by goroutines
-	userArray := make([]model.User, len(emailList))
-	// var wg sync.WaitGroup
-	var err error
+	userSlice := make([]model.User, len(emailList))
+	var wg sync.WaitGroup
 
 	for i, email := range emailList {
 		password := generatorutil.GenerateRandomPassword(16, 2, 2, 2)
 		// hash password
-		var hashedPassword string
-		hashedPassword, err = validationutil.GenerateHash(password)
+		hashedPassword, err := validationutil.GenerateHash(password)
 		if err != nil {
 			logrus.Errorf("error hashing password: %v", err.Error())
 			continue
 		}
 		qlToken := generatorutil.GenerateQuantumLabToken()
-		// wg.Add(1)
+		wg.Add(1)
 
-		// go func(index int, email string) {
-		// defer wg.Done()
-		err = emailutil.SendUserInvitation(email, password, host, port, from, secret)
-		if err == nil {
-			userArray[i] = defaultUser(email, hashedPassword, qlToken, role)
-		}
-		// }(i, email)
+		go func(index int, email string) {
+			defer wg.Done()
+			emailErr := emailutil.SendUserInvitation(email, password, host, port, from, secret)
+			if emailErr == nil {
+				userSlice[index] = defaultUser(email, hashedPassword, qlToken, role)
+			} else {
+				logrus.Errorf("error sending email: %v", emailErr.Error())
+			}
+		}(i, email)
 	}
 
-	// wg.Wait()
+	wg.Wait()
 	var users []model.User
-	for _, user := range userArray {
+	for _, user := range userSlice {
 		if user.Email != "" {
 			users = append(users, user)
 		}
 	}
 
-	return users, err
+	return users
 }
 
 func defaultUser(email string, password string, qlToken string, role *model.Role) model.User {
