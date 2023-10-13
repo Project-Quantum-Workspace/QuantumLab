@@ -76,7 +76,7 @@ const Login: React.FC = () => {
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const navigate = useNavigate();
-  const [hasUser, setHasUser] = useState(false);
+  //const [hasUser, setHasUser] = useState(false);
 
   useEffect(() => {
     const checkForUser = async () => {
@@ -89,19 +89,14 @@ const Login: React.FC = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          if (data.hasUser) {
-            setHasUser(true);
-            message.info('Database already has a user. Please proceed to login.');
-          } else {
+          if (!data.hasUser) {
             message.info('There is no user, please creat your account');
             navigate('/admin/adminInitialization');
           }
         } else {
-          console.error('Error checking for user:', response.statusText);
           message.error('Error checking for user');
         }
       } catch (error) {
-        console.error('Error checking for user:', error);
         message.error('Error checking for user');
       }
     };
