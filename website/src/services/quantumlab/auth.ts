@@ -19,7 +19,7 @@ class AuthApi extends BaseApi {
   }
 
   userUpdateInfo(data: UserMetaData) {
-    return this.loadbyPut('/api/admin/users/' + data.id, data)
+    return this.loadbyPut('/api/settings/users', data)
       .then((res) => res)
   }
 }

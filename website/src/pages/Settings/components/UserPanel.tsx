@@ -123,7 +123,7 @@ const UserPanel = (props: UserPanelProps) => {
                 }),
               ]}
             >
-              <Input placeholder="Confirm Password" />
+              <Input.Password placeholder="Confirm Password" />
             </Form.Item>
           </Form.Item>
 
