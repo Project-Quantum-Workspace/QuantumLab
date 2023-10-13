@@ -106,6 +106,12 @@ func (ur *userRepository) Update(user *model.User) error {
 	return err
 }
 
+func (ur *userRepository) UpdateSelf(user *model.User) error {
+	omit := []string{"ID", "UUID", "Workspaces", "Roles", "QuantumlabToken", "AccountStatus"}
+	result := ur.qlDB.Model(user).Omit(omit...).Updates(user)
+	return result.Error
+}
+
 func (ur *userRepository) SetAccountStatus(id uint, accountStatus bool) error {
 	result := ur.qlDB.Model(&model.User{ID: id}).
 		Update("account_status", accountStatus)
