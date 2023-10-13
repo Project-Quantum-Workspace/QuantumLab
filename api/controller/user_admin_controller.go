@@ -23,7 +23,7 @@ func (uac *UserAdminController) isAuthorized(c *gin.Context) bool {
 	roleIDs, err := tokenutil.ExtractRoleIDs(c, uac.Env.AccessJWTSecret)
 	if err != nil ||
 		(!slices.Contains(roleIDs, 0) && !slices.Contains(roleIDs, 1)) {
-		c.JSON(http.StatusUnauthorized, model.ErrorResponse{
+		c.JSON(http.StatusForbidden, model.ErrorResponse{
 			Message: "unauthorized",
 		})
 		if err != nil {
