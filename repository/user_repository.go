@@ -35,7 +35,7 @@ func (ur *userRepository) CreateBatch(users []model.User) error {
 
 func (ur *userRepository) GetByEmail(email string) (*model.User, error) {
 	var user model.User
-	result := ur.qlDB.Where("email = ?", email).First(&user)
+	result := ur.qlDB.Preload("Roles").Where("email = ?", email).First(&user)
 	return &user, result.Error
 }
 
