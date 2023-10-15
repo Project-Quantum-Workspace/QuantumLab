@@ -22,12 +22,56 @@ export default function index() {
   const [data, setData] = useState([]);
   /*   const [loading, setLoading] = useState(true); */
 
+  //data
+  const [formData, setFormData] = useState({
+    user_name: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    // other form fields
+  });
+
+  type Role = {
+    id: number;
+    name: string;
+  };
+
+  type User = {
+    email: string;
+    uuid: string;
+    id: number;
+    firstName: string;
+    lastName: string;
+    accountStatus: boolean;
+    accessLevel: number;
+    roles: Role[];
+  };
+
+  //define users
+  const [users, setUsers] = useState<User[]>([]);
+
+  /*   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/usersUpdate');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+ */
+
   useEffect(() => {
     // Make a GET request to your API
     axios
-      .get('https://my.api.mockaroo.com/data.json?key=e7cb8c20')
+      .get('/api/usersUpdate')
       .then((response) => {
         setData(response.data); // Set the data in your component state
+
         /*  setLoading(false); */ // Update loading state to indicate that data has been fetched
       })
       .catch((error) => {
@@ -39,15 +83,6 @@ export default function index() {
   ///////////////
 
   const posturl = 'https://my.api.mockaroo.com/data2.json?key=e7cb8c20&__method=PUT';
-
-  const [formData, setFormData] = useState({
-    user_name: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    // other form fields
-  });
 
   const [statusMessage, setStatusMessage] = useState('');
 
@@ -149,9 +184,28 @@ export default function index() {
   };
   /////////////////
   /////////////////
+  const pfirstName = data.map((user) => user.firstName).join(', ');
+  const plastName = data.map((user) => user.lastName).join(', ');
+  const pemail = data.map((user) => user.email).join(', ');
+  const paccountStatus = data.map((user) => user.accountStatus).join(', ');
+  const paccessLevel = data.map((user) => user.accessLevel).join(', ');
+  const prole = data.flatMap((user) => user.roles.map((role) => role.name)).join(', ');
 
   return (
     <div>
+      <h1>Welcome -{pfirstName}</h1>
+
+      {/* 
+      <p>
+        <ul>
+          {data.map((user) => (
+            <li key={user.id}>
+              {user.firstName} {user.lastName} - {user.email}
+            </li>
+          ))}
+        </ul>
+      </p> */}
+
       <div className="container">
         <Row gutter={[80, 0]}>
           <Col span={7}>
@@ -199,7 +253,7 @@ export default function index() {
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="First Name:">
                       <Input
-                        placeholder={data.firstName}
+                        placeholder={pfirstName}
                         type="text"
                         name="first_name"
                         value={formData.first_name}
@@ -210,7 +264,7 @@ export default function index() {
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="Last Name:">
                       <Input
-                        placeholder={data.lastName}
+                        placeholder={plastName}
                         type="text"
                         name="last_name"
                         value={formData.last_name}
@@ -224,7 +278,7 @@ export default function index() {
                   <Col span={10}>
                     <Form.Item label="Email:">
                       <Input
-                        placeholder={data.email}
+                        placeholder={pemail}
                         type="text"
                         name="email"
                         value={formData.email}
@@ -279,7 +333,7 @@ export default function index() {
 
                   <Col className="gutter-row" span={6}>
                     <Form.Item label="Role">
-                      <Select>
+                      <Select placeholder={prole}>
                         <Select.Option value="Student">Student</Select.Option>
                         <Select.Option value="Admin">Admin</Select.Option>
                       </Select>
