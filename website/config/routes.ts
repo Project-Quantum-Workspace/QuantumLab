@@ -116,12 +116,12 @@ export default [
         name: 'user-information',
         path: '/admin/adminView',
         component: './AdminView',
+        hideInMenu: true,
       },
       {
         name: 'admin-update',
         path: '/admin/adminUpdate',
         component: './AdminUpdate',
-        hideInMenu: true,
       },
 
       {
