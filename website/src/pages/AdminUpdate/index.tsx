@@ -1,31 +1,12 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Form, Input, Row, Select, Upload, message } from 'antd';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './admin.css';
 
 const DemoBox: React.FC<{ children: React.ReactNode; value: number }> = (props) => (
   <p className={`height-${props.value}`}>{props.children}</p>
 );
-
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
-
-const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-};
 
 export default function index() {
   ////////////message
@@ -38,10 +19,26 @@ export default function index() {
     });
   };
 
-  /////////////// API
-  const url = 'https://my.api.mockaroo.com/data.json?key=e7cb8c20';
+  const [data, setData] = useState([]);
+  /*   const [loading, setLoading] = useState(true); */
+
+  useEffect(() => {
+    // Make a GET request to your API
+    axios
+      .get('https://my.api.mockaroo.com/data.json?key=e7cb8c20')
+      .then((response) => {
+        setData(response.data); // Set the data in your component state
+        /*  setLoading(false); */ // Update loading state to indicate that data has been fetched
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        /*  setLoading(false);  */ // Update loading state in case of an error
+      });
+  }, []);
+
+  ///////////////
+
   const posturl = 'https://my.api.mockaroo.com/data2.json?key=e7cb8c20&__method=PUT';
-  const test = '/test.json';
 
   const [formData, setFormData] = useState({
     user_name: '',
@@ -78,7 +75,7 @@ export default function index() {
   //////////////////
 
   const [form] = Form.useForm();
-
+  /* 
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState();
   const handleChange = (info) => {
@@ -106,43 +103,119 @@ export default function index() {
       </div>
     </div>
   );
-
+ */
   //////
   const navigate = useNavigate();
   const handleNavigation = () => {
     navigate('/admin/adminView');
   };
 
+  /////////////////
+  /////////////////
+  const [image, setImage] = useState(null);
+  const hiddenFileInput = useRef(null);
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const imgname = event.target.files[0].name;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = Math.max(img.width, img.height);
+        canvas.width = maxSize;
+        canvas.height = maxSize;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, (maxSize - img.width) / 2, (maxSize - img.height) / 2);
+        canvas.toBlob(
+          (blob) => {
+            const file = new File([blob], imgname, {
+              type: 'image/png',
+              lastModified: Date.now(),
+            });
+
+            console.log(file);
+            setImage(file);
+          },
+          'image/jpeg',
+          0.8,
+        );
+      };
+    };
+  };
+
+  const handleUploadButtonClick = (file) => {
+    var myHeaders = new Headers();
+    /* const token = "adhgsdaksdhk938742937423";
+    myHeaders.append("Authorization", `Bearer ${token}`); */
+
+    var formdata = new FormData();
+    formdata.append('file', file);
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: formdata,
+      redirect: 'follow',
+    };
+
+    fetch('https://trickuweb.com/upload/profile_pic', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(JSON.parse(result));
+        const profileurl = JSON.parse(result);
+        setImage(profileurl.img_url);
+      })
+      .catch((error) => console.log('error', error));
+  };
+
+  const handleClick = (event) => {
+    hiddenFileInput.current.click();
+  };
+  /////////////////
+  /////////////////
+
   return (
     <div>
-      <div></div>
-
       <div className="container">
         <Row gutter={[80, 0]}>
-          <Col span={6}>
-            <div className="avatar">
-              <Upload
-                name="avatar"
-                listType="picture-circle"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt="avatar"
-                    style={{
-                      width: '100%',
-                    }}
+          <Col span={7}>
+            {/* ----------------------------------------------------------------*/}
+            <div className="image-upload-container">
+              <div className="box-decoration">
+                <label htmlFor="image-upload-input" className="image-upload-label">
+                  {image ? image.name : 'Choose an image'}
+                </label>
+
+                <div onClick={handleClick} style={{ cursor: 'pointer' }}>
+                  {image ? (
+                    <img
+                      src={URL.createObjectURL(image)}
+                      alt="upload image"
+                      className="img-display-after"
+                    />
+                  ) : (
+                    <img src="/photo.png" alt="upload image" className="img-display-before" />
+                  )}
+
+                  <input
+                    id="image-upload-input"
+                    type="file"
+                    onChange={handleImageChange}
+                    ref={hiddenFileInput}
+                    style={{ display: 'none' }}
                   />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
+                </div>
+
+                <button className="image-upload-button" onClick={handleUploadButtonClick}>
+                  Upload
+                </button>
+              </div>
             </div>
+            {/* ----------------------------------------------------------------*/}
           </Col>
 
           <Col span={15}>
@@ -150,24 +223,11 @@ export default function index() {
               <h2>Update User Information</h2>
               <Divider orientation="left"></Divider>
               <Form form={form} size="large" layout="vertical">
-                <Row>
-                  <Col span={10}>
-                    <Form.Item label="User Name:">
-                      <Input
-                        placeholder="new user name"
-                        type="text"
-                        name="user_name"
-                        value={formData.user_name}
-                        onChange={handleInputChange}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
                 <Row gutter={48}>
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="First Name:">
                       <Input
+                        placeholder={data.firstName}
                         type="text"
                         name="first_name"
                         value={formData.first_name}
@@ -178,6 +238,7 @@ export default function index() {
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="Last Name:">
                       <Input
+                        placeholder={data.lastName}
                         type="text"
                         name="last_name"
                         value={formData.last_name}
@@ -191,6 +252,7 @@ export default function index() {
                   <Col span={10}>
                     <Form.Item label="Email:">
                       <Input
+                        placeholder={data.email}
                         type="text"
                         name="email"
                         value={formData.email}
@@ -204,6 +266,7 @@ export default function index() {
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="New Password:">
                       <Input
+                        placeholder="Passworrd"
                         type="text"
                         name="password"
                         value={formData.password}
@@ -214,6 +277,7 @@ export default function index() {
                   <Col className="gutter-row" span={8}>
                     <Form.Item label="Confrim Password:">
                       <Input
+                        placeholder="Confirm passworrd"
                         type="text"
                         name="password"
                         value={formData.password}
@@ -241,7 +305,7 @@ export default function index() {
                     </Form.Item>
                   </Col>
 
-                  <Col className="gutter-row" span={4}>
+                  <Col className="gutter-row" span={6}>
                     <Form.Item label="Role">
                       <Select>
                         <Select.Option value="Student">Student</Select.Option>
@@ -251,6 +315,7 @@ export default function index() {
                   </Col>
                 </Row>
                 <br></br>
+
                 <Row gutter={8}>
                   <Col offset={5} className="gutter-row" span={2}>
                     <Form.Item>
