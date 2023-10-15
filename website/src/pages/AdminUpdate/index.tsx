@@ -75,35 +75,7 @@ export default function index() {
   //////////////////
 
   const [form] = Form.useForm();
-  /* 
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
-  };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
- */
+
   //////
   const navigate = useNavigate();
   const handleNavigation = () => {
@@ -269,7 +241,7 @@ export default function index() {
                         placeholder="Passworrd"
                         type="text"
                         name="password"
-                        value={formData.password}
+                        /* value={formData.password} */
                         onChange={handleInputChange}
                       />
                     </Form.Item>
@@ -280,7 +252,7 @@ export default function index() {
                         placeholder="Confirm passworrd"
                         type="text"
                         name="password"
-                        value={formData.password}
+                        /* value={formData.password} */
                         onChange={handleInputChange}
                       />
                     </Form.Item>
