@@ -7,7 +7,7 @@ class TokenApi extends BaseApi {
     return this.loadByGet('/api/token/list')
       .then((res) => {
         let token: UserTokenType[] = []
-        if (res.ok) {
+        if (Array.isArray(res)) {
           res.forEach((t: UserTokenType) => {
             token.push(t)
           });
