@@ -13,12 +13,15 @@ import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FrownOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import useTemplateStore from '@/stores/TemplateStore'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { TemplateClass } from '@/utils/types/TemplateTypes';
+import { PageLoading } from '@ant-design/pro-components';
 
 const TemplateInfo: React.FC = () => {
   const { Title, Text } = Typography;
   const { templateId } = useParams()
   const { fetchedTemplates, currentTemplate, setCurrentTemplate } = useTemplateStore()
+  const [ isLoading, setIsLoading ] = useState(true)
   
   const projectNameClass = useEmotionCss(() => {
     return {
@@ -138,20 +141,30 @@ const TemplateInfo: React.FC = () => {
       </div>
     );
   };
-
-  useEffect(() => {
-    const template = fetchedTemplates.filter((t) => t.id===Number(templateId))
-    setCurrentTemplate(template[0])
-  },[])
   
   const handleBack = () => {
     history.push('/workspace', { tag: 'template' });
   };
 
+  useEffect(() => {
+    if(fetchedTemplates.length === 0) {
+      setIsLoading(true)
+      handleBack()
+    } else {
+      const template = fetchedTemplates.filter((t: TemplateClass) => t.id===Number(templateId))
+      setCurrentTemplate(template[0])
+      setIsLoading(false)
+    }
+  },[])
+  
+  
   const handleCreateWorkspace = (templateId: number) => {
     history.push('/workspace/new', { templateId: templateId });
   }
 
+  if (isLoading) 
+  return <PageLoading />
+  
   return (
     <>{currentTemplate ? (
       <>

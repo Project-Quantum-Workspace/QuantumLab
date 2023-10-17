@@ -101,8 +101,9 @@ export default [
       },
       {
         name: 'user-information',
-        path: '/admin/adminView',
+        path: '/admin/users/:userId',
         component: './AdminView',
+        hideInMenu: true,
       },
       {
         name: 'admin-update',
