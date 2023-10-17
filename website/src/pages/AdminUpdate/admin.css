@@ -35,9 +35,9 @@
     }
     
     .box-decoration {
-        border: 2px dashed #ccc;
-        border-radius: 5px;
-        padding: 100px 70px;
+        border: 2px dashed #1552b3;
+        border-radius: 3px;
+        padding: 15px 70px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -56,7 +56,7 @@
     }
     
     .image-upload-button {
-        background-color: #4CAF50;
+        background-color: #1388e7;
         border: none;
         color: white;
         padding: 0.8rem 1.2rem;
@@ -66,13 +66,14 @@
     }
     
     .image-upload-button:hover {
-        background-color: #3e8e41;
+        background-color: #2399e7;
     }
     
     .img-display-before {
         height: 200px;
         width: 200px;
         margin-left: 35px;
+        border-radius: 50%;
     }
     
     .img-display-after {

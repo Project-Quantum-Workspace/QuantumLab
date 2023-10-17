@@ -114,7 +114,7 @@ export default function index() {
   //////
   const navigate = useNavigate();
   const handleNavigation = () => {
-    navigate('/admin/adminView');
+    navigate('/home');
   };
 
   /////////////////
@@ -156,8 +156,6 @@ export default function index() {
 
   const handleUploadButtonClick = (file) => {
     var myHeaders = new Headers();
-    /* const token = "adhgsdaksdhk938742937423";
-    myHeaders.append("Authorization", `Bearer ${token}`); */
 
     var formdata = new FormData();
     formdata.append('file', file);
@@ -169,7 +167,7 @@ export default function index() {
       redirect: 'follow',
     };
 
-    fetch('https://trickuweb.com/upload/profile_pic', requestOptions)
+    fetch('https://my.api.mockaroo.com/data2.json?key=e7cb8c20&__method=PUT', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(JSON.parse(result));
@@ -189,22 +187,12 @@ export default function index() {
   const pemail = data.map((user) => user.email).join(', ');
   const paccountStatus = data.map((user) => user.accountStatus).join(', ');
   const paccessLevel = data.map((user) => user.accessLevel).join(', ');
+  const pavatar = data.map((user) => user.avatar).join(', ');
   const prole = data.flatMap((user) => user.roles.map((role) => role.name)).join(', ');
 
   return (
     <div>
       <h1>Welcome -{pfirstName}</h1>
-
-      {/* 
-      <p>
-        <ul>
-          {data.map((user) => (
-            <li key={user.id}>
-              {user.firstName} {user.lastName} - {user.email}
-            </li>
-          ))}
-        </ul>
-      </p> */}
 
       <div className="container">
         <Row gutter={[80, 0]}>
@@ -215,7 +203,7 @@ export default function index() {
                 <label htmlFor="image-upload-input" className="image-upload-label">
                   {image ? image.name : 'Choose an image'}
                 </label>
-
+                <br></br>
                 <div onClick={handleClick} style={{ cursor: 'pointer' }}>
                   {image ? (
                     <img
@@ -224,7 +212,7 @@ export default function index() {
                       className="img-display-after"
                     />
                   ) : (
-                    <img src="/photo.png" alt="upload image" className="img-display-before" />
+                    <img src={pavatar} alt="upload image" className="img-display-before" />
                   )}
 
                   <input
@@ -235,6 +223,8 @@ export default function index() {
                     style={{ display: 'none' }}
                   />
                 </div>
+
+                <br></br>
 
                 <button className="image-upload-button" onClick={handleUploadButtonClick}>
                   Upload
