@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
 import  {SmallCard, StyledContainer} from './HomeComponent/LPComponent'
-import CircularLoading from './HomeComponent/Circular/CircularLoading'
 import { useModel } from '@umijs/max'
 
 

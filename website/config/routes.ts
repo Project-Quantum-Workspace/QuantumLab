@@ -56,23 +56,11 @@ export default [
       },
     ]
   },
-  {
-    name:'composer',
-    icon:'slidersOutlined',
-    path:'/composer'
-  },
 
   {
-
     name:'jobMonitor',
     icon:'dashboardOutlined',
     path:'/jobMonitor'
-  },
-  {
-    name: 'backendStatus',
-    icon: 'databaseOutlined',
-    path: '/backendStatus',
-    //component: './BackendStatus',
   },
 
   {
@@ -81,7 +69,6 @@ export default [
     path: '/analyseTool',
     //component: './AnalyseTool',
   },
-
 
   {
     name: 'settings',
@@ -131,6 +118,18 @@ export default [
         hideInMenu: true,
       },
     ],
+  },
+  {
+    name: 'backendStatus',
+    icon: 'databaseOutlined',
+    path: '/backendStatus',
+    component : './TODO',
+  },
+  {
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer',
+    component : './TODO',
   },
   {
     path: '/',

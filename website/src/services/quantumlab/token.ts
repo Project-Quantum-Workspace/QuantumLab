@@ -1,18 +1,20 @@
 import { BaseApi } from '@/utils/BaseApi';
 import { UserTokenType } from '@/utils/types/UserTypes';
+import { message } from 'antd';
 
 class TokenApi extends BaseApi {
   getUserToken() {
     return this.loadByGet('/api/token/list')
       .then((res) => {
         let token: UserTokenType[] = []
-        if (res?.length) {
+        if (res.ok) {
           res.forEach((t: UserTokenType) => {
             token.push(t)
           });
         }
         return token
       })
+      .catch((error) => { message.error(error.message) })
   }
 
   addUserToken(data: {name: string, value: string }) {
