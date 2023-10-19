@@ -69,12 +69,14 @@ definitions:
     type: object
   model.Toolset:
     properties:
-      accessID:
+      accessId:
         type: string
       accessType:
         type: string
       icon:
         type: string
+      id:
+        type: integer
       name:
         type: string
       type:
@@ -173,40 +175,6 @@ info:
   title: QuantumLab Gin Web Service
   version: "1.0"
 paths:
-  /admin/{id}/status:
-    patch:
-      consumes:
-      - application/json
-      description: Administrator updates desired users account status
-      parameters:
-      - description: Status Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/model.SetAccountStatusRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.SuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-        "500":
-          description: Unexpected System Error
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      summary: Update the account status of a user
-      tags:
-      - user admin
   /admin/users:
     get:
       description: Get all users to list in the table.
@@ -285,6 +253,40 @@ paths:
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       summary: Update user
+      tags:
+      - user admin
+  /admin/users/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Administrator updates desired users account status
+      parameters:
+      - description: Status Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.SetAccountStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update the account status of a user
       tags:
       - user admin
   /admin/users/invite:
@@ -425,6 +427,8 @@ paths:
           schema:
             $ref: '#/definitions/model.LoginResponse'
       summary: Removes the JWT token from cookies
+      tags:
+      - auth
   /init:
     get:
       consumes:
@@ -457,6 +461,36 @@ paths:
       summary: Initialize root admin
       tags:
       - init
+  /settings/users:
+    put:
+      consumes:
+      - application/json
+      description: Update user in setting.
+      parameters:
+      - description: Updated user
+        in: body
+        name: workspace
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Request Parse Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Unexpected System Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update user setting
+      tags:
+      - settings
   /templates:
     get:
       description: Get all authorised templates.

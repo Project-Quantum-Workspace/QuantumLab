@@ -1,6 +1,6 @@
-import { 
-  ToolsetItemType, 
-  ToolsetType, 
+import {
+  ToolsetItemType,
+  ToolsetType,
   WorkspaceInfoClass
 } from "@/utils/types/WorkspaceTypes";
 import Toolset from "./components/ToolsetComponent";
@@ -56,10 +56,11 @@ const WorkspaceInfo: React.FC = () => {
 
     {
       type: ToolsetType.Jupyter,
-      // link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
+      link: 'https://jupyter-test.quantumlab.cloud',
     },
     {
       type: ToolsetType.VSCode,
+      link: 'https://vs-test.quantumlab.cloud',
     },
     {
       type: ToolsetType.Terminal,
@@ -194,8 +195,8 @@ const WorkspaceInfo: React.FC = () => {
       <>
         <div>
 
-        <Button 
-          type="text" 
+        <Button
+          type="text"
           icon={<ArrowLeftOutlined />}
           onClick={handleBack}
           style={{
@@ -218,7 +219,7 @@ const WorkspaceInfo: React.FC = () => {
         <div>
           <Row>
             <Col>
-              <Title className={projectNameClass}>{workspace?.name}</Title>
+              <Title className={projectNameClass} data-test-id="workspace-name">{workspace?.name}</Title>
             </Col>
           </Row>
           <Row>

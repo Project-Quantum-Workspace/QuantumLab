@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { UserMetaData } from '@/utils/types/UserTypes';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -10,11 +11,6 @@ const waitTime = (time: number = 100) => {
 
 const { ACCESS_ENV } = process.env;
 
-/**
- * 当前用户的权限，如果为空代表没登录
- * current user access， if is '', user need login
- * 如果是 pro 的预览，默认是有权限的
- */
 let access = ACCESS_ENV === 'site' ? 'admin' : '';
 
 const getAccess = () => {
@@ -24,6 +20,41 @@ const getAccess = () => {
 export default {
 
   'GET /api/auth/currUser': (req: Request, res: Response) => {
+    const adminData: UserMetaData = {
+      accessLevel: 10,
+      accountStatus: true,
+      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      email: 'workspace@gmail.com',
+      firstName: 'LoisW',
+      id: 1,
+      lastName: '-Admin',
+      password: 'encoded-string',
+      quantumlabToken: 'quantumlabToken',
+      roles: [{
+        id: 1,
+        name: 'Admin'
+      }],
+      uuid: 'uuid',
+      workspaces: []
+    }
+    
+    const userData: UserMetaData = {
+      accessLevel: 1,
+      accountStatus: true,
+      avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      email: 'workspace@gmail.com',
+      firstName: 'LoisW',
+      id: 1,
+      lastName: '-User',
+      password: 'encoded-string',
+      quantumlabToken: 'quantumlabToken',
+      roles: [{
+        id: 1,
+        name: 'User'
+      }],
+      uuid: 'uuid',
+      workspaces: []
+    }
     if (!getAccess()) {
       res.status(401).send({
         data: {
@@ -34,39 +65,20 @@ export default {
         success: true,
       });
       return;
-    } else if(getAccess() === 'admin') {
-      res.send({
-        success: true,
-        firstName: 'LoisW-Admin',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-        email: 'loisw@test.com',
-        notifyCount: 12,
-        unreadCount: 11,
-        access: getAccess(),
-        accessLevel:10
-      });
+    } else if (getAccess() === 'admin') {
+      res.send(adminData);
     } else {
-      res.send({
-        success: true,
-        
-          firstName: 'LoisW-User',
-          avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-          email: 'loisw@test.com',
-          notifyCount: 12,
-          unreadCount: 11,
-          access: getAccess(),
-          accessLevel:0
-        
-      });
+      res.send(userData);
     }
   },
   'POST /api/auth/login': async (req: Request, res: Response) => {
     const { password, email, type } = req.body;
 
     await waitTime(200);
-    if ((password === 'admin' && email === 'admin') ||
-        (password === 'workspacequantum@gmail.com' && 
-        email === 'workspacequantum@gmail.com')) {
+    if (
+      (password === 'admin' && email === 'admin') ||
+      (password === 'workspacequantum@gmail.com' && email === 'workspacequantum@gmail.com')
+    ) {
       res.send({
         status: 'Logged In Successfully',
         type,
@@ -75,7 +87,7 @@ export default {
       access = 'admin';
       return;
     }
-  
+
     if (password === 'user' && email === 'user') {
       res.send({
         status: 'Logged In Successfully',
@@ -148,5 +160,9 @@ export default {
         message: 'Form submission successful!',
       });
     }, 500);
+  },
+
+  'PUT /api/admin/users/:id': (req: Request, res: Response) => {
+    res.status(200).send({ message: 'OK!' });
   },
 };

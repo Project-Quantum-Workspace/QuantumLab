@@ -1,5 +1,5 @@
 import { TemplateClass } from "@/utils/types/TemplateTypes"
-import create from "zustand"
+import { create } from "zustand"
 export type TemplateStore = {
   fetchedTemplates: TemplateClass[]
   currentTemplate: TemplateClass | undefined

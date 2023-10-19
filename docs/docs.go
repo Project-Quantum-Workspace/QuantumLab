@@ -209,7 +209,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/{id}/status": {
+        "/admin/users/{id}/status": {
             "patch": {
                 "description": "Administrator updates desired users account status",
                 "consumes": [
@@ -391,6 +391,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "auth"
+                ],
                 "summary": "Removes the JWT token from cookies",
                 "responses": {
                     "200": {
@@ -446,6 +449,52 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/users": {
+            "put": {
+                "description": "Update user in setting.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "settings"
+                ],
+                "summary": "Update user setting",
+                "parameters": [
+                    {
+                        "description": "Updated user",
+                        "name": "workspace",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Request Parse Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected System Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -1038,7 +1087,7 @@ const docTemplate = `{
         "model.Toolset": {
             "type": "object",
             "properties": {
-                "accessID": {
+                "accessId": {
                     "type": "string"
                 },
                 "accessType": {
@@ -1046,6 +1095,9 @@ const docTemplate = `{
                 },
                 "icon": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

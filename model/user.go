@@ -47,6 +47,10 @@ type UserAdminUsecase interface {
 	SetAccountStatus(id uint, accountStatus bool) error
 }
 
+type UserUsecase interface {
+	UpdateUser(user *User) error
+}
+
 type UserRepository interface {
 	Create(user *User) error
 	CreateBatch(users []User) error
@@ -57,6 +61,7 @@ type UserRepository interface {
 	GetByID(id uint) (*User, error)
 	GetAll() ([]UserListItem, error)
 	Update(user *User) error
+	UpdateSelf(user *User) error
 	GetCount() (int64, error)
 	SetAccountStatus(id uint, accountStatus bool) error
 }

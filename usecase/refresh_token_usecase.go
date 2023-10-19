@@ -20,13 +20,13 @@ func (rtu *refreshTokenUsecase) FindUser(email string) (*model.User, error) {
 }
 
 func (rtu *refreshTokenUsecase) CreateAccessToken(
-	user *model.User, roles []uint, secret string, expiry int) (accessToken string, err error) {
-	return tokenutil.CreateAccessToken(user, roles, secret, expiry)
+	user *model.User, secret string, expiry int) (accessToken string, err error) {
+	return tokenutil.CreateAccessToken(user, secret, expiry)
 }
 
 func (rtu *refreshTokenUsecase) CreateRefreshToken(
-	user *model.User, roles []uint, secret string, expiry int) (refreshToken string, err error) {
-	return tokenutil.CreateRefreshToken(user, roles, secret, expiry)
+	user *model.User, secret string, expiry int) (refreshToken string, err error) {
+	return tokenutil.CreateRefreshToken(user, secret, expiry)
 }
 
 func (rtu *refreshTokenUsecase) ExtractClaimsFromToken(requestToken string, secret string) (*model.JwtCustomClaims, error) {
