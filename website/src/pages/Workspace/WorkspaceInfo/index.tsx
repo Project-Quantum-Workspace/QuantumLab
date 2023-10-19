@@ -56,10 +56,11 @@ const WorkspaceInfo: React.FC = () => {
 
     {
       type: ToolsetType.Jupyter,
-      // link: 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
+      link: 'https://jupyter-test.quantumlab.cloud',
     },
     {
       type: ToolsetType.VSCode,
+      link: 'https://vs-test.quantumlab.cloud',
     },
     {
       type: ToolsetType.Terminal,

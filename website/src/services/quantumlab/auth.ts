@@ -18,8 +18,34 @@ class AuthApi extends BaseApi {
     return this.loadByPost('/api/auth/logout')
   }
 
-  userUpdateInfo(data: UserMetaData) {
+  adminGetUsers() {
+    return this.loadByGet('/api/admin/users')
+      .then((res) => {
+        return res as UserMetaData[]
+     })
+  }
+
+  adminGetRoles() {
+    return this.loadByGet('/api/admin/users/roles')
+      .then((res) => {
+        return res
+     })
+  }
+
+  adminGetUser(userId: string) {
+    return this.loadByGet('/api/admin/users/' + userId)
+      .then((res) => {
+        return res as UserMetaData
+     })
+  }
+
+  adminUpdateInfo(data: UserMetaData) {
     return this.loadbyPut('/api/admin/users/' + data.id, data)
+      .then((res) => res)
+  }
+
+  userUpdateInfo(data: UserMetaData) {
+    return this.loadbyPut('/api/settings/users', data)
       .then((res) => res)
   }
 }
