@@ -1,52 +1,102 @@
-import React from 'react';
-import { Layout, PageHeader, Descriptions, Button, Timeline, Card } from 'antd';
-import { CircuitOutlined, CodeOutlined, PlayCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import './JobDetail.css';
+interface Job {
+  id: string | undefined;
+  computeResource: string;
+  from: string;
+  status: string;
+  instance: string;
+  program: string;
+  circuits: number;
+  created: string;
+  timeline: Array<{ status: string; time: string }>;
+  // ... add other necessary properties
+}
 
-const { Content } = Layout;
+const JobDetail: React.FC = () => {
+  const [job, setJob] = useState<Job | null>(null);
 
-const JobDetails: React.FC = () => {
+  const { jobId } = useParams<{ jobId: string }>();
+
+  useEffect(() => {
+    // Mock data for demonstration:
+    setJob({
+      id: jobId,
+      computeResource: 'ibm_brisbane',
+      from: 'Untitled circuit',
+      status: 'Queued',
+      instance: 'ibm-q/open/main',
+      program: 'sampler',
+      circuits: 1,
+      created: 'Oct 07, 2023 2:35 PM',
+      timeline: [
+        { status: 'Created', time: 'Oct 07, 2023 2:35 PM' },
+        { status: 'In queue', time: '...' },
+        { status: 'Running', time: '...' },
+        { status: 'Completed', time: '...' },
+      ],
+      // ... add other necessary properties
+    });
+  }, [jobId]);
+
   return (
-    <Layout style={{ padding: '24px' }}>
-      <PageHeader title="Jobs/ ID0020" backIcon={false} />
+    <div className="page-container">
+      <div className="header">
+        Jobs/ {job?.id}
+        <div className="action-buttons">
+          <button>Cancel</button>
+          <button>Download</button>
+          <button>Back</button>
+        </div>
+      </div>
 
-      <Content>
-        <Card style={{ marginBottom: '24px' }}>
-          <Descriptions title="Details" bordered column={1}>
-            <Descriptions.Item label="Compute resource">ibm_brisbane</Descriptions.Item>
-            <Descriptions.Item label="Sent from">Untitled circuit</Descriptions.Item>
-            <Descriptions.Item label="Status">Queued</Descriptions.Item>
-            <Descriptions.Item label="Instance">ibm-q/open/main</Descriptions.Item>
-            <Descriptions.Item label="Program">sampler</Descriptions.Item>
-            <Descriptions.Item label="# of circuits">1</Descriptions.Item>
-          </Descriptions>
-        </Card>
-
-        <Card style={{ marginBottom: '24px' }}>
-          <h4>Status Timeline</h4>
-          <Timeline>
-            <Timeline.Item dot={<PlayCircleOutlined style={{ fontSize: '16px' }} />}>Created: Oct 07, 2023 2:35 PM</Timeline.Item>
-            <Timeline.Item>In queue</Timeline.Item>
-            <Timeline.Item>Running</Timeline.Item>
-            <Timeline.Item>Estimated usage: 33.1s</Timeline.Item>
-            <Timeline.Item>Completed</Timeline.Item>
-          </Timeline>
-        </Card>
-
-        <Card>
-          <h4>Circuit</h4>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Button icon={<CircuitOutlined />} type="default">Diagram</Button>
-            <Button icon={<CodeOutlined />} type="default">Qasm</Button>
-            <Button icon={<DownloadOutlined />} type="default">Qiskit</Button>
+      <div className="main-content">
+        {/* Details Section */}
+        {job && (
+          <div className="details-section">
+            <div className="details-item">
+              <div className="key">Compute resource:</div>
+              <div className="value">{job.computeResource}</div>
+            </div>
+            <div className="details-item">
+              <div className="key">From:</div>
+              <div className="value">{job.from}</div>
+            </div>
+            <div className="details-item">
+              <div className="key">Status:</div>
+              <div className="value">{job.status}</div>
+            </div>
+            {/* ... Add more details items here */}
           </div>
-          {/* For the circuit diagram, you can place an SVG or any other visual representation here. */}
-          <div style={{ marginTop: '24px' }}>
-            Circuit visual representation goes here.
+        )}
+
+        {/* Status Timeline */}
+        {job && (
+          <div className="status-timeline">
+            {job.timeline.map((item, index) => (
+              <div
+                key={index}
+                className={`status-item ${item.status.toLowerCase().replace(/ /g, '-')}`}
+              >
+                {item.status}: {item.time}
+              </div>
+            ))}
           </div>
-        </Card>
-      </Content>
-    </Layout>
+        )}
+
+        {/* Circuit Section */}
+        <div className="circuit-section">
+          <div className="circuit-tabs">
+            <button className="active">Diagram</button>
+            <button>Qasm</button>
+            <button>Qiskit</button>
+          </div>
+          <div className="circuit-diagram">{/* Display the quantum circuit diagram here */}</div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default JobDetails;
+export default JobDetail;
