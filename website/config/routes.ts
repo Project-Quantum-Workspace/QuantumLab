@@ -21,6 +21,8 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
+import component from "@/locales/en-US/component";
+
 export default [
   {
     name: 'login',
@@ -64,7 +66,7 @@ export default [
   },
 
   {
-    name: 'analyseTool',
+    name: 'analyse-tool',
     icon: 'areaChartOutlined',
     path: '/analyseTool',
     //component: './AnalyseTool',
@@ -78,9 +80,15 @@ export default [
   },
 
   {
-    path: '/template/:templateId',
+    path: '/templates/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,
+  },
+  {
+    path:'/templates/createTemplate',
+    component:'./CreateTemplate',
+    hideInMenu: true,
+    
   },
 
   {
@@ -91,9 +99,8 @@ export default [
     routes: [
       {
         path: '/admin',
-        redirect: '/admin/sub-page',
+        redirect: '/admin/users',
       },
-
       {
         name:'users',
         path:'/admin/users',
@@ -105,6 +112,7 @@ export default [
         component: './AdminView',
         hideInMenu: true,
       },
+      
       {
         name: 'admin-update',
         path: '/admin/adminUpdate',

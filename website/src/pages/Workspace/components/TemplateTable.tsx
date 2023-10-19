@@ -13,7 +13,7 @@ const TemplateTable = () => {
   const [error, setError] = useState(null)
   const { fetchedTemplates, setFetchedTemplates } = useTemplateStore()
   const handleTemplateinfo = (id: number) => {
-    history.push('/template/' + id);
+    history.push('/templates/' + id);
   }
   const columns: ColumnsType<TemplateClass> = [
     {

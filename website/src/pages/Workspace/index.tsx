@@ -5,7 +5,12 @@ import TemplateTable from './components/TemplateTable';
 import { history, useModel } from '@umijs/max';
 import { useLocation } from 'umi';
 import useTemplateStore from '@/stores/TemplateStore';
+import { UploadOutlined } from '@ant-design/icons';
 
+const Buttonstyle={
+  backgroundColor: '#0F56B3',
+  marginTop: "8px"
+}
 const App: React.FC = () => {
   const [viewP, setViewP] = useState(true);
   const [viewT, setViewT] = useState(false);

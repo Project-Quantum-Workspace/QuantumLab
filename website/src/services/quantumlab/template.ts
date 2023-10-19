@@ -2,7 +2,6 @@ import { BaseApi } from '@/utils/BaseApi';
 import { TemplateClass, TemplateMetaData } from '@/utils/types/TemplateTypes';
 import { request } from '@umijs/max';
 class TemplateApi extends BaseApi {
-
   getAccessibleTemplates() {
     return this.loadByGet('/api/templates')
       .then((res) => {
@@ -15,6 +14,12 @@ class TemplateApi extends BaseApi {
         }
         return res.message
       })
+  }
+  postTemplate(template: object | undefined){
+    return this.loadByPost('/api/templates',template)
+    .then((res)=>{
+      return res
+    })
   }
 
 }
