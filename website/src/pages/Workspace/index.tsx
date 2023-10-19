@@ -73,22 +73,30 @@ const App: React.FC = () => {
               key: '2',
             },
           ]}
-          style={{ width: '200px', fontSize: '20px' }}
+          style={{ width: '200px', fontSize: "20px" }}
+
           onChange={Onchange}
         />
-        <Button
+        <Button type="primary"
+            style={{width: "150px",...Buttonstyle}}
+            onClick={() => { history.push('/workspace/new') }}
+          >
+            + New Project
+          </Button>
+        
+        {initialState?.currentUser?.accessLevel === 10 && viewT && 
+       
+          <Button
           type="primary"
-          style={{
-            width: '150px',
-            backgroundColor: '#0F56B3',
-            marginTop: '8px',
-          }}
-          onClick={() => {
-            history.push('/workspace/new');
-          }}
-        >
-          + New Workspace
-        </Button>
+          icon={<UploadOutlined />}
+          style={{...Buttonstyle,marginLeft:"3px"}}
+          onClick={() => { history.push('/templates/createTemplate') }}
+          >
+            Template
+          </Button>
+    
+        }
+       
       </div>
       {viewP && <ProjectsTable data={initialState?.currentUser?.id} />}
       {viewT && <TemplateTable />}
