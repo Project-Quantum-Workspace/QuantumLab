@@ -2,12 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
+	"github.com/Project-Quantum-Workspace/QuantumLab/internal/parserutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
@@ -94,7 +96,7 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 // @Success 200 {object} model.Template
 // @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
 // @Router /templates/{id} [get]
-func (tc *TemplateController)GetTemplateByID(c *gin.Context){
+func (tc *TemplateController) GetTemplateByID(c *gin.Context) {
 	var template model.Template
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
@@ -104,7 +106,7 @@ func (tc *TemplateController)GetTemplateByID(c *gin.Context){
 		return
 	}
 	template, err = tc.TemplateUsecase.GetByID(id)
-	if err !=nil {
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
 		})
@@ -228,28 +230,69 @@ func listFilesInDirectory(directoryPath string) ([]string, error) {
 	return fileList, nil
 }
 
-//UploadFile @Summary Upload file and parse the parameters
+// UploadFile @Summary Upload file and parse the parameters
 // @Description Get the preset template icons.
 // @Tags templates
 // @Param multipart/form-data
 // @Produce json
-func (tc *TemplateController)UploadFile(c *gin.Context){
-	c.Request.Body = http.MaxBytesReader(c.Writer,c.Request.Body,10*1024*1024)
-	file, header, err := c.Request.FormFile("file")
+func (tc *TemplateController) UploadFile(c *gin.Context) {
+
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid template id",
+		})
+		return
+	}
+
+	file, _, err := c.Request.FormFile("file")
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		c.String(http.StatusBadRequest, "Error retrieving the file")
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "Failed to load file",
+		})
 		return
 	}
-	defer file.Close()
-	if header.Size > 10*1024*1024 {
-		c.String(http.StatusBadRequest, "File too big!")
+
+	// Read the file into byte slice
+
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read the file"})
 		return
 	}
+
+	// Insert the file into the database
+	err = tc.TemplateUsecase.UploadFile(id, fileBytes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Record not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "file successfully uploaded",
+	})
+}
+
+func (tc *TemplateController) ParseYaml(c *gin.Context) {
+	var requestBody map[string]string
+
+	if err := c.BindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	yamlstr := requestBody["data"]
 	// TODO: get parsed template string
-	
+	jsonstr, err := parserutil.YamlToJSON(yamlstr)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		c.JSON(http.StatusBadRequest, "Error retrieving the yaml")
+		return
+	}
 	//response with retrived data string
 	c.JSON(http.StatusOK, gin.H{
-		"msg":"file successfully parsed",
-		"params": "parsed string"})
+		"msg":    "file successfully parsed",
+		"params": jsonstr,
+	})
 }

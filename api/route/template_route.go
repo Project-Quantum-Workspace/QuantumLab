@@ -24,5 +24,6 @@ func NewTemplateRouter(env *bootstrap.Env, db *gorm.DB, apiRouterGroup *gin.Rout
 	apiRouterGroup.PUT("/templates/:id", templateController.UpdateOneTemplate)
 	apiRouterGroup.DELETE("/templates/:id", templateController.DeleteTemplate)
 	apiRouterGroup.GET("/templates/icons", templateController.GetPresetIconList)
-	apiRouterGroup.POST("/templates/uploadFile",templateController.UploadFile)
+	apiRouterGroup.POST("/templates/uploadFile/:id",templateController.UploadFile)
+	apiRouterGroup.POST("/templates/parseYaml",templateController.ParseYaml)
 }

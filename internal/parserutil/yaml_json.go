@@ -1,4 +1,5 @@
-package yaml_json
+package parserutil
+
 import (
 	"encoding/json"
 	"fmt"
@@ -6,23 +7,23 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-func convertMap1(input interface{}) interface{} {
+func ConvertMap(input interface{}) interface{} {
 	switch v := input.(type) {
 	case map[interface{}]interface{}:
 		newMap := make(map[string]interface{})
 		for k, val := range v {
-			newMap[fmt.Sprintf("%v", k)] = convertMap1(val)
+			newMap[fmt.Sprintf("%v", k)] = ConvertMap(val)
 		}
 		return newMap
 	case []interface{}:
 		for i, val := range v {
-			v[i] = convertMap1(val)
+			v[i] = ConvertMap(val)
 		}
 	}
 	fmt.Print(input)
 	return input
 }
-func yamlToJSON(yamlContent string) (string, error) {
+func YamlToJSON(yamlContent string) (string, error) {
 	var obj interface{}
 
 	// Unmarshal the YAML to a Go variable
@@ -30,7 +31,7 @@ func yamlToJSON(yamlContent string) (string, error) {
 		return "", err
 	}
 
-	obj = convertMap1(obj)
+	obj = ConvertMap(obj)
 
 	// Convert the Go variable to JSON
 	jsonBytes, err := json.Marshal(obj)
