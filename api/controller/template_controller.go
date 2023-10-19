@@ -265,7 +265,7 @@ func (tc *TemplateController) UploadFile(c *gin.Context) {
 	// Insert the file into the database
 	err = tc.TemplateUsecase.UploadFile(id, fileBytes)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Record not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
