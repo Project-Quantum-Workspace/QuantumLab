@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
+
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 
 	"gorm.io/gorm"
@@ -67,7 +69,7 @@ func(repo *templateRepository)UploadFile(id uint, file []byte) error{
 	var findT model.Template
 	res := repo.db.First(&findT, id)
 	if res.Error != nil {
-		return res.Error
+		return errors.New("invalid")
 	}
 	res = repo.db.Exec("UPDATE templates SET tf_file = $1 WHERE id = $2", file, id)
 	return res.Error
