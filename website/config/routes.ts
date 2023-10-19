@@ -56,23 +56,11 @@ export default [
       },
     ]
   },
-  {
-    name:'composer',
-    icon:'slidersOutlined',
-    path:'/composer'
-  },
 
   {
     name:'jobMonitor',
     icon:'dashboardOutlined',
-    path:'/jobMonitor',
-    component: './JobMonitor',
-  },
-  {
-    name: 'backendStatus',
-    icon: 'databaseOutlined',
-    path: '/backendStatus',
-    //component: './BackendStatus',
+    path:'/jobMonitor'
   },
 
   {
@@ -82,12 +70,11 @@ export default [
     //component: './AnalyseTool',
   },
 
-
   {
-    name: 'setting',
+    name: 'settings',
     icon: 'settingOutlined',
-    path: '/setting',
-    //component: './Setting',
+    path: '/settings',
+    component: './Settings',
   },
 
   {
@@ -114,8 +101,9 @@ export default [
       },
       {
         name: 'user-information',
-        path: '/admin/adminView',
+        path: '/admin/users/:userId',
         component: './AdminView',
+        hideInMenu: true,
       },
       {
         name: 'admin-update',
@@ -125,12 +113,24 @@ export default [
       },
 
       {
-        name: 'admininitialization',
+        name: 'adminInitialization',
         path : '/admin/adminInitialization',
         component : './AdminInitialization',
         hideInMenu: true,
       },
     ],
+  },
+  {
+    name: 'backendStatus',
+    icon: 'databaseOutlined',
+    path: '/backendStatus',
+    component : './TODO',
+  },
+  {
+    name:'composer',
+    icon:'slidersOutlined',
+    path:'/composer',
+    component : './TODO',
   },
   {
     path: '/',

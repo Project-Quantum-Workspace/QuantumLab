@@ -118,7 +118,7 @@ func sendUserInvitations(emailList []string,
 	host string, port int, from string, secret string, role *model.Role,
 ) []model.User {
 	// for concurrent access by goroutines
-	userArray := make([]model.User, len(emailList))
+	userSlice := make([]model.User, len(emailList))
 	var wg sync.WaitGroup
 
 	for i, email := range emailList {
@@ -134,16 +134,18 @@ func sendUserInvitations(emailList []string,
 
 		go func(index int, email string) {
 			defer wg.Done()
-			err := emailutil.SendUserInvitation(email, password, host, port, from, secret)
-			if err == nil {
-				userArray[index] = defaultUser(email, hashedPassword, qlToken, role)
+			emailErr := emailutil.SendUserInvitation(email, password, host, port, from, secret)
+			if emailErr == nil {
+				userSlice[index] = defaultUser(email, hashedPassword, qlToken, role)
+			} else {
+				logrus.Errorf("error sending email: %v", emailErr.Error())
 			}
 		}(i, email)
 	}
 
 	wg.Wait()
 	var users []model.User
-	for _, user := range userArray {
+	for _, user := range userSlice {
 		if user.Email != "" {
 			users = append(users, user)
 		}

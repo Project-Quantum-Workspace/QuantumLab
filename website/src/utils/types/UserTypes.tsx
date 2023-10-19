@@ -1,5 +1,11 @@
 import { WorkspaceInfoMetaData } from './WorkspaceTypes';
 
+export type UserTokenType = {
+  id?: number;
+  name: string;
+  value: string;
+}
+
 export type UserMetaData = {
   accessLevel: number;
   accountStatus: boolean;

@@ -1,6 +1,9 @@
 import { Button, Table, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InviteUsersModal from './inviteUsersModal';
+import { history } from '@umijs/max';
+import { UserMetaData } from '@/utils/types/UserTypes';
+import AuthApi from '@/services/quantumlab/auth';
 
 type UserRole = {
   id: number;
@@ -20,7 +23,7 @@ type User = {
 
 const AdminUserList: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserMetaData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -34,8 +37,7 @@ const AdminUserList: React.FC = () => {
       });
     }, 10000); // 10 seconds timeout
 
-    fetch('/api/admin/users')
-      .then((response) => response.json())
+    AuthApi.adminGetUsers()
       .then((data) => {
         clearTimeout(timeoutId);
         setUsers(data);
@@ -242,6 +244,11 @@ const AdminUserList: React.FC = () => {
         dataSource={users}
         rowKey="id"
         loading={loading}
+        onRow={(user) => {
+          return {
+            onClick: () => { history.push('/admin/users/' + user.id) }, 
+          };
+        }}
       />
 
       <InviteUsersModal isVisible={isModalVisible} onSend={handleSend} onCancel={handleCancel} />

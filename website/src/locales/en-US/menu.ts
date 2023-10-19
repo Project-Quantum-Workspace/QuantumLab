@@ -7,13 +7,13 @@ export default {
   'menu.jobMonitor': 'Job Monitor',
   'menu.backendStatus': 'Backend Status',
   'menu.analyseTool': 'Analyse Tool',
-  'menu.setting': 'Setting',
+  'menu.settings': 'Settings',
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.users': 'Users',
   'menu.admin.user-information': 'User Information',
   'menu.admin.admin-update': 'Admin Update',
-  'menu.admin.admininitialization': 'Admin Initialization', // Add this line
+  'menu.admin.adminInitialization': 'Admin Initialization', // Add this line
   'menu.login': 'Login',
   'menu.exception.404': '404',
 };
