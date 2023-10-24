@@ -21,11 +21,15 @@ func NewOAuthServer(env *bootstrap.Env) *server.Server {
 
 	// client memory store
 	clientStore := store.NewClientStore()
-	clientStore.Set(env.OAuthClientID, &models.Client{
+	err := clientStore.Set(env.OAuthClientID, &models.Client{
 		ID:     env.OAuthClientID,
 		Secret: env.OAuthClientSecret,
 		Domain: env.OAuthClientDomain,
 	})
+	if err != nil {
+		logrus.Errorf("error setting up oauth server: %v", err)
+		return nil
+	}
 	manager.MapClientStorage(clientStore)
 
 	srv := server.NewDefaultServer(manager)

@@ -25,7 +25,10 @@ func (oac *OAuthController) AuthorizeHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (oac *OAuthController) TokenHandler(w http.ResponseWriter, r *http.Request) {
-	oac.Server.HandleTokenRequest(w, r)
+	err := oac.Server.HandleTokenRequest(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }
 
 func (oac *OAuthController) GetUserDetails(c *gin.Context) {
