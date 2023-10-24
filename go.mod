@@ -15,6 +15,24 @@ require (
 )
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/go-session/session v3.1.2+incompatible // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/tidwall/btree v1.7.0 // indirect
+	github.com/tidwall/buntdb v1.3.0 // indirect
+	github.com/tidwall/gjson v1.17.0 // indirect
+	github.com/tidwall/grect v0.1.4 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
+	github.com/tidwall/rtred v0.1.2 // indirect
+	github.com/tidwall/rtree v1.10.0 // indirect
+	github.com/tidwall/tinyqueue v0.1.1 // indirect
+	golang.org/x/oauth2 v0.13.0 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
+	gopkg.in/oauth2.v3 v3.12.0 // indirect
+)
+
+require (
 	github.com/alexedwards/argon2id v0.0.0-20230305115115-4b3c3280a736
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
@@ -61,12 +79,12 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.13.0 // indirect
-	golang.org/x/net v0.15.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
