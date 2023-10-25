@@ -54,7 +54,8 @@ func (jmc *JobMonitorController) GetJobList(c *gin.Context) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error: Failed to retrieve job lists"})
+			return
 		}
 	}(resp.Body)
 
@@ -67,7 +68,6 @@ func (jmc *JobMonitorController) GetJobList(c *gin.Context) {
 	c.Writer.WriteHeader(resp.StatusCode)
 
 	if _, err := io.Copy(c.Writer, resp.Body); err != nil {
-		// Log the error or handle it as appropriate for your application
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Message: "Error: Failed to retrieve job lists"})
 		return
 	}
