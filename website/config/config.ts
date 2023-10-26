@@ -13,7 +13,7 @@ export default defineConfig({
    * @doc https://umijs.org/docs/api/config#hash
    */
   hash: true,
-  // mock: false,
+  mock: false,
 
 
   /**

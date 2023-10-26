@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal } from 'antd';
 import { DeleteOutlined, ExportOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { history } from '@umijs/max';
@@ -11,12 +11,58 @@ const JobMonitor: React.FC = () => {
   const [popupContent, setPopupContent] = useState<'info' | 'cancel' | 'open' | null>(null);
   const [selectedJobStatus, setSelectedJobStatus] = useState<string | null>(null);
   const [jobDetailsVisible, setJobDetailsVisible] = useState(false);
+  const [data, setData] = useState<TableRowData[]>([]);
 
-
-  const redirectToJobDetailPage = (jobId: string) => {
-    history.push(`jobMonitor/jobDetail/${jobId}`);  // This assumes the route for job details page is `/job-detail/:jobId`
+  type Job = {
+    id: string;
+    backend: string;
+    status: string;
+    program: {
+      id: string;
+    };
   };
 
+  type JobApiResponse = {
+    jobs: Job[];
+    count: number;
+    limit: number;
+    offset: number;
+  };
+  type TableRowData = {
+    key: string;
+    id: string;
+    name: string;
+    backend: string;
+    status: string;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('api/job/list');
+        const result: JobApiResponse = await response.json();
+
+        // Transforming the data to fit the format expected by the table
+        const transformedData = result.jobs.map((job, index) => ({
+          key: (index + 1).toString(),
+          id: job.id,
+          name: job.program.id,
+          backend: job.backend,
+          status: job.status,
+        }));
+
+        setData(transformedData);
+      } catch (error) {
+        console.error('Failed to fetch data from API:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const redirectToJobDetailPage = (jobId: string) => {
+    history.push(`jobMonitor/jobDetail/${jobId}`); // This assumes the route for job details page is `/job-detail/:jobId`
+  };
 
   const handleOpenInfo = (jobId: string, status: JobStatusType) => {
     setSelectedJob(jobId);
@@ -24,7 +70,6 @@ const JobMonitor: React.FC = () => {
     setPopupContent('info');
     setVisible(true);
   };
-
 
   const handleOpenDelete = (jobId: string) => {
     setSelectedJob(jobId);
@@ -94,46 +139,46 @@ const JobMonitor: React.FC = () => {
           <ExportOutlined onClick={() => handleOpenExport(record.id)} />
         </>
       ),
-    }
+    },
   ];
 
-  const data = [
-    {
-      key: '1',
-      id: 'ID00110',
-      name: 'JOB_title_1',
-      backend: 'Backend_01',
-      status: JobStatusType.Completed,
-    },
-    {
-      key: '2',
-      id: 'ID00111',
-      name: 'JOB_title_2',
-      backend: 'Backend_02',
-      status: JobStatusType.Queued,
-    },
-    {
-      key: '3',
-      id: 'ID00112',
-      name: 'JOB_title_3',
-      backend: 'Backend_03',
-      status: JobStatusType.Running,
-    },
-    {
-      key: '4',
-      id: 'ID00113',
-      name: 'JOB_title_4',
-      backend: 'Backend_04',
-      status: JobStatusType.Failed,
-    },
-    {
-      key: '5',
-      id: 'ID00114',
-      name: 'JOB_title_5',
-      backend: 'Backend_05',
-      status: JobStatusType.Cancelled,
-    },
-  ];
+  // const data = [
+  //   {
+  //     key: '1',
+  //     id: 'ID00110',
+  //     name: 'JOB_title_1',
+  //     backend: 'Backend_01',
+  //     status: JobStatusType.Completed,
+  //   },
+  //   {
+  //     key: '2',
+  //     id: 'ID00111',
+  //     name: 'JOB_title_2',
+  //     backend: 'Backend_02',
+  //     status: JobStatusType.Queued,
+  //   },
+  //   {
+  //     key: '3',
+  //     id: 'ID00112',
+  //     name: 'JOB_title_3',
+  //     backend: 'Backend_03',
+  //     status: JobStatusType.Running,
+  //   },
+  //   {
+  //     key: '4',
+  //     id: 'ID00113',
+  //     name: 'JOB_title_4',
+  //     backend: 'Backend_04',
+  //     status: JobStatusType.Failed,
+  //   },
+  //   {
+  //     key: '5',
+  //     id: 'ID00114',
+  //     name: 'JOB_title_5',
+  //     backend: 'Backend_05',
+  //     status: JobStatusType.Cancelled,
+  //   },
+  // ];
 
   const renderFooter = () => {
     switch (popupContent) {
