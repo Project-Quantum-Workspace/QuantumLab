@@ -8,7 +8,7 @@ const isUser = {
   "hasUser" : false
 }
 
-export default {
+/*export default {
   'POST /api/admin': async (req, res)=> {
     res.send(firstadmin);
   },
@@ -16,7 +16,7 @@ export default {
   'GET /api/admin/hasUser': async (req, res)=> {
     res.send(isUser);
   },
-};
+};*/
 
 export const adminInitializationPosturl = '/api/admin';
 export const adminInitializationPostData = firstadmin;
