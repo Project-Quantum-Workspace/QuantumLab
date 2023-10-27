@@ -27,5 +27,4 @@ export async function getAllWorkspace(id: string) {
 
     },
   });
-
 }
