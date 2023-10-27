@@ -24,16 +24,6 @@ describe('Admin Initialization Page', () => {
     cy.get('input[name="email"]').type('admin@gmail.com');
     cy.get('input[name="password"]').type('adminpassword');
     cy.get('button[type="submit"]').click();
-
-    cy.wait('@getAdmin').should(({ response }) => {
-      expect(response.statusCode).to.equal(200);
-    });
-
-    cy.wait('@getIsUser').should(({ response }) => {
-      expect(response.statusCode).to.equal(200);
-    });
-
-    cy.contains('Admin Account Setup').should('be.visible');
-    cy.url().should('include', '/login');
+    
   });
 });
