@@ -4,8 +4,9 @@ type Template struct {
 	ID          uint   `json:"id"`
 	Parameters  string `json:"parameters"`
 	AccessLevel uint   `json:"accessLevel"`
-	Filename    string `json:"filename"`
+	FileName    string `json:"filename"`
 	Icon        string `json:"icon"` // A Base64-encoded string
+	TfFile    []byte `json:"tffile"`
 	
 }
 

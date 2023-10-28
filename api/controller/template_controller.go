@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
-	"github.com/Project-Quantum-Workspace/QuantumLab/internal/parserutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
@@ -235,7 +234,7 @@ func listFilesInDirectory(directoryPath string) ([]string, error) {
 // @Tags templates
 // @Param multipart/form-data
 // @Produce json
-func (tc *TemplateController) UploadFile(c *gin.Context) {
+func (tc *TemplateController) UpdateFile(c *gin.Context) {
 
 	id, err := validationutil.ValidateID(c.Param("id"))
 	if err != nil {
@@ -271,28 +270,5 @@ func (tc *TemplateController) UploadFile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "file successfully uploaded",
-	})
-}
-
-func (tc *TemplateController) ParseYaml(c *gin.Context) {
-	var requestBody map[string]string
-
-	if err := c.BindJSON(&requestBody); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	yamlstr := requestBody["data"]
-	// TODO: get parsed template string
-	jsonstr, err := parserutil.YamlToJSON(yamlstr)
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		c.JSON(http.StatusBadRequest, "Error retrieving the yaml")
-		return
-	}
-	//response with retrived data string
-	c.JSON(http.StatusOK, gin.H{
-		"msg":    "file successfully parsed",
-		"params": jsonstr,
 	})
 }

@@ -21,6 +21,18 @@ class TemplateApi extends BaseApi {
       return res
     })
   }
+  parseYaml(yamlStr:object){
+    return this.loadByPost('/api/templates/parseyAML',yamlStr)
+    .then((res)=>{
+      return res
+    })
+  }
+  uploadFile(id:number, file:Blob){
+    return this.loadByPost('/api/templates/uploadfile'+String(id),file)
+    .then((res)=>{
+      return res
+    })
+  }
 
 }
 export default new TemplateApi()

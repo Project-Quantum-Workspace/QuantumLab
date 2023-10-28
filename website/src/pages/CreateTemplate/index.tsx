@@ -11,13 +11,16 @@ import {
   Upload,
   UploadProps,
   message,
+  notification,
 } from 'antd';
 import { Link } from '@umijs/max';
-
+import TemplateApi from '@/services/quantumlab/template';
 import { TemplateCol } from './components/FormItems';
+import TextArea from 'antd/es/input/TextArea';
+import { event } from 'cypress/types/jquery';
 
 //CT_TODO: delete this after backend integration
-const templateParameter = "[{\"name\":\"availableZone\",\"label\":\"Available Zone\",\"selections\":[\"qh2\",\"qh2-uom\"],\"isInput\":false, \"value\":\"qh2\"},{\"name\":\"diskSize\",\"label\":\"Disk Size\",\"isInput\":true,\"value\":\"30\"}]";
+const templateParameter = "{\"template\":[{\"default\":\"s-1vcpu-1gb\",\"description\":\"Which Droplet configuration would you like to use?\",\"droplet size\":null,\"isInput\":false,\"name\":\"Droplet size\",\"selections\":[{\"name\":\"1 vCPU, 1 GB RAM\",\"value\":\"s-1vcpu-1gb\"},{\"name\":\"1 vCPU, 2 GB RAM\",\"value\":\"s-1vcpu-2gb\"},{\"name\":\"2 vCPU, 2 GB RAM\",\"value\":\"s-2vcpu-2gb\"},{\"name\":\"2 vCPU 4 GB RAM\",\"value\":\"s-2vcpu-4gb\"}],\"type\":\"selection\"},{\"default\":5,\"description\":\"How large would you like your home volume to be (in GB)?\",\"home volume size\":null,\"isInput\":true,\"name\":\"Home volume size\",\"type\":\"number\",\"validation\":{\"max\":20,\"min\":1}},{\"default\":\"sgp1\",\"description\":\"This is the region where your workspace will be created.\",\"isInput\":false,\"name\":\"Region\",\"region\":null,\"selections\":[{\"name\":\"New York 1\",\"value\":\"nyc1\"},{\"name\":\"Melbourne\",\"value\":\"melb\"}],\"type\":\"selection\"}]}"
 const iconList1: Array<{ value: string, label: string }> = [
   { value: '/unimelb', label: 'Unimelb Icon' },
   { value: '/quantumLab', label: 'QuantumLab Icon' },
@@ -25,21 +28,25 @@ const iconList1: Array<{ value: string, label: string }> = [
 //CT_TODO: put this to the /utils/types once the data type is settled 
 export type JsonData = {
   name: string;
+  description:string;
+  default?:string;
+  type:string;
   label: string;
   selections?: string[];
   isInput: boolean;
-  value:string;
+  validation?:string[];
 };
 
 const CreateTemplate: React.FC = () => {
   const [form] = Form.useForm();
-  const [fileData, setFileData] = useState("");
+  const [fileData, setFileData] = useState(null);
   const [iconList, setIconList] = useState<Array<{ value: string, label: string }>>(iconList1);
   const [displayP, setDisplayP] = useState(0);
-  const [params, setParams] = useState<JsonData[]>([])
+  const [params, setParams] = useState(templateParameter)
+  const [jsonData, setJsonData]=useState<JsonData[]>([])
 
 
-  const props: UploadProps = {
+  const fileProps: UploadProps = {
     beforeUpload: (file) => {
       const isTar = file.type === 'application/x-tar';
       if (!isTar) {
@@ -49,22 +56,31 @@ const CreateTemplate: React.FC = () => {
     },
     onChange: (info) => {
       setDisplayP(info.fileList?.length)
-      setFileData(templateParameter)
-      if (fileData) {
-        //CT_TODO: post the file and parse the recieved json string here
-        const params = JSON.parse(fileData);
-        setParams(params);
-      }
+      //setFileData(info.fileList[0])
+      
     }
 
   };
+  const uploadParam=async (e: { target: { value: React.SetStateAction<string>; } })=>{
+   
+    setParams(e.target.value);
+    if(params){
+      
+      const d = JSON.parse(params);
+      setJsonData(d["template"])
+      console.log(params)
+    }
+          
+  }
+  
+
   //CT_TODO: get icon list
   //CT_TODO: upload info to backend
   const onFinish = async (t: any) => {
     
     const template = {
       filename: t.filename,
-      parameters: JSON.stringify(params),
+      parameters: JSON.stringify(jsonData),
       accessLevel: t.accessLevel,
       icon: t.icon
     }
@@ -112,8 +128,8 @@ const CreateTemplate: React.FC = () => {
 
         <Form.Item label="Upload template"
           name="file">
-          <Form.Item name="Upload template" label="Upload template" valuePropName="file" rules={[{ required: true, message: 'Please upload your template format' }]} noStyle>
-            <Upload.Dragger {...props} name="files" maxCount={1} action="/upload.do">
+          <Form.Item name="Upload template" label="Upload template" valuePropName="file" rules={[{ required: true, message: 'Please upload your tf file' }]} noStyle>
+            <Upload.Dragger {...fileProps} name="files" maxCount={1} action="/upload.do">
               <p className="ant-upload-drag-icon">
                 <CloudUploadOutlined />
               </p>
@@ -130,6 +146,12 @@ const CreateTemplate: React.FC = () => {
           />
 
         </Form.Item>
+        <Form.Item name='parameters' label='Parameters'rules={[{ required: true, message: 'Please upload your template parameters' }]}>
+        <TextArea 
+        value={params}
+        onChange={uploadParam} showCount />
+        </Form.Item>
+        
 
         <Divider />
         <h2>Permission</h2>
@@ -137,10 +159,10 @@ const CreateTemplate: React.FC = () => {
           extra="Any user with greater or equal to access level can use this template to create workspaces.">
           <InputNumber min={0} max={10} defaultValue={0} />
         </Form.Item>
-        {displayP === 1 && params.length !== 0 &&
+        {jsonData.length !== 0 &&
           <><Divider />
             <h2>Workspace Parameters</h2>
-            {params.map((p) =>
+            {jsonData.map((p) =>
               <TemplateCol key={p.name} data={p} />
             )}
 
