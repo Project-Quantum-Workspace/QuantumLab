@@ -43,6 +43,7 @@ func NewOAuthServer(env *bootstrap.Env) *server.Server {
 		}
 		uid, err := tokenutil.ExtractUserIDFromToken(authCookie.Value, env.AccessJWTSecret)
 		userID = fmt.Sprintf("%v", uid)
+		logrus.Infof("userID: %v", userID)
 		return
 	})
 
