@@ -8,6 +8,7 @@ import (
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/model"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/oauth2.v3/server"
 )
 
@@ -20,6 +21,7 @@ type OAuthController struct {
 func (oac *OAuthController) AuthorizeHandler(w http.ResponseWriter, r *http.Request) {
 	err := oac.Server.HandleAuthorizeRequest(w, r)
 	if err != nil {
+		logrus.Errorf("error handling oauth authorize request: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 }
@@ -27,6 +29,7 @@ func (oac *OAuthController) AuthorizeHandler(w http.ResponseWriter, r *http.Requ
 func (oac *OAuthController) TokenHandler(w http.ResponseWriter, r *http.Request) {
 	err := oac.Server.HandleTokenRequest(w, r)
 	if err != nil {
+		logrus.Errorf("error handling oauth token request: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 }

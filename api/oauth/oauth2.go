@@ -39,11 +39,9 @@ func NewOAuthServer(env *bootstrap.Env) *server.Server {
 	srv.SetUserAuthorizationHandler(func(w http.ResponseWriter, r *http.Request) (userID string, err error) {
 		authCookie, err := r.Cookie("auth")
 		if err != nil {
-			logrus.Errorf("%v", err.Error())
 			return
 		}
 		uid, err := tokenutil.ExtractUserIDFromToken(authCookie.Value, env.AccessJWTSecret)
-		logrus.Errorf("%v", err.Error())
 		userID = fmt.Sprintf("%v", uid)
 		return
 	})
