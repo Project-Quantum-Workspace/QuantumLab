@@ -10,9 +10,11 @@ type CreateTableRequest struct {
 }
 
 type ResultRepository interface {
-	Create(table *CreateTableRequest) error
+	Create(table *CreateTableRequest, token string) error
+	CheckToken(token string) (bool, error)
 }
 
 type ResultUsecase interface {
-	Create(table *CreateTableRequest) error
+	Create(table *CreateTableRequest, token string) error
+	CheckToken(token string) (bool, error)
 }
