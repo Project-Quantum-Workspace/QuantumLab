@@ -125,8 +125,8 @@ func (lc *LoginController) Logout(c *gin.Context) {
 	c.SetCookie("refresh", "", -1, "/", "quantumlab.cloud", true, true)
 
 	// also logout superset
-	c.SetCookie("session", "", -1, "/", "localhost", false, true)
-	c.SetCookie("session", "", -1, "/", "quantumlab.cloud", true, true)
+	c.SetCookie("superset_session", "", -1, "/", "localhost", false, true)
+	c.SetCookie("superset_session", "", -1, "/", "quantumlab.cloud", true, true)
 
 	logoutMessage := model.LoginResponse{Status: "Logged out successfully"}
 	c.JSON(http.StatusOK, logoutMessage)
