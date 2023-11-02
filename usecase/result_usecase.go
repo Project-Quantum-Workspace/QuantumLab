@@ -15,10 +15,14 @@ func NewResultUsecase(resultRepository model.ResultRepository) model.ResultUseca
 	}
 }
 
-func (result *resultUsecase) Create(table *model.CreateTableRequest) error {
+func (result *resultUsecase) Create(table *model.CreateTableRequest, token string) error {
 	validation := validationutil.ValidateTableCreationRequest(table)
 	if validation != nil {
 		return validation
 	}
-	return result.resultRepository.Create(table)
+	return result.resultRepository.Create(table, token)
+}
+
+func (result *resultUsecase) CheckToken(token string) (bool, error) {
+	return result.resultRepository.CheckToken(token)
 }

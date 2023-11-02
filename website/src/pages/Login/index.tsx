@@ -5,7 +5,6 @@ import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-compone
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, Helmet, SelectLang, history, useIntl, useModel } from '@umijs/max';
 import { Alert, Tabs, message } from 'antd';
-
 import { flushSync } from 'react-dom';
 import Logo from '../../../public/icons/logo.svg';
 import Settings from '../../../config/defaultSettings';

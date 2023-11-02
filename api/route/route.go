@@ -13,6 +13,7 @@ func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, wo
 	NewUserInitRouter(publicApiRouterGroup, db, env)
 	NewLoginRouter(publicApiRouterGroup, db, env)
 	NewAgentRouter(db, publicApiRouterGroup, workspaceMonitor)
+	NewResultRouter(publicApiRouterGroup, rdb)
 
 	privateApiRouterGroup := engine.Group("/api")
 	privateApiRouterGroup.Use(middleware.JwtAuthenticator(env.AccessJWTSecret))
@@ -20,6 +21,6 @@ func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, wo
 	NewSettingRouter(privateApiRouterGroup, db, env)
 	NewTemplateRouter(env, db, privateApiRouterGroup)
 	NewWorkspaceRouter(privateApiRouterGroup, db, env)
-	NewResultRouter(privateApiRouterGroup, rdb)
 	NewTokenRouter(privateApiRouterGroup, db, env)
+	NewJobMonitorRoute(privateApiRouterGroup, db, env)
 }

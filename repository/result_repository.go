@@ -18,8 +18,16 @@ func NewResultRepository(qlDB *gorm.DB) model.ResultRepository {
 	}
 }
 
-func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
-	createTableSQL := "CREATE TABLE " + table.TableName + " ("
+func (repo *resultRepository) CheckToken(token string) (bool, error) {
+	var tokenValueInDB string
+	if err := repo.qlRDB.Table("tokens").Where("value = ?", token).First(&tokenValueInDB).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (repo *resultRepository) Create(table *model.CreateTableRequest, token string) error {
+	createTableSQL := "CREATE TABLE " + table.TableName + "_" + token + " ("
 	for i, col := range table.ColumnName {
 		createTableSQL += col + " " + table.ColumnDatatype[col]
 		if i < table.ColumnCount-1 {
