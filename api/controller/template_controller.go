@@ -142,7 +142,7 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	//tc.TemplateUsecase.First(&template, id)
 	err = tc.TemplateUsecase.Update(&template, id)
 
