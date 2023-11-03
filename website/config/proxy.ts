@@ -12,9 +12,7 @@
 export default {
   // Uncomment the following and adjust as needed if you need to customize the local development server.
   dev: {
-    // 'http://localhost:8080'** -> https://preview.pro.ant.design/api/**
     '/api/': {
-      // The address to be proxied
       // target:'http://localhost:8080',
       target: 'https://feature-template-api-integration.dev.quantumlab.cloud',
       //target: 'https://quantumlab.cloud',

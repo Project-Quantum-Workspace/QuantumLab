@@ -246,7 +246,7 @@ const AdminUserList: React.FC = () => {
         loading={loading}
         onRow={(user) => {
           return {
-            onClick: () => { history.push('/admin/users/' + user.id) }, 
+            onClick: () => { history.push('/admin/users/' + user.id) },
           };
         }}
       />

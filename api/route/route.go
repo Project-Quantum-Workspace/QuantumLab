@@ -12,6 +12,7 @@ func Setup(env *bootstrap.Env, db *gorm.DB, rdb *gorm.DB, engine *gin.Engine, wo
 	publicApiRouterGroup := engine.Group("/api")
 	NewUserInitRouter(publicApiRouterGroup, db, env)
 	NewLoginRouter(publicApiRouterGroup, db, env)
+	NewOAuthRouter(*publicApiRouterGroup, db, env)
 	NewAgentRouter(db, publicApiRouterGroup, workspaceMonitor)
 	NewResultRouter(publicApiRouterGroup, rdb)
 
