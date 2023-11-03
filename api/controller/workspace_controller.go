@@ -128,6 +128,7 @@ func (wc *WorkspaceController) GetWorkspacesByUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
 			Message: "unexpected system error",
 		})
+		logrus.Errorf("database error: %v", err)
 		return
 	}
 
