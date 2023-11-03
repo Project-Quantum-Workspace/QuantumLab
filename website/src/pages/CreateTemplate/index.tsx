@@ -13,6 +13,7 @@ import {
   message,
   notification,
 } from 'antd';
+
 import { Link } from '@umijs/max';
 import TemplateApi from '@/services/quantumlab/template';
 import { TemplateCol } from './components/FormItems';
@@ -36,10 +37,29 @@ export type JsonData = {
   isInput: boolean;
   validation?:string[];
 };
-
+function fileToBytes(file: File): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (event) => {
+          const result = event.target?.result;
+          if (typeof result === "string") {
+              reject(new Error("Unexpected result type"));
+          } else {
+              resolve(new Uint8Array(result as ArrayBuffer));
+          }
+      };
+      
+      reader.onerror = (error) => {
+          reject(error);
+      };
+      
+      reader.readAsArrayBuffer(file);
+  });
+}
 const CreateTemplate: React.FC = () => {
   const [form] = Form.useForm();
-  const [fileData, setFileData] = useState(null);
+  const [fileData, setFileData] = useState<Uint8Array|null>(null);
   const [iconList, setIconList] = useState<Array<{ value: string, label: string }>>(iconList1);
   const [displayP, setDisplayP] = useState(0);
   const [params, setParams] = useState(templateParameter)
@@ -47,16 +67,21 @@ const CreateTemplate: React.FC = () => {
 
 
   const fileProps: UploadProps = {
-    beforeUpload: (file) => {
+    beforeUpload: async (file) => {
+      console.log(file.type)
       const isTar = file.type === 'application/x-tar';
       if (!isTar) {
         message.error(`${file.name} is not a tar file`);
       }
+      const bytes = await fileToBytes(file)
+      setFileData(bytes)
+      console.log(bytes)
       return isTar || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
       setDisplayP(info.fileList?.length)
-      //setFileData(info.fileList[0])
+      //const fileBytes: Uint8Array = new Uint8Array(info.fileList[0]);
+      
       
     }
 
@@ -68,7 +93,7 @@ const CreateTemplate: React.FC = () => {
       
       const d = JSON.parse(params);
       setJsonData(d["template"])
-      console.log(params)
+      
     }
           
   }
@@ -82,9 +107,10 @@ const CreateTemplate: React.FC = () => {
       filename: t.filename,
       parameters: JSON.stringify(jsonData),
       accessLevel: t.accessLevel,
-      icon: t.icon
+      //tfFile:fileData,
     }
-    //const res = await TemplateApi.postTemplate(template)
+    const res = await TemplateApi.postTemplate(template)
+    console.log(Buffer.from(res))
   }
   
   return (

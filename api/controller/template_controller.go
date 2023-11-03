@@ -1,13 +1,11 @@
 package controller
 
 import (
-	"fmt"
-	"io"
+	
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
@@ -40,11 +38,11 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	res := tc.TemplateUsecase.Create(&template)
 	if res != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: "unexpected system error",
+			Message: res.Error(),
 		})
 		return
 	}
@@ -244,31 +242,38 @@ func (tc *TemplateController) UpdateFile(c *gin.Context) {
 		return
 	}
 
-	file, _, err := c.Request.FormFile("file")
+	file, err := c.FormFile("file")
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		
 		c.JSON(http.StatusBadRequest, model.ErrorResponse{
-			Message: "Failed to load file",
+			Message: err.Error(),
 		})
 		return
 	}
-
-	// Read the file into byte slice
-
-	fileBytes, err := io.ReadAll(file)
+	openedFile, err := file.Open()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read the file"})
+		c.JSON(500, gin.H{"error": "Failed to open file"})
 		return
 	}
+	defer openedFile.Close()
 
+	content := make([]byte, file.Size)
+	_, err = openedFile.Read(content)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to read file content"})
+		return
+	}
+	
 	// Insert the file into the database
-	err = tc.TemplateUsecase.UploadFile(id, fileBytes)
+	err = tc.TemplateUsecase.UploadFile(id, content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
+	//decodedData, _ := base64.StdEncoding.DecodeString(string(content))
 	c.JSON(http.StatusOK, gin.H{
 		"msg": "file successfully uploaded",
+		
+		
 	})
 }

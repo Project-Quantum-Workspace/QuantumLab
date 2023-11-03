@@ -14,6 +14,7 @@ type templateRepository struct {
 }
 
 func NewTemplateRepository(db *gorm.DB) model.TemplateRepository {
+	db.AutoMigrate(&model.Template{})
 	return &templateRepository{
 		db: db,
 	}
@@ -23,6 +24,7 @@ func NewTemplateRepository(db *gorm.DB) model.TemplateRepository {
 func (repo *templateRepository) Create(template *model.Template) error {
 	result := repo.db.Omit("ID").Create(&template)
 	if result.Error != nil {
+		fmt.Println(result)
 		return result.Error
 	}
 	return nil

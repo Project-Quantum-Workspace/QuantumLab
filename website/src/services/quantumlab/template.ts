@@ -4,7 +4,7 @@ import { request } from '@umijs/max';
 class TemplateApi extends BaseApi {
   getAccessibleTemplates() {
     return this.loadByGet('/api/templates')
-      .then((res) => {
+      .then((res: { message: any; forEach: (arg0: (t: TemplateMetaData) => void) => void; }) => {
         if(!res.message) {
           let templates: TemplateClass[] = []
           res.forEach((t: TemplateMetaData) => {
@@ -17,22 +17,11 @@ class TemplateApi extends BaseApi {
   }
   postTemplate(template: object | undefined){
     return this.loadByPost('/api/templates',template)
-    .then((res)=>{
+    .then((res: any)=>{
       return res
     })
   }
-  parseYaml(yamlStr:object){
-    return this.loadByPost('/api/templates/parseyAML',yamlStr)
-    .then((res)=>{
-      return res
-    })
-  }
-  uploadFile(id:number, file:Blob){
-    return this.loadByPost('/api/templates/uploadfile'+String(id),file)
-    .then((res)=>{
-      return res
-    })
-  }
+ 
 
 }
 export default new TemplateApi()
