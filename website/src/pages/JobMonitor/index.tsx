@@ -1,62 +1,147 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, notification } from 'antd';
 import { DeleteOutlined, ExportOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { history } from '@umijs/max';
 import JobStatus, { JobStatusType } from './Component/JobStatus';
 import JobDetailModal from '@/pages/JobMonitor/Component/JobDetailModal';
 
+type Job = {
+  id: string;
+  backend: string;
+  hub: string;
+  group: string;
+  project: string;
+  state: {
+    status: string;
+  };
+  program: {
+    id: string;
+  };
+  created: string;
+  cost: number;
+  estimated_running_time_seconds: number;
+  estimated_max_running_time_seconds: number;
+  usage: {
+    quantum_seconds: number;
+    seconds: number;
+  };
+  tags?: string[]; // Made this optional since not every job has tags
+  // Add other necessary fields if needed in the future
+};
+
+type JobApiResponse = {
+  jobs: Job[];
+  count: number;
+  limit: number;
+  offset: number;
+};
+type TableRowData = {
+  key: string;
+  job: Job;
+};
+
 const JobMonitor: React.FC = () => {
   const [visible, setVisible] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [popupContent, setPopupContent] = useState<'info' | 'cancel' | 'open' | null>(null);
   const [selectedJobStatus, setSelectedJobStatus] = useState<string | null>(null);
-  const [jobDetailsVisible, setJobDetailsVisible] = useState(false);
   const [data, setData] = useState<TableRowData[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  type Job = {
-    id: string;
-    backend: string;
-    status: string;
-    program: {
-      id: string;
-    };
+  const handleHttpError = (errorCode: number, errorMessage: string) => {
+    let description = errorMessage;
+
+    // You can customize further based on specific error codes if needed.
+    switch (errorCode) {
+      case 400:
+        notification.error({
+          message: 'Bad Request',
+          description,
+        });
+        break;
+      case 401:
+        notification.error({
+          message: 'Unauthorized',
+          description,
+        });
+        break;
+      case 403:
+        notification.error({
+          message: 'Forbidden',
+          description,
+        });
+        break;
+      case 404:
+        notification.error({
+          message: 'Not Found',
+          description,
+        });
+        break;
+      case 408:
+        notification.error({
+          message: 'Request Timeout',
+          description,
+        });
+        break;
+      case 409:
+        notification.error({
+          message: 'Conflict',
+          description,
+        });
+        break;
+      case 500:
+        notification.error({
+          message: 'Internal Server Error',
+          description,
+        });
+        break;
+      default:
+        notification.error({
+          message: `Error Code: ${errorCode}`,
+          description,
+        });
+    }
   };
 
-  type JobApiResponse = {
-    jobs: Job[];
-    count: number;
-    limit: number;
-    offset: number;
-  };
-  type TableRowData = {
-    key: string;
-    id: string;
-    name: string;
-    backend: string;
-    status: string;
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/job/list');
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+
+        let errorMessage = '';
+        if (errorResponse.errors && errorResponse.errors.length > 0) {
+          errorMessage = `${errorResponse.errors[0].message}\n${errorResponse.errors[0].solution}`;
+        } else {
+          errorMessage = 'An unknown error occurred.';
+        }
+
+        handleHttpError(response.status, errorMessage);
+        return;
+      }
+
+      const result: JobApiResponse = await response.json();
+
+      const transformedData = result.jobs.map((job, index) => ({
+        key: (index + 1).toString(),
+        job,
+      }));
+
+      setData(transformedData);
+    } catch (error) {
+      const errMessage = (error as Error).message || String(error);
+      notification.error({
+        message: 'Error',
+        description: `Failed to fetch data from API: ${errMessage}`,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('api/job/list');
-        const result: JobApiResponse = await response.json();
-
-        // Transforming the data to fit the format expected by the table
-        const transformedData = result.jobs.map((job, index) => ({
-          key: (index + 1).toString(),
-          id: job.id,
-          name: job.program.id,
-          backend: job.backend,
-          status: job.status,
-        }));
-
-        setData(transformedData);
-      } catch (error) {
-        console.error('Failed to fetch data from API:', error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -64,21 +149,20 @@ const JobMonitor: React.FC = () => {
     history.push(`jobMonitor/jobDetail/${jobId}`); // This assumes the route for job details page is `/job-detail/:jobId`
   };
 
-  const handleOpenInfo = (jobId: string, status: JobStatusType) => {
-    setSelectedJob(jobId);
-    setSelectedJobStatus(status);
+  const handleOpenInfo = (job: Job) => {
+    setSelectedJob(job);
     setPopupContent('info');
     setVisible(true);
   };
 
-  const handleOpenDelete = (jobId: string) => {
-    setSelectedJob(jobId);
+  const handleOpenDelete = (job: Job) => {
+    setSelectedJob(job);
     setPopupContent('cancel');
     setVisible(true);
   };
 
-  const handleOpenExport = (jobId: string) => {
-    setSelectedJob(jobId);
+  const handleOpenExport = (job: Job) => {
+    setSelectedJob(job);
     setPopupContent('open');
     setVisible(true);
   };
@@ -89,7 +173,7 @@ const JobMonitor: React.FC = () => {
   };
   const handleOpenDetails = () => {
     if (selectedJob) {
-      redirectToJobDetailPage(selectedJob);
+      redirectToJobDetailPage(selectedJob.id);
     }
   };
 
@@ -110,75 +194,37 @@ const JobMonitor: React.FC = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: 'id',
+      dataIndex: ['job', 'id'],
       key: 'id',
     },
     {
       title: 'Name',
-      dataIndex: 'name',
+      dataIndex: ['job', 'program', 'id'],
       key: 'name',
     },
     {
       title: 'Backend',
-      dataIndex: 'backend',
+      dataIndex: ['job', 'backend'],
       key: 'backend',
     },
     {
       title: 'Status',
-      dataIndex: 'status',
+      dataIndex: ['job', 'state', 'status'],
       key: 'status',
       render: (status: JobStatusType) => <JobStatus status={status} />,
     },
     {
       title: 'Operation',
       key: 'operation',
-      render: (text: any, record: any) => (
+      render: (text: any, record: TableRowData) => (
         <>
-          <InfoCircleOutlined onClick={() => handleOpenInfo(record.id, record.status)} />
-          <DeleteOutlined onClick={() => handleOpenDelete(record.id)} />
-          <ExportOutlined onClick={() => handleOpenExport(record.id)} />
+          <InfoCircleOutlined onClick={() => handleOpenInfo(record.job)} />
+          <DeleteOutlined onClick={() => handleOpenDelete(record.job)} />
+          <ExportOutlined onClick={() => handleOpenExport(record.job)} />
         </>
       ),
     },
   ];
-
-  // const data = [
-  //   {
-  //     key: '1',
-  //     id: 'ID00110',
-  //     name: 'JOB_title_1',
-  //     backend: 'Backend_01',
-  //     status: JobStatusType.Completed,
-  //   },
-  //   {
-  //     key: '2',
-  //     id: 'ID00111',
-  //     name: 'JOB_title_2',
-  //     backend: 'Backend_02',
-  //     status: JobStatusType.Queued,
-  //   },
-  //   {
-  //     key: '3',
-  //     id: 'ID00112',
-  //     name: 'JOB_title_3',
-  //     backend: 'Backend_03',
-  //     status: JobStatusType.Running,
-  //   },
-  //   {
-  //     key: '4',
-  //     id: 'ID00113',
-  //     name: 'JOB_title_4',
-  //     backend: 'Backend_04',
-  //     status: JobStatusType.Failed,
-  //   },
-  //   {
-  //     key: '5',
-  //     id: 'ID00114',
-  //     name: 'JOB_title_5',
-  //     backend: 'Backend_05',
-  //     status: JobStatusType.Cancelled,
-  //   },
-  // ];
 
   const renderFooter = () => {
     switch (popupContent) {
@@ -221,7 +267,7 @@ const JobMonitor: React.FC = () => {
 
   return (
     <div>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={data} loading={loading} />
 
       <Modal
         title={
@@ -240,18 +286,29 @@ const JobMonitor: React.FC = () => {
       >
         {popupContent === 'info' && selectedJob && (
           <JobDetailModal
-            status="Completed"
-            createdBy="Andrew"
-            createdDate="12/9/2021"
-            completedDate="23/11/2022"
-            deviceConfig="simulator 2"
+            id={selectedJob.id}
+            status={selectedJob.state.status}
+            createdDate={new Date(selectedJob.created).toLocaleDateString()}
+            backend={selectedJob.backend}
+            hub={selectedJob.hub}
+            group={selectedJob.group}
+            project={selectedJob.project}
+            programId={selectedJob.program.id}
+            cost={selectedJob.cost}
+            estimatedRunningTime={selectedJob.estimated_running_time_seconds}
+            estimatedMaxRunningTime={selectedJob.estimated_max_running_time_seconds}
+            quantumSeconds={selectedJob.usage.quantum_seconds}
+            seconds={selectedJob.usage.seconds}
+            tags={selectedJob.tags}
           />
         )}
 
         {popupContent === 'cancel' && selectedJob && (
-          <p>Confirm deletion for the job: {selectedJob}?</p>
+          <p>Confirm deletion for the job: {selectedJob.id}?</p>
         )}
-        {popupContent === 'open' && selectedJob && <p>Export details for the job: {selectedJob}</p>}
+        {popupContent === 'open' && selectedJob && (
+          <p>Open this job in Analyser: {selectedJob.id}</p>
+        )}
       </Modal>
     </div>
   );
