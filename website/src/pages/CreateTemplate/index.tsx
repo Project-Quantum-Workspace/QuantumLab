@@ -75,7 +75,7 @@ const CreateTemplate: React.FC = () => {
       }
       const bytes = await fileToBytes(file)
       setFileData(bytes.split(',')[1])
-      console.log(bytes.split(',')[1])
+      
       return isTar || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
@@ -111,6 +111,9 @@ const CreateTemplate: React.FC = () => {
     }
     console.log(template)
     const res = await TemplateApi.postTemplate(template)
+    if(res.message==="success"){
+      console.log(res)
+    }
     
   }
   

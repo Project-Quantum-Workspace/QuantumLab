@@ -57,6 +57,7 @@ const TemplateTable = () => {
             type='link'
             icon={<DoubleRightOutlined />} 
             onClick={() => handleTemplateinfo(id)}
+            className='ant-icon-info'
           />
         </Space>
       ),

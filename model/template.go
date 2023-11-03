@@ -4,7 +4,7 @@ type Template struct {
 	ID          uint   `json:"id"`
 	Parameters  string `json:"parameters"`
 	AccessLevel uint   `json:"accessLevel"`
-	FileName    string `json:"filename"`
+	Filename    string `json:"filename"`
 	Icon        string `json:"icon"` // A Base64-encoded string
 	TfFile    []byte `gorm:"type:bytea" json:"tffile"`
 	

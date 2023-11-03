@@ -18,6 +18,7 @@ class TemplateApi extends BaseApi {
   postTemplate(template: object | undefined){
     return this.loadByPost('/api/templates',template)
     .then((res: any)=>{
+      
       return res
     })
   }
