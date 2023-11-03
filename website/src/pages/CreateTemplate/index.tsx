@@ -37,16 +37,16 @@ export type JsonData = {
   isInput: boolean;
   validation?:string[];
 };
-function fileToBytes(file: File): Promise<Uint8Array> {
+function fileToBytes(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
       reader.onload = (event) => {
           const result = event.target?.result;
-          if (typeof result === "string") {
+          if (typeof result !== "string") {
               reject(new Error("Unexpected result type"));
           } else {
-              resolve(new Uint8Array(result as ArrayBuffer));
+              resolve(result);
           }
       };
       
@@ -54,12 +54,12 @@ function fileToBytes(file: File): Promise<Uint8Array> {
           reject(error);
       };
       
-      reader.readAsArrayBuffer(file);
+      reader.readAsDataURL(file);
   });
 }
 const CreateTemplate: React.FC = () => {
   const [form] = Form.useForm();
-  const [fileData, setFileData] = useState<Uint8Array|null>(null);
+  const [fileData, setFileData] = useState<string|null>(null);
   const [iconList, setIconList] = useState<Array<{ value: string, label: string }>>(iconList1);
   const [displayP, setDisplayP] = useState(0);
   const [params, setParams] = useState(templateParameter)
@@ -74,8 +74,8 @@ const CreateTemplate: React.FC = () => {
         message.error(`${file.name} is not a tar file`);
       }
       const bytes = await fileToBytes(file)
-      setFileData(bytes)
-      console.log(bytes)
+      setFileData(bytes.split(',')[1])
+      console.log(bytes.split(',')[1])
       return isTar || Upload.LIST_IGNORE;
     },
     onChange: (info) => {
@@ -107,10 +107,11 @@ const CreateTemplate: React.FC = () => {
       filename: t.filename,
       parameters: JSON.stringify(jsonData),
       accessLevel: t.accessLevel,
-      //tfFile:fileData,
+      tfFile:fileData,
     }
+    console.log(template)
     const res = await TemplateApi.postTemplate(template)
-    console.log(Buffer.from(res))
+    
   }
   
   return (
