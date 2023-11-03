@@ -20,6 +20,7 @@ import { TemplateCol } from './components/FormItems';
 import TextArea from 'antd/es/input/TextArea';
 import { TemplateField } from '@/utils/types/TemplateTypes';
 import { history } from 'umi';
+import { DefaultIcon } from '@/assets/DefaultIcon';
 //CT_TODO: delete this after backend integration
 
 const iconList1: Array<{ value: string, label: string }> = [
@@ -114,6 +115,7 @@ const CreateTemplate: React.FC = () => {
       parameters: JSON.stringify(jsonData),
       accessLevel: t.accessLevel,
       tfFile: fileData,
+      icon: DefaultIcon
     }
     console.log(template)
     const res = await TemplateApi.postTemplate(template)
