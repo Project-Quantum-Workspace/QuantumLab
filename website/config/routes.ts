@@ -60,7 +60,19 @@ export default [
   {
     name:'jobMonitor',
     icon:'dashboardOutlined',
-    path:'/jobMonitor'
+    path:'/jobMonitor',
+    routes:[
+      {
+        path:'/jobMonitor',
+        component: './JobMonitor',
+      },
+      {
+        path: '/jobMonitor/jobDetail/:jobId',
+        component: './JobMonitor/JobDetail',
+        hideInMenu: true,
+      },
+    ]
+
   },
 
   {
