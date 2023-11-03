@@ -13,57 +13,48 @@ import {
   message,
   notification,
 } from 'antd';
-
+import * as yaml from 'js-yaml';
 import { Link } from '@umijs/max';
 import TemplateApi from '@/services/quantumlab/template';
 import { TemplateCol } from './components/FormItems';
 import TextArea from 'antd/es/input/TextArea';
-import { event } from 'cypress/types/jquery';
-
+import { TemplateField } from '@/utils/types/TemplateTypes';
+import { history } from 'umi';
 //CT_TODO: delete this after backend integration
-const templateParameter = "{\"template\":[{\"default\":\"s-1vcpu-1gb\",\"description\":\"Which Droplet configuration would you like to use?\",\"droplet size\":null,\"isInput\":false,\"name\":\"Droplet size\",\"selections\":[{\"name\":\"1 vCPU, 1 GB RAM\",\"value\":\"s-1vcpu-1gb\"},{\"name\":\"1 vCPU, 2 GB RAM\",\"value\":\"s-1vcpu-2gb\"},{\"name\":\"2 vCPU, 2 GB RAM\",\"value\":\"s-2vcpu-2gb\"},{\"name\":\"2 vCPU 4 GB RAM\",\"value\":\"s-2vcpu-4gb\"}],\"type\":\"selection\"},{\"default\":5,\"description\":\"How large would you like your home volume to be (in GB)?\",\"home volume size\":null,\"isInput\":true,\"name\":\"Home volume size\",\"type\":\"number\",\"validation\":{\"max\":20,\"min\":1}},{\"default\":\"sgp1\",\"description\":\"This is the region where your workspace will be created.\",\"isInput\":false,\"name\":\"Region\",\"region\":null,\"selections\":[{\"name\":\"New York 1\",\"value\":\"nyc1\"},{\"name\":\"Melbourne\",\"value\":\"melb\"}],\"type\":\"selection\"}]}"
+
 const iconList1: Array<{ value: string, label: string }> = [
   { value: '/unimelb', label: 'Unimelb Icon' },
   { value: '/quantumLab', label: 'QuantumLab Icon' },
 ]
 //CT_TODO: put this to the /utils/types once the data type is settled 
-export type JsonData = {
-  name: string;
-  description:string;
-  default?:string;
-  type:string;
-  label: string;
-  selections?: string[];
-  isInput: boolean;
-  validation?:string[];
-};
+
+
 function fileToBytes(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (event) => {
-          const result = event.target?.result;
-          if (typeof result !== "string") {
-              reject(new Error("Unexpected result type"));
-          } else {
-              resolve(result);
-          }
-      };
-      
-      reader.onerror = (error) => {
-          reject(error);
-      };
-      
-      reader.readAsDataURL(file);
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const result = event.target?.result;
+      if (typeof result !== "string") {
+        reject(new Error("Unexpected result type"));
+      } else {
+        resolve(result);
+      }
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+
+    reader.readAsDataURL(file);
   });
 }
 const CreateTemplate: React.FC = () => {
   const [form] = Form.useForm();
-  const [fileData, setFileData] = useState<string|null>(null);
+  const [fileData, setFileData] = useState<string | null>(null);
   const [iconList, setIconList] = useState<Array<{ value: string, label: string }>>(iconList1);
-  const [displayP, setDisplayP] = useState(0);
-  const [params, setParams] = useState(templateParameter)
-  const [jsonData, setJsonData]=useState<JsonData[]>([])
+  const [params, setParams] = useState("")
+  const [jsonData, setJsonData] = useState<TemplateField[]|undefined>(undefined)
 
 
   const fileProps: UploadProps = {
@@ -75,29 +66,44 @@ const CreateTemplate: React.FC = () => {
       }
       const bytes = await fileToBytes(file)
       setFileData(bytes.split(',')[1])
-      
+
       return isTar || Upload.LIST_IGNORE;
     },
-    onChange: (info) => {
-      setDisplayP(info.fileList?.length)
-      //const fileBytes: Uint8Array = new Uint8Array(info.fileList[0]);
-      
-      
-    }
+    
 
   };
-  const uploadParam=async (e: { target: { value: React.SetStateAction<string>; } })=>{
-   
-    setParams(e.target.value);
-    if(params){
-      
-      const d = JSON.parse(params);
-      setJsonData(d["template"])
-      
-    }
-          
+  const enterParam=(e: { target: { value: React.SetStateAction<string>; }; })=>{
+    setParams(e.target.value)
+    setJsonData(undefined)
   }
-  
+  const parseParam = () => {
+    
+    try {
+      const yamldata = yaml.load(params)
+      const d = JSON.parse(JSON.stringify(yamldata));
+      setJsonData(d["template"])
+      if(d["template"].length!==0){
+        notification.success({
+          message: 'Success',
+          description: "Successfully parse parameters",
+          duration: 3,
+        });
+      }else{
+        throw new Error("Invalid input")
+      }
+      
+    } catch (error) {
+      
+      notification.error({
+        message: 'Error',
+        description: 'Fail to parse Yaml, please check your format',
+        duration: 5,
+      });
+      return;
+    }
+
+  }
+
 
   //CT_TODO: get icon list
   //CT_TODO: upload info to backend
@@ -107,16 +113,32 @@ const CreateTemplate: React.FC = () => {
       filename: t.filename,
       parameters: JSON.stringify(jsonData),
       accessLevel: t.accessLevel,
-      tfFile:fileData,
+      tfFile: fileData,
     }
     console.log(template)
     const res = await TemplateApi.postTemplate(template)
-    if(res.message==="success"){
-      console.log(res)
-    }
+    if (res.message === "success") {
+      notification.success({
+        message: 'Success',
+        description: res.message,
+        duration: 3,
+      });
+      setTimeout(() => {
+        history.push('/workspace');
+      }, 3000);
+
+    }else{
+      notification.error({
+        message: 'Error',
+        description: 'Fail to create, please check your input',
+        duration: 5,
+      });
+      return;
     
+    }
+
   }
-  
+
   return (
     <>
       <h1>
@@ -142,17 +164,17 @@ const CreateTemplate: React.FC = () => {
         <Form.Item
           label="Template Name"
           name="templatename"
-          rules={[{ required: true, message: 'Please enter the template name'},
-        ()=>({
-          validator(_,value){
-            const pattern = /^[a-zA-Z0-9-]+$/
-           if(pattern.test(value)){
-            return Promise.resolve();
-           }
-           return Promise.reject(new Error("Name must start with letters and contain only lowercase letters, uppercase letters, numbers and '-'"));
-          }
-        })]}
-         >
+          rules={[{ required: true, message: 'Please enter the template name' },
+          () => ({
+            validator(_, value) {
+              const pattern = /^[a-zA-Z0-9-]+$/
+              if (pattern.test(value)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error("Name must start with letters and contain only lowercase letters, uppercase letters, numbers and '-'"));
+            }
+          })]}
+        >
           <Input />
         </Form.Item>
 
@@ -176,12 +198,22 @@ const CreateTemplate: React.FC = () => {
           />
 
         </Form.Item>
-        <Form.Item name='parameters' label='Parameters'rules={[{ required: true, message: 'Please upload your template parameters' }]}>
-        <TextArea 
-        value={params}
-        onChange={uploadParam} showCount />
+        <Form.Item name='parameters' label='Parameters' rules={[{ required: true, message: 'Please upload your template parameters' }]}>
+          <TextArea
+            value={params}
+            rows={10}
+            onChange={enterParam} showCount />
+           
         </Form.Item>
-        
+        <Button
+              type="primary"
+              style={{
+                marginLeft:'25%',
+                backgroundColor: '#0F56B3',
+              }}
+              onClick={parseParam}>
+              Parse
+            </Button>
 
         <Divider />
         <h2>Permission</h2>
@@ -189,7 +221,7 @@ const CreateTemplate: React.FC = () => {
           extra="Any user with greater or equal to access level can use this template to create workspaces.">
           <InputNumber min={0} max={10} defaultValue={0} />
         </Form.Item>
-        {jsonData.length !== 0 &&
+        {jsonData &&
           <><Divider />
             <h2>Workspace Parameters</h2>
             {jsonData.map((p) =>

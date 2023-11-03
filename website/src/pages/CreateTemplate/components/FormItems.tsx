@@ -1,14 +1,14 @@
 
+import { DataSelections, TemplateField } from '@/utils/types/TemplateTypes';
 import { Form, Input, InputNumber, Select } from 'antd';
 import React, { Component, useState } from 'react'
-import { JsonData } from '..';
+
 
 type Props = {
-  data: JsonData
+  data: TemplateField
 }
-const InputStyle = {
-  marginTop: "10px"
-}
+
+const { Option } = Select;
 export const TemplateCol = (props: Props) => {
   const data = props.data
   var options:Array<{name: string,label: string}>= []
@@ -24,15 +24,18 @@ export const TemplateCol = (props: Props) => {
     <Form.Item
       labelCol={{ flex: '30%' }}
       wrapperCol={{ span: '30%' }}
-      label={data.name}
+      label={data.label}
       name={data.name}
       extra={data.description}
     >
       {data.isInput?<InputNumber defaultValue={data.default}/>:
-      <Select style={InputStyle} defaultValue={data.default} options={options} 
-  
-
-      />}
+      <Select className="question"defaultValue={data.default}>
+      {data.selections?.map((option: DataSelections, index: number) => (
+        <Option key={index} value={option.name}>
+          {option.name}
+        </Option>
+      ))}
+    </Select>}
     </Form.Item>
    
   </>
