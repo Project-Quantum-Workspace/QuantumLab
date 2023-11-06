@@ -16,7 +16,7 @@ class TemplateApi extends BaseApi {
       })
   }
   postTemplate(template: object | undefined){
-    if(!template.parameters){
+    if(!template?.parameters){
       return{"message":"invalid params"}
     }
     return this.loadByPost('/api/templates',template)
