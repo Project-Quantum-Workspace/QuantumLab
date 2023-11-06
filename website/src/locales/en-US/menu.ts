@@ -13,7 +13,7 @@ export default {
   'menu.admin.users': 'Users',
   'menu.analyse-tool':'analyse-tool',
   'menu.admin.user-information': 'User Information',
-  'menu.admin.adminInitialization': 'Admin Initialization', // Add this line
+  'menu.admin.adminInitialization': 'Admin Initialization',
   'menu.login': 'Login',
   'menu.exception.404': '404',
 };
