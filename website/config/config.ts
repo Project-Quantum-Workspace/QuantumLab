@@ -15,7 +15,7 @@ export default defineConfig({
   hash: true,
   mock: false,
 
-
+  esbuildMinifyIIFE: true
   /**
    * @name Compatibility settings
    * @description Setting ie11 doesn't guarantee perfect compatibility, you need to check all your dependencies.
