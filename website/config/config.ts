@@ -14,6 +14,7 @@ export default defineConfig({
    */
   hash: true,
   mock: false,
+  esbuildMinifyIIFE: true,
 
 
   /**
