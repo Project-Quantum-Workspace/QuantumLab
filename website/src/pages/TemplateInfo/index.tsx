@@ -14,7 +14,7 @@ import { FrownOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import useTemplateStore from '@/stores/TemplateStore'
 import { useEffect, useState } from 'react';
-import { TemplateClass } from '@/utils/types/TemplateTypes';
+import { DataSelections, TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 
 const TemplateInfo: React.FC = () => {
@@ -72,7 +72,7 @@ const TemplateInfo: React.FC = () => {
       alignItems: 'flex-start',
       padding: '5px 8px',
       minWidth: '160px',
-      height: '83px',
+      minHeight: '83px',
       borderRadius: '8px',
       backgroundColor: 'white',
       flex: '1',
@@ -119,7 +119,7 @@ const TemplateInfo: React.FC = () => {
     };
   });
 
-  const renderParam = (key: string, label: string, options?: string[]) => {
+  const renderParam = (key: string, label: string, options?: DataSelections[]) => {
     return (
       <div className={paramItemClass} key={key}>
         <Row>
@@ -129,7 +129,7 @@ const TemplateInfo: React.FC = () => {
           return (
             // eslint-disable-next-line react/jsx-key
             <Row key={key}>
-              <Text className={paramKeyClass}>{op}</Text>
+              <Text className={paramKeyClass}>{op.name}</Text>
             </Row>
           )
         })) : (
@@ -208,7 +208,7 @@ const TemplateInfo: React.FC = () => {
         </Title>
         <Space size="middle">
           {Object.entries(currentTemplate?.parameters || {}).map(([key, param]) =>
-            renderParam(key, param.label, param.selections)
+            renderParam(key, param.name, param.selections)
           )}
         </Space>
       </div>

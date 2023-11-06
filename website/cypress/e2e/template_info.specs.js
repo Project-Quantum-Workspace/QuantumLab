@@ -18,7 +18,7 @@ describe('Template Info', () => {
     cy.intercept('GET', workspaceIDUrl, workspaceIDData).as('workspaceInfo');
     cy.visit(`${Cypress.env('QUANTUMLAB_WEB')}/workspace`);
     cy.get('.ant-tabs-tab-btn:contains("Templates")').click();
-    cy.get('.ant-btn-icon').click();
+    cy.get('[class*="ant-icon-info"]').click();
   });
 
   it('should display template information', () => {

@@ -2,10 +2,9 @@ import { BaseApi } from '@/utils/BaseApi';
 import { TemplateClass, TemplateMetaData } from '@/utils/types/TemplateTypes';
 import { request } from '@umijs/max';
 class TemplateApi extends BaseApi {
-
   getAccessibleTemplates() {
     return this.loadByGet('/api/templates')
-      .then((res) => {
+      .then((res: { message: any; forEach: (arg0: (t: TemplateMetaData) => void) => void; }) => {
         if(!res.message) {
           let templates: TemplateClass[] = []
           res.forEach((t: TemplateMetaData) => {
@@ -16,6 +15,17 @@ class TemplateApi extends BaseApi {
         return res.message
       })
   }
+  postTemplate(template: object | undefined){
+    if(!template.parameters){
+      return{"message":"invalid params"}
+    }
+    return this.loadByPost('/api/templates',template)
+    .then((res: any)=>{
+      
+      return res
+    })
+  }
+ 
 
 }
 export default new TemplateApi()

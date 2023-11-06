@@ -14,7 +14,10 @@ export default {
   dev: {
     '/api/': {
       // target:'http://localhost:8080',
+      //target: 'https://feature-template-api-integration.dev.quantumlab.cloud',
       target: 'https://quantumlab.cloud',
+      // Configuring this allows proxying from http to https
+      // Features dependent on origin may need this, e.g. cookies
       changeOrigin: true,
     },
   },

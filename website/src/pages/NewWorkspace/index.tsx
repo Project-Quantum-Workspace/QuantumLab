@@ -14,13 +14,14 @@ import {
 import { useEffect, useState } from 'react';
 import { history, Link } from 'umi';
 import useTemplateStore from '@/stores/TemplateStore';
-import { TemplateClass } from '@/utils/types/TemplateTypes';
+import { DataSelections, TemplateClass } from '@/utils/types/TemplateTypes';
 import { PageLoading } from '@ant-design/pro-components';
 import React from 'react';
 import AuthApi from '@/services/quantumlab/auth';
 // import { log } from 'debug';
 import './newWorkspace.css';
 import { UserMetaData } from '@/utils/types/UserTypes';
+
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -336,9 +337,9 @@ const NewWorkspace = () => {
                   <InputNumber min={0} step={1} className="input-number" />
                 ) : (
                   <Select className="question">
-                    {question.selections?.map((option: string, index: number) => (
-                      <Option key={index} value={option}>
-                        {option}
+                    {question.selections?.map((option: DataSelections, index: number) => (
+                      <Option key={index} value={option.name}>
+                        {option.name}
                       </Option>
                     ))}
                   </Select>

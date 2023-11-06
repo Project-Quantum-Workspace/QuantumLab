@@ -1,11 +1,11 @@
 package controller
 
 import (
+	
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-
 	"github.com/Project-Quantum-Workspace/QuantumLab/bootstrap"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/tokenutil"
 	"github.com/Project-Quantum-Workspace/QuantumLab/internal/validationutil"
@@ -38,11 +38,11 @@ func (tc *TemplateController) PostOneTemplate(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	res := tc.TemplateUsecase.Create(&template)
 	if res != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
-			Message: "unexpected system error",
+			Message: res.Error(),
 		})
 		return
 	}
@@ -85,6 +85,34 @@ func (tc *TemplateController) GetAllTemplates(c *gin.Context) {
 	c.JSON(http.StatusOK, templates)
 }
 
+// GetTemplateByID @summary get one template
+// @Description get the template with its id
+// @Tags templates
+// @Produce json
+// @Param id path uint true "Template ID"
+// @Success 200 {object} model.Template
+// @Failure 500 {object} model.ErrorResponse "Unexpected System Error"
+// @Router /templates/{id} [get]
+func (tc *TemplateController) GetTemplateByID(c *gin.Context) {
+	var template model.Template
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid template id",
+		})
+		return
+	}
+	template, err = tc.TemplateUsecase.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
+			Message: "unexpected system error",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, template)
+
+}
+
 // UpdateOneTemplate @Summary Update template
 // @Description Update an existing workspace template.
 // @Tags templates
@@ -112,7 +140,7 @@ func (tc *TemplateController) UpdateOneTemplate(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	//tc.TemplateUsecase.First(&template, id)
 	err = tc.TemplateUsecase.Update(&template, id)
 
@@ -197,4 +225,55 @@ func listFilesInDirectory(directoryPath string) ([]string, error) {
 	}
 
 	return fileList, nil
+}
+
+// UploadFile @Summary Upload file and parse the parameters
+// @Description Get the preset template icons.
+// @Tags templates
+// @Param multipart/form-data
+// @Produce json
+func (tc *TemplateController) UpdateFile(c *gin.Context) {
+
+	id, err := validationutil.ValidateID(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: "invalid template id",
+		})
+		return
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{
+			Message: err.Error(),
+		})
+		return
+	}
+	openedFile, err := file.Open()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to open file"})
+		return
+	}
+	defer openedFile.Close()
+
+	content := make([]byte, file.Size)
+	_, err = openedFile.Read(content)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to read file content"})
+		return
+	}
+	
+	// Insert the file into the database
+	err = tc.TemplateUsecase.UploadFile(id, content)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	//decodedData, _ := base64.StdEncoding.DecodeString(string(content))
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "file successfully uploaded",
+		
+		
+	})
 }
