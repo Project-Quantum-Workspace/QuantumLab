@@ -1,14 +1,12 @@
-import {
-  ToolsetItemType,
-  ToolsetType,
-  WorkspaceInfoClass
-} from "@/utils/types/WorkspaceTypes";
+import { WorkspaceInfoClass} from "@/utils/types/WorkspaceTypes";
+import { ToolsetClass } from "@/utils/types/ToolsetTypes";
 import Toolset from "./components/ToolsetComponent";
 import { PageLoading } from '@ant-design/pro-components';
 import {
   Button,
   Col,
   Divider,
+  Empty,
   Image,
   message,
   Row,
@@ -31,6 +29,7 @@ const WorkspaceInfo: React.FC = () => {
   const { workspaceId } = useParams()
   const [loading, setLoading] = useState(true);
   const [workspace, setWorkspace] = useState<WorkspaceInfoClass|undefined>(undefined)
+  const [toolset, setToolset] = useState<ToolsetClass[]|undefined>([])
   const intl = useIntl();
   useEffect(() => {
     WorkspaceApi.getWorkspace(workspaceId as string)
@@ -51,21 +50,13 @@ const WorkspaceInfo: React.FC = () => {
       });
     }, []);
 
-
-    const toolsets: ToolsetItemType[] = [
-
-    {
-      type: ToolsetType.Jupyter,
-      link: 'https://jupyter-test.quantumlab.cloud',
-    },
-    {
-      type: ToolsetType.VSCode,
-      link: 'https://vs-test.quantumlab.cloud',
-    },
-    {
-      type: ToolsetType.Terminal,
-    },
-  ];
+    useEffect(() => {
+      WorkspaceApi.getWorksapceToolset(workspaceId as string)
+        .then((res) => {
+          if (res)
+            setToolset(res)
+        })
+    }, [])
 
   const projectNameClass = useEmotionCss(() => {
     return {
@@ -163,7 +154,7 @@ const WorkspaceInfo: React.FC = () => {
 
   const renderParam = (key: string, value: string) => {
     return (
-      <div className={paramItemClass}>
+      <div className={paramItemClass} key={key}>
         <Row>
           <Col>
             <Title className={paramValueClass}>{value}</Title>
@@ -178,8 +169,8 @@ const WorkspaceInfo: React.FC = () => {
     );
   };
 
-  const renderToolset = (key: string, toolset: ToolsetItemType) => {
-    return <Toolset key={key} type={toolset.type} link={toolset.link} />;
+  const renderToolset = (key: string, toolset: ToolsetClass) => {
+    return <Toolset key={key} tool={toolset} />;
   };
 
   const handleBack = () => {
@@ -194,17 +185,15 @@ const WorkspaceInfo: React.FC = () => {
     {workspace ? (
       <>
         <div>
-
-        <Button
-          type="text"
-          icon={<ArrowLeftOutlined />}
-          onClick={handleBack}
-          style={{
-            color: '#0F56B3',
-            padding: 0
-          }}
-        >
-          Back to My Project
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={handleBack}
+            style={{
+              color: '#0F56B3',
+              padding: 0
+          }}>
+            Back to My Project
         </Button>
       </div>
 
@@ -212,9 +201,7 @@ const WorkspaceInfo: React.FC = () => {
         <Image
           width={96}
           height={96}
-
           src={workspace.templateIcon}
-
         />
         <div>
           <Row>
@@ -225,13 +212,11 @@ const WorkspaceInfo: React.FC = () => {
           <Row>
             <Space size='large'>
               <>
-
                 <Title className={projectAttrClass}>{"Status:"}</Title>
                 <ProjectStatus status={workspace?.state} margin={true}/>
               </>
               <Title className={projectAttrClass}>{"Owner: Lois"}</Title>
               <Title className={projectAttrClass}>{"Template: " + workspace?.templateName}</Title>
-
             </Space>
           </Row>
         </div>
@@ -274,18 +259,22 @@ const WorkspaceInfo: React.FC = () => {
           Utilize the predefined toolset for your development
         </Paragraph>
         <div>
-          {Object.entries(toolsets).map(([key, toolset]) =>
-            renderToolset(key, toolset)
-          )}
+          {toolset?.length ? toolset?.map((tool) => renderToolset(tool.accessId, tool)) : 
+            <Empty 
+              description={
+                <span>
+                  No toolset set up for this workspace yet.
+                </span>
+              }
+            />
+          }
         </div>
       </div>
-
     </>) : (
       <>
         <Result
           icon={<FrownOutlined />}
           title="Workspace Not Found"
-
         />
       </>
     )}
