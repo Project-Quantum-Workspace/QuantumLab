@@ -81,7 +81,7 @@ export default defineConfig({
    */
   title: 'QuantumLab',
   layout: {
-    locale: false,
+    locale: true,
     ...defaultSettings,
   },
   /**
@@ -99,7 +99,7 @@ export default defineConfig({
    */
   locale: {
     default: 'en-US',
-    antd: false,
+    antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: false,
   },

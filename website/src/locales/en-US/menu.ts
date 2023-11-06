@@ -11,7 +11,7 @@ export default {
   'menu.admin': 'Admin',
   'menu.admin.sub-page': 'Sub-Page',
   'menu.admin.users': 'Users',
-  'menu.analyse-tool':'analyse-tool',
+  'menu.analyse-tool':'Analyse Tool',
   'menu.admin.user-information': 'User Information',
   'menu.admin.adminInitialization': 'Admin Initialization',
   'menu.login': 'Login',
