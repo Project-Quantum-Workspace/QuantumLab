@@ -37,7 +37,15 @@ func (jmc *JobMonitorController) GetJobList(c *gin.Context) {
 		return
 	}
 
-	url := "https://runtime-us-east.quantum-computing.ibm.com/jobs"
+	var url string
+
+	if token.Name == "IBM" {
+		url = "https://runtime-us-east.quantum-computing.ibm.com/jobs"
+	} else {
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Message: "token supplier not supported"})
+		return
+	}
+
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
