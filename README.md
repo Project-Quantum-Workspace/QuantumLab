@@ -98,7 +98,7 @@ Login as an Administrator, hit this link (http://localhost:8000/admin/users) and
 ### Pipeline Migration
 If you need to migrate and establish your own development pipeline, please refer to the following document:
 
-- [CI/CD Pipeline Spec and Migration Guide]([https://superset.apache.org/docs/intro](https://confluence.cis.unimelb.edu.au:8443/display/SWEN900172023QZ/Development+Environment+Deployment+Pipeline))
+- [CI/CD Pipeline Spec and Migration Guide](https://confluence.cis.unimelb.edu.au:8443/display/SWEN900172023QZ/Development+Environment+Deployment+Pipeline)
 
 <!-- LICENSE -->
 ## License
