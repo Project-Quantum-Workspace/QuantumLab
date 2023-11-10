@@ -78,8 +78,7 @@ export default [
   {
     name: 'analyse-tool',
     icon: 'areaChartOutlined',
-    path: '/analyseTool',
-    //component: './AnalyseTool',
+    path: 'https://superset-dev.quantumlab.cloud'
   },
 
   {
