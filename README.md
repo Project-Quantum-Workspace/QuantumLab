@@ -1,11 +1,33 @@
 # QuantumLab
 
+# Table of Contents
+
+1. [About This Project](#about-this-project)
+2. [Built With](#built-with)
+3. [Project Structure](#project-structure)
+4. [Getting Started with Backend](#getting-started-with-backend)
+    - [Prerequisite](#prerequisite)
+    - [Install Dependencies](#install-dependencies)
+    - [Configure `.env` File](#configure-env-file)
+    - [Run Server Program](#run-server-program)
+    - [Swagger](#api-documentation-swagger)
+5. [System Users](#system-users)
+    - [System Roles](#system-roles)
+    - [Initialise Root Administrator](#initialise-root-administrator)
+    - [Invite Researchers](#invite-researchers)
+6. [Frontend Development](#frontend-development)
+7. [Developer's Guide](#developers-guide)
+    - [Pipeline Migration](#pipeline-migration)
+8. [License](#license)
+
 <!-- ABOUT THE PROJECT -->
+
 ## About This Project
 
 QuantumLab is an open-source quantum computing platform aiming to enhance researchers' experience by gathering the access to quantum computing resources from multiple providers. In addition, QuantumLab provides customisable analysis and visualisation tool based on [Apache-Superset](https://superset.apache.org/docs/intro) for quantum circuit execution results.
 
 <!-- BUILT WITH -->
+
 ## Built With
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
@@ -17,9 +39,11 @@ QuantumLab is an open-source quantum computing platform aiming to enhance resear
 ![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
 
 <!-- PROJECT STRUCTURE -->
+
 ## Project Structure
+
 ```sh
-QuantumLab                                                
+QuantumLab
 ├─ api                  # Backend API endpoints
 ├─ bootstrap            # Env bootstrap
 ├─ cluster              # Kubernetes cluster
@@ -37,50 +61,61 @@ QuantumLab
 ├─ README.md
 ```
 
-<!-- GETTING STARTED -->
-## Getting Started
+<!-- GETTING STARTED WITH BACKEND-->
+
+## Getting Started with Backend
 
 ### Prerequisite
+
 Make sure you properly installed **Go 1.20** on your OS. Refer to the [Go official documentation](https://go.dev/doc/install) for more details.
 
 ### Install dependencies
+
 Note: Make sure you execute all following commands from the root project directory.
+
 ```
 go get ./...
 ```
 
 ### Configure `.env` file
+
 Several environment variables need to be set up before developing this repository. An example `.env` file is provided ([.env.example](.env.example)), and you may need to replace these example values environment variables. The `.env` file must be put in the root project directory for development.
 
 ### Run server program
+
 ```
 go run cmd/main.go
 ```
 
-### Swagger
-Install swag CLI:
- ```
- go install github.com/swaggo/swag/cmd/swag@latest
- ```
+### API Documentation Swagger
 
- Create or update swagger API documentation:
- ```
- swag init -g ./cmd/main.go ./docs --pd true
- ```
- You can visit the API documentation after starting up the server: http://localhost:8080/swagger/index.html#/
+Install swag CLI:
+
+```
+go install github.com/swaggo/swag/cmd/swag@latest
+```
+
+Create or update swagger API documentation:
+
+```
+swag init -g ./cmd/main.go ./docs --pd true
+```
+
+You can visit the API documentation after starting up the server: http://localhost:8080/swagger/index.html#/
 
 <!-- SYSTEM USERS -->
+
 ## System Users
 
 ### System roles
 
 By default, the system has the following three different roles:
 
-| id | name |
-| -- | ---- |
-| 0 | Root Administrator |
-| 1 | Administrator |
-| 2 | Researcher |
+| id  | name               |
+| --- | ------------------ |
+| 0   | Root Administrator |
+| 1   | Administrator      |
+| 2   | Researcher         |
 
 ### Initialise Root Administrator
 
@@ -93,14 +128,20 @@ Login as an Administrator, hit this link (http://localhost:8000/admin/users) and
 
 ![Invite new user](docs/screenshots/user_invite.png)
 
+## Frontend Development
+
+For the frontend development, please refer to the [website/README.md](website/README.md)
+
 ## Developer's Guide
 
 ### Pipeline Migration
+
 If you need to migrate and establish your own development pipeline, please refer to the following document:
 
-- [CI/CD Pipeline Spec and Migration Guide](https://confluence.cis.unimelb.edu.au:8443/display/SWEN900172023QZ/Development+Environment+Deployment+Pipeline)
+-   [CI/CD Pipeline Spec and Migration Guide](https://confluence.cis.unimelb.edu.au:8443/display/SWEN900172023QZ/Development+Environment+Deployment+Pipeline)
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See [LICENSE.txt](LICENSE.txt) for more information.
