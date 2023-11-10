@@ -3,7 +3,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { Space, Table, Tag } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import ProjectStatus from './ProjectStatus';
-import { getAllWorkspace } from '@/services/quantumlab/workspace';
+import  WorksapceApi from '@/services/quantumlab/workspace';
 import { WorkspaceInfoMetaData } from '@/utils/types/WorkspaceTypes';
 import { Link } from '@umijs/max';
 import { PageLoading } from '@ant-design/pro-components';
@@ -24,9 +24,7 @@ const periods = {
 const durationCalculator = (t: string) => {
   let lastAcc: Date = new Date(t);
   let curtime: Date = new Date();
-  // console.log(t);
-  // console.log(lastAcc);
-  // console.log(curtime);
+
   let diff = curtime.valueOf() - lastAcc.valueOf();
   if (diff > periods.year) {
     const m = Math.floor(diff / periods.year);
@@ -145,7 +143,7 @@ const ProjectsTable = (props: Props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   useEffect(() => {
-    getAllWorkspace(String(data))
+    WorksapceApi.getAllWorkspace(String(data))
       .then((res) => {
         setWorkspaces(res);
         setLoading(false);

@@ -21,8 +21,6 @@
  * @doc https://umijs.org/docs/guides/routes
  */
 
-import component from "@/locales/en-US/component";
-
 export default [
   {
     name: 'login',
@@ -80,8 +78,7 @@ export default [
   {
     name: 'analyse-tool',
     icon: 'areaChartOutlined',
-    path: '/analyseTool',
-    //component: './AnalyseTool',
+    path: 'https://superset-dev.quantumlab.cloud'
   },
 
   {
@@ -124,14 +121,6 @@ export default [
         component: './AdminView',
         hideInMenu: true,
       },
-      
-      {
-        name: 'admin-update',
-        path: '/admin/adminUpdate',
-        component: './AdminUpdate',
-        hideInMenu: true,
-      },
-
       {
         name: 'adminInitialization',
         path : '/admin/adminInitialization',

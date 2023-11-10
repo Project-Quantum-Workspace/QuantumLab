@@ -1,51 +1,30 @@
 import {
   Col, Row, Typography
 } from 'antd';
-import { ToolsetType } from '@/utils/types/WorkspaceTypes';
-import TerminalLOGO from '../../../../assets/TerminalLOGO.svg';
-import VSCodeLOGO from '../../../../assets/VSCodeLOGO.svg';
-import JupyterLOGO from '../../../../assets/JupyterLOGO.svg';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { ToolsetClass } from '@/utils/types/ToolsetTypes';
 
-interface ToolsetProps {
-  key: string;
-  type: ToolsetType;
-  link?: string;
+interface ToolsetProp {
+  key: string
+  tool: ToolsetClass
 }
 
-const Toolset = (props: ToolsetProps) => {
-  const { key, type, link } = props;
-  const handleOpenLink = () => {
-    window.open(
-      // 'https://workspace-1.dev.quantumlab.cloud/?folder=/home/ccc/workspace-test',
-      link,
-      '_blank',
-    );
-  };
-  let logo = '';
-  let label = '';
-  switch (type) {
-    case ToolsetType.Terminal:
-      logo = TerminalLOGO;
-      label = 'Terminal';
-      break;
-    case ToolsetType.Jupyter:
-      logo = JupyterLOGO;
-      label = 'JupyterLab';
-      break;
-    case ToolsetType.VSCode:
-      logo = VSCodeLOGO;
-      label = 'VS Code Web';
-      break;
+const Toolset = (props: ToolsetProp) => {
+  const { tool } = props
+  const handleOpenLink = (accessId: string) => {
+    const link = ToolsetClass.getLink(accessId)
+    if (link)
+      window.open(link, '_blank')
   }
+
   const { Title } = Typography;
 
   const toolsetClass = useEmotionCss(() => {
     return {
-      width: '160px',
-      height: '160px',
-      background: '#F7F7F7',
-      borderRadius: '30px',
+      padding: '0.5rem',
+      marginLeft: '1.5rem',
+      background: 'white',
+      borderRadius: '20px',
       cursor: 'pointer',
       display: 'inline-block',
       textAlign: 'center'
@@ -74,17 +53,19 @@ const Toolset = (props: ToolsetProps) => {
 
   return (
     <div 
-      key={key}
       className={toolsetClass}
-      onClick={handleOpenLink}>
+      onClick={() => handleOpenLink(tool.accessId)}>
         <Row>
           <Col span={24}>
-            <img className={toolsetImgClass} src={logo} />
+            <img 
+              className={toolsetImgClass} 
+              src={tool.icon} 
+            />
           </Col>
         </Row>
         <Row>
           <Col style={{ height: '24px' }} span={24}>
-            <Title level={5} className={toolsetLabelClass}>{label}</Title>
+            <Title level={5} className={toolsetLabelClass}>{tool.name}</Title>
           </Col>
           </Row>
     </div>
