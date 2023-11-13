@@ -78,7 +78,8 @@ export default [
   {
     name: 'analyse-tool',
     icon: 'areaChartOutlined',
-    path: '/api/redirect/superset'
+    path: '/api/redirect/superset',
+    component: './AnalyseTool',
   },
 
   {

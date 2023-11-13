@@ -1,4 +1,4 @@
-import { Footer, Feedback, SelectLang, AvatarDropdown, AvatarName } from '@/components';
+import { Footer, Feedback, AvatarDropdown, AvatarName } from '@/components';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
@@ -52,7 +52,7 @@ export async function getInitialState(): Promise<{
 
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    actionsRender: () => [<Feedback key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [<Feedback key="doc" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -105,7 +105,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       ? [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
-            <span>OpenAPI 文档</span>
+            <span>OpenAPI File</span>
           </Link>,
         ]
       : [],
