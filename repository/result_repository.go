@@ -10,16 +10,25 @@ import (
 
 type resultRepository struct {
 	qlRDB *gorm.DB
+	qlDB  *gorm.DB
 }
 
-func NewResultRepository(qlDB *gorm.DB) model.ResultRepository {
+func NewResultRepository(qlRDB *gorm.DB, qlDB *gorm.DB) model.ResultRepository {
 	return &resultRepository{
-		qlRDB: qlDB,
+		qlRDB: qlRDB,
+		qlDB:  qlDB,
 	}
 }
 
-func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
-	createTableSQL := "CREATE TABLE " + table.TableName + " ("
+func (repo *resultRepository) CheckToken(token string) (bool, error) {
+	var users []model.User
+	err := repo.qlDB.Table("users").Where("quantumlab_token = ?", token).Find(&users)
+	return len(users) == 1, err.Error
+}
+
+func (repo *resultRepository) Create(table *model.CreateTableRequest, token string) error {
+	tableName := table.TableName + "_" + token
+	createTableSQL := "CREATE TABLE " + tableName + " ("
 	for i, col := range table.ColumnName {
 		createTableSQL += col + " " + table.ColumnDatatype[col]
 		if i < table.ColumnCount-1 {
@@ -65,7 +74,7 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 	}
 
 	for i < table.RowCount {
-		insertDataSQL = "INSERT INTO " + table.TableName + " ("
+		insertDataSQL = "INSERT INTO " + tableName + " ("
 		for j, col := range table.ColumnName {
 			insertDataSQL += col
 			if j < table.ColumnCount-1 {
@@ -97,7 +106,7 @@ func (repo *resultRepository) Create(table *model.CreateTableRequest) error {
 		insertDataSQL += ");"
 		result = repo.qlRDB.Exec(insertDataSQL, args...)
 		if result.Error != nil {
-			dropTableSQL := fmt.Sprintf("DROP TABLE %s", table.TableName)
+			dropTableSQL := fmt.Sprintf("DROP TABLE %s", tableName)
 			repo.qlRDB.Exec(dropTableSQL)
 			return result.Error
 		}

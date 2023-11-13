@@ -1,5 +1,3 @@
-import { request } from '@umijs/max';
-import type { AxiosError, Method, ResponseType } from 'axios';
 import { BaseApi } from '@/utils/BaseApi';
 const api = new BaseApi();
 

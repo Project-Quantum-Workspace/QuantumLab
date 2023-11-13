@@ -1,6 +1,7 @@
-import { request } from '@umijs/max';
 import { BaseApi } from '@/utils/BaseApi';
 import { WorkspaceInfoClass } from '@/utils/types/WorkspaceTypes';
+import { ToolsetMetaData, ToolsetClass } from '@/utils/types/ToolsetTypes';
+import { message } from 'antd';
 
 class WorkspaceApi extends BaseApi {
   getWorkspace(id: string) {
@@ -9,22 +10,25 @@ class WorkspaceApi extends BaseApi {
     });
   }
 
-  // getAllWorkspace(id:string) {
-  //   return this.loadByGet('/api/workspaces/users/'+id)
-  //     .then((workspaces) =>  workspaces)
-  // }
+  getAllWorkspace(id:string) {
+    return this.loadByGet('/api/workspaces/users/'+id)
+      .then((workspaces) =>  workspaces)
+  }
+
+  getWorksapceToolset(id:string) {
+    return this.loadByGet('/api/workspaces/' + id + '/toolset')
+      .then((res) => {
+        if(Array.isArray(res)) {
+          let toolset: ToolsetClass[] = []
+          res.forEach((t: ToolsetMetaData) => {
+            toolset.push(ToolsetClass.fromDTO(t))
+          })
+          return toolset
+        }
+      })
+      .catch((error) => { message.error(error.message) })
+  }
+
 }
 
 export default new WorkspaceApi();
-
-//get all workspace by user id
-export async function getAllWorkspace(id: string) {
-  //console.log(id)
-  return request('/api/workspaces/users/' + id, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-
-    },
-  });
-}

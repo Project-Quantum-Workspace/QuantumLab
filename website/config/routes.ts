@@ -60,14 +60,26 @@ export default [
   {
     name:'jobMonitor',
     icon:'dashboardOutlined',
-    path:'/jobMonitor'
+    path:'/jobMonitor',
+    routes:[
+      {
+        path:'/jobMonitor',
+        component: './JobMonitor',
+      },
+      {
+        path: '/jobMonitor/jobDetail/:jobId',
+        component: './JobMonitor/JobDetail',
+        hideInMenu: true,
+      },
+    ]
+
   },
 
   {
-    name: 'analyseTool',
+    name: 'analyse-tool',
     icon: 'areaChartOutlined',
-    path: '/analyseTool',
-    //component: './AnalyseTool',
+    path: '/api/redirect/superset',
+    component: './AnalyseTool',
   },
 
   {
@@ -78,9 +90,15 @@ export default [
   },
 
   {
-    path: '/template/:templateId',
+    path: '/templates/:templateId',
     component: './TemplateInfo',
     hideInMenu: true,
+  },
+  {
+    path:'/templates/createTemplate',
+    component:'./CreateTemplate',
+    hideInMenu: true,
+    
   },
 
   {
@@ -91,9 +109,8 @@ export default [
     routes: [
       {
         path: '/admin',
-        redirect: '/admin/sub-page',
+        redirect: '/admin/users',
       },
-
       {
         name:'users',
         path:'/admin/users',
@@ -105,13 +122,6 @@ export default [
         component: './AdminView',
         hideInMenu: true,
       },
-      {
-        name: 'admin-update',
-        path: '/admin/adminUpdate',
-        component: './AdminUpdate',
-        hideInMenu: true,
-      },
-
       {
         name: 'adminInitialization',
         path : '/admin/adminInitialization',

@@ -22,6 +22,10 @@ type Env struct {
 	EmailServicePort     int    `mapstructure:"EMAIL_SERVICE_PORT"`
 	EmailServiceAddress  string `mapstructure:"EMAIL_SERVICE_ADDRESS"`
 	EmailServiceSecret   string `mapstructure:"EMAIL_SERVICE_SECRET"`
+	SupersetURL          string `mapstructure:"SUPERSET_URL"`
+	OAuthClientID        string `mapstructure:"OAUTH_CLIENT_ID"`
+	OAuthClientSecret    string `mapstructure:"OAUTH_CLIENT_SECRET"`
+	OAuthClientDomain    string `mapstructure:"OAUTH_CLIENT_DOMAIN"`
 }
 
 func NewEnv() *Env {

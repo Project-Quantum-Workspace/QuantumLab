@@ -10,11 +10,19 @@ export type TemplateMetaData = {
 
 export type TemplateField = {
   name: string;
+  description:string;
+  default?:string;
+  type:string;
   label: string;
+  selections?: DataSelections[];
   isInput: boolean;
-  selections: string[];
+  validation?:string[];
 }
-
+export type DataSelections={
+  
+  name:string;
+  value:string
+}
 export class TemplateClass {
   constructor(
     readonly id: number,
