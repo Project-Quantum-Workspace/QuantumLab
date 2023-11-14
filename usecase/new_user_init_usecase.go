@@ -11,13 +11,16 @@ import (
 
 type userInitUsecase struct {
 	userRepository model.UserRepository
+	roleRepository model.RoleRepository
 }
 
 func NewUserInitUsecase(
 	userRepository model.UserRepository,
+	roleRepository model.RoleRepository,
 ) model.NewUserInitUsecase {
 	return &userInitUsecase{
 		userRepository: userRepository,
+		roleRepository: roleRepository,
 	}
 }
 
@@ -30,6 +33,13 @@ func (uiu *userInitUsecase) CreateRootAdmin(request *model.InitRequest) error {
 	if count != 0 {
 		return errors.New("already has users")
 	}
+
+	roleInitError := uiu.roleRepository.InitRoles()
+	if roleInitError != nil {
+		logrus.Errorf("error initiating roles: %v", roleInitError.Error())
+		return roleInitError
+	}
+
 	// Root Administrator has id = 0
 	roleID := uint(0)
 	role := model.Role{ID: &roleID}

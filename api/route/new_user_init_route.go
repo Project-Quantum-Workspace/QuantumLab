@@ -11,8 +11,9 @@ import (
 
 func NewUserInitRouter(apiRouterGroup *gin.RouterGroup, db *gorm.DB, env *bootstrap.Env) {
 	ur := repository.NewUserRepository(db)
+	rr := repository.NewRoleRepository(db)
 	nuic := &controller.NewUserInitializerController{
-		UserInitUsecase: usecase.NewUserInitUsecase(ur),
+		UserInitUsecase: usecase.NewUserInitUsecase(ur, rr),
 	}
 
 	authRouterGroup := apiRouterGroup.Group("/init")
