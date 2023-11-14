@@ -90,7 +90,7 @@ const Login: React.FC = () => {
           const data = await response.json();
           if (!data.hasUser) {
             message.info('There is no user, please creat your account');
-            navigate('/admin/adminInitialization');
+            navigate('/adminInitialization');
           }
         } else {
           message.error('Error checking for user');
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
 
 
 
-  
+
   const containerClassName = useEmotionCss(() => {
 
     return {
