@@ -98,7 +98,13 @@ export default [
     path:'/templates/createTemplate',
     component:'./CreateTemplate',
     hideInMenu: true,
-    
+
+  },
+  {
+    name: 'adminInitialization',
+    path : '/adminInitialization',
+    component : './AdminInitialization',
+    layout: false,
   },
 
   {
@@ -122,12 +128,12 @@ export default [
         component: './AdminView',
         hideInMenu: true,
       },
-      {
-        name: 'adminInitialization',
-        path : '/admin/adminInitialization',
-        component : './AdminInitialization',
-        hideInMenu: true,
-      },
+      // {
+      //   name: 'adminInitialization',
+      //   path : '/admin/adminInitialization',
+      //   component : './AdminInitialization',
+      //   hideInMenu: true,
+      // },
     ],
   },
   {
