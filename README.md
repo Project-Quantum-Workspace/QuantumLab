@@ -133,6 +133,9 @@ Login as an Administrator, hit this link (http://localhost:8000/admin/users) and
 For the frontend development, please refer to the [website/README.md](website/README.md)
 
 ## Developer's Guide
+### Getting Start to run the whole project
+- [Get Start Guide](docs/Get-start.md)
+
 
 ### Pipeline Migration
 
