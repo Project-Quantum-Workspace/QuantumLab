@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -14,10 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+/app/docker/docker-init.sh
 
-# Ignore everything
-*
-# DON'T ignore the .gitignore
-!.gitignore
-!superset_config.py
-!superset_config_local.example
+# TODO: copy config overrides from ENV vars
+
+# TODO: run celery in detached state
+export SERVER_THREADS_AMOUNT=8
+# start up the web server
+
+/usr/bin/run-server.sh
