@@ -119,7 +119,11 @@ SESSION_COOKIE_NAME=superset_session
 SESSION_COOKIE_DOMAIN=localhost
 ```
 ## Step 5: Run the project using docker-compose
-Make sure you are in the root project directory. Then, run the following command to start the project:
+Make sure you are in the root project directory. If you are using Unix-based os, please run following command to grant execute permission to shell scripts :
+```sh
+chmod +x -R script/docker
+```
+ Then, run the following command to start the project:
 ```sh
 docker-compose up
 ```
