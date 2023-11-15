@@ -29,3 +29,23 @@ func (rr *roleRepository) GetByName(name string) (*model.Role, error) {
 	result := rr.qlDB.Where("name = ?", name).First(&role)
 	return &role, result.Error
 }
+
+func (rr *roleRepository) InitRoles() error {
+	var roles []model.Role
+	roles = append(roles, model.Role{ID: new(uint), Name: "Root Administrator"})
+	*roles[0].ID = 0
+	roles = append(roles, model.Role{ID: new(uint), Name: "Administrator"})
+	*roles[1].ID = 1
+	roles = append(roles, model.Role{ID: new(uint), Name: "Researcher"})
+	*roles[2].ID = 2
+
+	err := rr.qlDB.Transaction(func(tx *gorm.DB) error {
+		for _, role := range roles {
+			if err := tx.Create(&role).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
+}

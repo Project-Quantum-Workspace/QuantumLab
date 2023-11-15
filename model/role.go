@@ -10,4 +10,5 @@ type Role struct {
 type RoleRepository interface {
 	GetAll() ([]Role, error)
 	GetByName(name string) (*Role, error)
+	InitRoles() error
 }
